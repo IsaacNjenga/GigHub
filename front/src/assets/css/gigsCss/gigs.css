@@ -1,0 +1,199 @@
+/*Modal css*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.575);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.5s ease;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  position: relative;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.4s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #333;
+}
+
+.modal-title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #4a4a4a;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gig-details {
+  text-align: center;
+  color: #333;
+}
+
+.gig-description {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.gig-info {
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 1em;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: rgb(40, 35, 35);
+  border-radius: 5px;
+  outline: 1px solid slategrey;
+}
+
+/* Chat Modal Overlay */
+.chat-modal-overlay {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.657); /* Black w/ opacity */
+  padding-top: 5px; /* Add some padding to the top */
+}
+
+/* Modal Content */
+.chat-modal-content {
+  background-color: #fefefe;
+  margin: 1% auto; /* 5% from the top and centered */
+  padding: 10px;
+  border: 1px solid #888;
+  width: 42%; /* Could be more or less, depending on screen size */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+}
+
+/* Close Button */
+.close-btn {
+  color: #d6c3c3;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Modal Title */
+.chat-modal-title {
+  margin-top: 0;
+  color: #333;
+}
+
+/* Modal Body */
+.chat-modal-body {
+  padding: 1px;
+}
+
+/* Chat Body */
+.chat-body {
+  padding: 5px;
+}
+
+/* Animation */
+@-webkit-keyframes animatetop {
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes animatetop {
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+.chat-modal-content::-webkit-scrollbar {
+  width: 1em;
+}
+
+.chat-modal-content::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.chat-modal-content::-webkit-scrollbar-thumb {
+  background-color: rgb(40, 35, 35);
+  border-radius: 5px;
+  outline: 1px solid slategrey;
+}

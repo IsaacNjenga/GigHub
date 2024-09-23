@@ -1,0 +1,26 @@
+.inputtext-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.inputtext-container button {
+  width: 10%;
+  height: 50px;
+  font-weight: bold;
+  border-radius: 10px;
+  font-size: 18px;
+  background-color: rgb(4, 170, 170);
+  border-width: 0;
+  color: #fff;
+  cursor: pointer;
+}
+
+.inputtext-container textarea {
+  width: 60%;
+  height: 50px;
+  border-radius: 10px;
+  border-width: 0;
+  padding: 10px;
+  font-size: 18px;
+  border-color: black;
+}
