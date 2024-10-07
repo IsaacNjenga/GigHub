@@ -1,57 +1,43 @@
 .chats_header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
-  .chats_icon {
-    color: red;
-  }
-  
-  .chats_logout {
-    color: rgb(6, 152, 152);
-  }
-  
-  
-  .home {
-    padding: 0 10%;
-  }
-  /* chats list  */
-  .chats_list {
-    height: 75vh;
-    overflow: scroll;
-    overflow-x: hidden;
-  }
-  .chat_sender {
-    display: flex;
-    justify-content: flex-end;
-    flex-direction: row
-  }
-  
-  .chat_sender img,
-  .chat_receiver img {
-    width: 30px;
-    height: 30px;
-    border-radius: 100%;
-  }
-  
-  .chat_sender p {
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 10px;
-    max-width: 60%,
-  }
-  
-  .chat_receiver {
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: row
-  }
-  
-  
-  .chat_receiver p {
-    padding: 10px;
-    background-color: #aff6be;
-    border-radius: 10px;
-    max-width: 60%,
-  }
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.chat-main{
+  background-color: red;
+}
+
+.chats-header {
+  display: flex;
+  background-color: #34c3daca;
+  align-items: center;
+  padding: 5px;
+}
+
+.pfp {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px; /* increased margin to create space between pfp and text */
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column; /* changed from column to row */
+  align-items: flex-start;
+}
+
+.username {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+}
+
+.time {
+  font-size: 0.8em;
+  color: #ffffff;
+  margin-top: 2px; /* added margin to create space between username and time */
+}

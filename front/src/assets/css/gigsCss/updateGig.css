@@ -1,0 +1,141 @@
+.update-gig-background {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.355), rgba(0, 0, 0, 0.812)),
+      url("../../images/jobOffer.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow-y: auto;
+  }
+  
+  .update-gig-container {
+    max-width: 750px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: rgba(
+      255,
+      255,
+      255,
+      0.738
+    ); /* Increased opacity for better readability */
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2;
+  }
+  
+  h1 {
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  hr {
+    border: 1px solid #7c7c7c;
+    margin-bottom: 20px;
+  }
+  
+  .update-gig-form {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    row-gap: 10px;
+  }
+  
+  label {
+    font-size: 1em;
+    font-weight: 500;
+    color: #1b1a1a;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  
+  textarea,
+  select {
+    width: 97%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #000000;
+    outline: none;
+  }
+  
+  textarea {
+    resize: none;
+    min-height: 70px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .type-select {
+    width: 100%;
+  }
+  
+  .radio-input {
+    grid-column: 1 / -1; /* Make radio buttons span full width */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .radio-input label {
+    margin: 0;
+    font-size: 1em;
+  }
+  
+  .form-radio {
+    margin-right: 10px;
+  }
+  
+  .button-container {
+    grid-column: 1 / -1; /* Span the buttons across both columns */
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .submit-gig-btn,
+  .cancel-gig-btn {
+    width: 48%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .submit-gig-btn {
+    background-color: #059d51;
+    color: #fff;
+  }
+  
+  .submit-gig-btn:hover {
+    background-color: #077219;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .cancel-gig-btn {
+    background-color: #ff0000;
+    color: #fff;
+  }
+  
+  .cancel-gig-btn:hover {
+    background-color: #970404;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  

@@ -1,0 +1,154 @@
+/* Centering the form container and improving background */
+.update-background {
+  background-image: linear-gradient(rgba(59, 56, 56, 0.2), rgba(0, 0, 0, 0.5)),
+    url("../../images/createProfile.jpg");
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1; /* Ensures the background stays behind content */
+  height: 100%;
+  overflow: auto;
+}
+
+.profile-container {
+  max-width: 900px;
+  width: 50%;
+  margin: 0 20px;
+  padding: 40px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+}
+
+/* Improving Profile Picture Section */
+.profile-picture {
+  position: relative;
+  text-align: center;
+  margin-bottom: 25px;
+  cursor: pointer;
+}
+
+.profile-picture img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.profile-picture:hover img {
+  transform: scale(1.1);
+}
+
+.upload-text {
+  font-size: 14px;
+  color: #555;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-top: 10px;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 25px;
+}
+
+.section-title {
+  font-size: 18px;
+  color: #2c3e50;
+  font-weight: bold;
+  margin-bottom: 15px;
+  display: block;
+}
+
+/* Enhancing inputs */
+.input {
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  width: 100%;
+  margin-bottom: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  border-color: #007bff;
+}
+
+/* Radio buttons */
+.radio-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.radio-label {
+  font-weight: normal;
+  margin-right: 10px;
+}
+
+/* Buttons */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.update-profile-btn,
+.delete-profile-btn {
+  padding: 14px;
+  width: 48%;
+  font-size: 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.update-profile-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.update-profile-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-profile-btn {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.delete-profile-btn:hover {
+  background-color: #d90404;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 20px;
+  }
+
+  .name-group,
+  .details-group1,
+  .details-group2 {
+    flex-direction: column;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .update-profile-btn,
+  .delete-profile-btn {
+    width: 100%;
+  }
+}

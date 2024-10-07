@@ -11,6 +11,7 @@ import "../../assets/css/gigsCss/gigs.css";
 import Loader from "../../components/loader";
 import { toast } from "react-toastify";
 import ChatContainer from "../../components/chats/chatContainer";
+import DOMPurify from "dompurify";
 
 const MySwal = withReactContent(Swal);
 function GigList() {
@@ -28,7 +29,11 @@ function GigList() {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const fetchedGigs = response.data.gigs;
-      setGigs(fetchedGigs);
+      const sanitizedGigs = fetchedGigs.map((gig) => ({
+        ...gig,
+        summary: DOMPurify.sanitize(gig.summary),
+      }));
+      setGigs(sanitizedGigs);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -144,7 +149,7 @@ function GigList() {
             onClick={() => viewProfile(row.postedBy)}
             style={{ cursor: "pointer" }}
           >
-            {row.username}
+            {row.username.replace(/^./, row.username[0].toUpperCase())}
           </p>
         </>
       ),
@@ -163,7 +168,9 @@ function GigList() {
     },
     {
       name: "Organisation",
-      selector: (row) => row.organisation,
+      selector: (row) => (
+        <div dangerouslySetInnerHTML={{ __html: row.organisation }} />
+      ),
     },
     {
       name: "Message",
@@ -189,7 +196,7 @@ function GigList() {
       ),
     },
     {
-      name: "",
+      name: "Actions",
       selector: (row) => (
         <>
           {row.postedBy === user._id ? (
@@ -206,7 +213,7 @@ function GigList() {
             </div>
           ) : (
             <button>
-              <Link to="/apply-gig">Apply Gig</Link>
+              <Link to={`/apply-gig/${row._id}`}>Apply</Link>
             </button>
           )}
         </>
@@ -215,110 +222,230 @@ function GigList() {
   ];
 
   const customStyles = {
-    headCells: { style: { fontSize: 15 + "px", fontWeight: 600 } },
-    cells: { style: { fontSize: 13 + "px", fontWeight: 400 } },
+    headCells: {
+      style: {
+        fontSize: 15 + "px",
+        fontWeight: 600,
+        border: "1px solid #ddd",
+        textAlign: "center",
+      },
+    },
+    cells: {
+      style: {
+        fontSize: 13 + "px",
+        fontWeight: 400,
+        backgroundColor: "#f2f2f2",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      },
+    },
+    rows: {
+      style: {
+        backgroundColor: "#f7f7f7",
+        "&:nth-of-type(odd)": {
+          backgroundColor: "#ffffff",
+        },
+        minHeight: "45px",
+      },
+    },
   };
 
   return (
     <>
       {loading && <Loader />}
-      <Navbar />
-      <h1>Gigs List</h1> <Link to="/create-gig">Post a Gig</Link>
-      <p>Gigs Available:</p>
-      <div className="gigs-list">
-        <DataTable
-          columns={columns}
-          data={gigs}
-          customStyles={customStyles}
-          pagination
-        />
-      </div>
-      {selectedMessage && (
-        <div className="chat-modal-overlay" onClick={closeMessageModal}>
-          <div
-            className="chat-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button className="close-btn" onClick={closeMessageModal}>
-              &times;
-            </button>
-            <h1 className="chat-modal-title">Receiver's name and pfp</h1>
-            <hr cols="3" /> <br />
-            <div className="chat-modal-body">
-              <div className="chat-body">
-                <ChatContainer />
+      <div className="gig-background">
+        <Navbar />
+        <div className="gig-container">
+          <h1>Gigs List</h1>
+          <Link to="/create-gig" className="post-gig">
+            Post a Gig
+          </Link>
+          <p>Gigs Available:</p>
+          <div className="gigs-list">
+            <DataTable
+              columns={columns}
+              data={gigs}
+              customStyles={customStyles}
+              pagination
+            />
+          </div>
+          {selectedMessage && (
+            <div className="chat-modal-overlay" onClick={closeMessageModal}>
+              <div
+                className="chat-modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button className="close-btn" onClick={closeMessageModal}>
+                  &times;
+                </button>
+                <h1 className="chat-modal-title">Receiver's name and pfp</h1>
+                <hr cols="3" /> <br />
+                <div className="chat-modal-body">
+                  <div className="chat-body">
+                    <ChatContainer />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-      {selectedProfile && (
-        <div className="modal-overlay" onClick={closeProfileModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={closeProfileModal}>
-              &times;
-            </button>
-            <h1 className="modal-title">User</h1>
-            <div className="modal-body">
-              <div className="gig-details">
-                <p>Profile Picture: Image here</p>
-                <p>
-                  {selectedProfile.firstname} {selectedProfile.lastname}
-                </p>
-                <p>E-mail: {selectedProfile.email}</p>
-                <p>Expertise: {selectedProfile.expertise}</p>
-                <p>Bio: {selectedProfile.bio}</p>
-                <button>View more</button>
+          )}
+          {selectedProfile && (
+            <div className="profile-modal-overlay" onClick={closeProfileModal}>
+              <div
+                className="profile-modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button className="close-btn" onClick={closeProfileModal}>
+                  &times;
+                </button>
+                <div
+                  className="background-profile"
+                  style={{
+                    backgroundImage: `url(${selectedProfile.profileImage})`,
+                  }}
+                >
+                  <div className="container-profile">
+                    <h1 className="profile-modal-title">Username</h1>
+                    <div className="profile-modal-body">
+                      <div className="profile-details">
+                        <img
+                          src={selectedProfile.profileImage}
+                          alt="pfp"
+                          className="profile-pfp"
+                        />
+                        <div className="profile-body">
+                          <p>
+                            {selectedProfile.firstname}{" "}
+                            {selectedProfile.lastname}
+                          </p>
+                          <p>E-mail: {selectedProfile.email}</p>
+                          <p>Expertise: {selectedProfile.expertise}</p>
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: selectedProfile.bio,
+                            }}
+                          />
+                        </div>
+                        <div className="button-container">
+                          <button>View more</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-      {selectedGig && (
-        <div className="modal-overlay" onClick={closeGigModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={closeGigModal}>
-              &times;
-            </button>
-            <h1 className="modal-title">Gig</h1>
-            <div className="modal-body">
-              <div className="gig-details">
-                <h3 className="gig-description">Title: {selectedGig.title}</h3>
-                {selectedGig.createdAt && (
-                  <p className="gig-info">
-                    <strong>Posted on: </strong>
-                    {format(
-                      new Date(selectedGig.createdAt),
-                      "EEEE do, MM yyyy"
+          )}
+          {selectedGig && (
+            <div className="modal-overlay" onClick={closeGigModal}>
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+              >
+                <button
+                  className="close-btn"
+                  onClick={closeGigModal}
+                  aria-label="Close Modal"
+                >
+                  &times;
+                </button>
+                <h1 className="modal-title">Gig Details</h1>
+                <div className="modal-body">
+                  <div className="gig-details">
+                    <h3 className="gig-description">
+                      <strong>Title:</strong> {selectedGig.title}
+                    </h3>
+                    {selectedGig.createdAt && (
+                      <p className="gig-info">
+                        <strong>Posted on: </strong>
+                        {format(
+                          new Date(selectedGig.createdAt),
+                          "EEEE do, MM yyyy"
+                        )}
+                      </p>
                     )}
-                  </p>
-                )}
-                <p className="gig-info">Contractor: {selectedGig.username} </p>
-                <p className="gig-info">Type: {selectedGig.type}</p>
-                <p className="gig-info">Location: {selectedGig.location}</p>
-                <p className="gig-info">
-                  Work Environment: {selectedGig.environment}
-                </p>
-                <p className="gig-info">
-                  Organisation & Company: {selectedGig.organisation}
-                </p>
-                <p className="gig-info">
-                  Requirements: {selectedGig.requirements}
-                </p>
-                <p className="gig-info">
-                  Responsibilities: {selectedGig.responsibilities}
-                </p>
-                <p className="gig-info">Job Summary: {selectedGig.summary}</p>
-                <p className="gig-info">Additional Info: {selectedGig.info}</p>
-                <p className="gig-info">
-                  Work Benefits & Compensation: {selectedGig.benefits}
-                </p>
-                <p className="gig-info">How To Apply: {selectedGig.apply}</p>
+                    <p className="gig-info">
+                      <strong>Contractor:</strong>{" "}
+                      {selectedGig.username.replace(
+                        /^./,
+                        selectedGig.username[0].toUpperCase()
+                      )}
+                    </p>
+                    <p className="gig-info">
+                      <strong>Type:</strong> {selectedGig.type}
+                    </p>
+                    <p className="gig-info">
+                      <strong>Location:</strong> {selectedGig.location}
+                    </p>
+                    <div className="gig-info">
+                      <strong>Work Environment:</strong>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: selectedGig.environment,
+                        }}
+                      />
+                    </div>
+                    <div className="gig-info">
+                      <strong>Organisation & Company:</strong>{" "}
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: selectedGig.organisation,
+                        }}
+                      />
+                    </div>
+                    <div className="gig-info">
+                      <strong>Requirements:</strong>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: selectedGig.requirements,
+                        }}
+                      />
+                    </div>
+                    <div className="gig-info">
+                      <strong>Responsibilities:</strong>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: selectedGig.responsibilities,
+                        }}
+                      />
+                    </div>
+                    <div className="gig-info">
+                      <strong>Job Summary:</strong>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: selectedGig.summary,
+                        }}
+                      />
+                    </div>
+                    <div className="gig-info">
+                      <strong>Additional Info:</strong>
+                      <div
+                        dangerouslySetInnerHTML={{ __html: selectedGig.info }}
+                      />
+                    </div>
+                    <div className="gig-info">
+                      <strong>Work Benefits & Compensation:</strong>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: selectedGig.benefits,
+                        }}
+                      />
+                    </div>
+                    <div className="gig-info">
+                      <strong>How To Apply:</strong>
+                      <div
+                        dangerouslySetInnerHTML={{ __html: selectedGig.apply }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 }

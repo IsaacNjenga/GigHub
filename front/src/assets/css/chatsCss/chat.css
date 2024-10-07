@@ -1,0 +1,135 @@
+/* Container for the entire chat page */
+.chats-container {
+  display: flex;
+  width: 100%;
+  height: 100vh; /* Full viewport height for the chat container */
+}
+
+/* Left side: chat list */
+.chat-div {
+  width: 30%; /* Left side takes 30% */
+  background-color: #3f817d6f; /* Light background for the left side */
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto; /* Allows scrolling for long chat lists */
+}
+
+/* Right side: chat page */
+.chat-page {
+  width: 70%; /* Right side takes 70% */
+  padding: 0px;
+  border-radius: 5px;
+  border-right: 5px;
+  border-bottom: 5px;
+  background-color: #fff;
+  box-sizing: border-box;
+  display: flex; /* Add flexbox layout */
+  flex-direction: column; /* Stack elements vertically */
+  height: 100vh; /* Set height to full viewport height */
+  overflow-y: hidden; /* Remove scrollbar */
+}
+
+/* Divider line between left and right */
+.chats-container::before {
+  content: "";
+  width: 1px;
+  background-color: #ccc;
+  position: absolute;
+  bottom: 0;
+  left: 30%;
+}
+
+.chat-list {
+  width: 100%;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.chat-list h1 {
+  font-size: 1.5em;
+  text-align: left;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.chat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.chat-info {
+  display: flex;
+  align-items: center;
+}
+
+.chat-pfp {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+}
+
+.chat-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 1em;
+  margin:0;
+}
+
+.chat-preview {
+  font-size: 0.9em;
+  color: #666;
+  margin: 0;
+}
+
+.chat-time {
+  font-size: 0.8em;
+  color: #888;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #8b8585;
+}
+
+.search-bar {
+  width: 350px; /* adjust the width to your liking */
+  height: 20px;
+  padding: 7px;
+  font-size: 18px;
+  border: none;
+  border-radius: 20px;
+  background-color: #f7f7f7; /* light gray background */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* subtle shadow effect */
+}
+
+.search-bar:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* slightly darker shadow on focus */
+}
+
+.search-bar::placeholder {
+  color: #ccc; /* light gray placeholder text */
+}
+
+.chat-div::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-div::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(47, 45, 45, 0.322);
+  border-radius: 7px;
+}
+
+.chat-div::-webkit-scrollbar-thumb {
+  background-color: rgb(0, 0, 0);
+  border-radius: 7px;
+  outline: 1px solid slategrey;
+}

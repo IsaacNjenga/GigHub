@@ -5,11 +5,25 @@ import ChatLists from "./chatLists";
 import axios from "axios";
 import { UserContext } from "../../App";
 import Login from "../../pages/login";
+import pfp from "../../assets/images/createProfile.jpg";
 
 function ChatContainer() {
   const { user } = useContext(UserContext);
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
+  let [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const time = currentDateTime.toLocaleTimeString("en-Us", {
+    timeStyle: "short",
+    hour12: false,
+  });
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -36,33 +50,39 @@ function ChatContainer() {
     const newChat = {
       username: user.username,
       message: chat,
-    }; setLoading(true);
+    };
+    setLoading(true);
     try {
       const res = await axios.post("createChat", newChat, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      if (res.data.success) {setLoading(false);
-        setChats((prevChats) => [...prevChats, newChat]);        
+      if (res.data.success) {
+        setLoading(false);
+        setChats((prevChats) => [...prevChats, newChat]);
       }
     } catch (err) {
-        setLoading(false);
+      setLoading(false);
       console.log(err);
     }
   };
 
   return (
     <>
-      <div>
         {user ? (
           <div className="home">
-            <div className="chats_header"></div>
+            <div className="chats-header">
+              <img src={pfp} alt="pfp" className="pfp" />
+              <div className="profile-info">
+                <span className="username">Username</span>
+                <span className="time">{time}</span>
+              </div>
+            </div>
             <ChatLists chats={chats} />
             <InputText addMessage={addMessage} />
           </div>
         ) : (
           <Login />
         )}
-      </div>
     </>
   );
 }

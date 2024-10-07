@@ -1,6 +1,8 @@
 .inputtext-container {
   display: flex;
+  padding: 7px;
   justify-content: space-evenly;
+  background-color: rgb(78, 73, 73);
   align-items: center;
 }
 .inputtext-container button {
@@ -9,18 +11,29 @@
   font-weight: bold;
   border-radius: 10px;
   font-size: 18px;
-  background-color: rgb(4, 170, 170);
+  background-color: rgba(92, 182, 182, 0.304);
   border-width: 0;
   color: #fff;
   cursor: pointer;
 }
 
 .inputtext-container textarea {
-  width: 60%;
-  height: 50px;
+  width: 80%;
+  height: 30px;
   border-radius: 10px;
   border-width: 0;
   padding: 10px;
+  background-color: rgb(94, 90, 90);resize: none;
   font-size: 18px;
-  border-color: black;
+}
+
+.inputtext-container textarea::placeholder {
+  color: rgb(208, 205, 205);
+}
+.send-icon {
+  width: 30px;
+  height: auto;
+  align-items: center;
+  object-fit: cover;
+  margin: 5px;
 }

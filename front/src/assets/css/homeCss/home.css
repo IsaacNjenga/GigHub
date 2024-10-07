@@ -1,0 +1,110 @@
+.home-background {
+  background-image: linear-gradient(
+      rgba(181, 177, 177, 0.355),
+      rgba(54, 51, 51, 0.812)
+    ),
+    url("../../images/collage.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow-y: auto;
+}
+
+.home-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 40px;
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.336
+  ); /* Increased opacity for better readability */
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 2;
+}
+
+h1 {
+  color: aliceblue;
+}
+
+h1,
+h2,
+h3,
+p {
+  line-height: 1.5;
+  margin-bottom: 20px;
+  color: #000000;
+}
+
+p {
+  font-size: 18px;
+  color: #1e1c1c;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.cta-button {
+  background-color: #059d51;
+  color: white;
+  padding: 12px 24px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #077219;
+}
+
+.section {
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.section-title {
+  font-size: 28px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .home-container {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  p {
+    font-size: 16px;
+  }
+}

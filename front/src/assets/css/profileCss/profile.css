@@ -1,0 +1,332 @@
+/* General Styles */
+
+.profile-background {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.347), rgba(0, 0, 0, 0.812)),
+    url("../../images/profile.jpg");
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Behind the content */
+  overflow: auto;
+}
+
+.profile-container {
+  max-width: 90%;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.69);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative; /* To ensure the background image behaves correctly */
+  z-index: 2; /* Ensures that the form content appears above the background */
+}
+
+.user-profile {
+  background-color: rgba(141, 21, 21, 0);
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.personal-details,
+.profile-details {
+  background-color: #ffffff5a;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Light shadow for visual separation */
+}
+
+/* Left (Personal Details) */
+.personal-details {
+  flex: 1; /* Takes up 1 part of the space */
+  max-width: 30%; /* Ensures it doesn't take more than 40% of the available space */
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column; /* Stack the personal details vertically */
+}
+
+.username,
+.name,
+.expertise {
+  text-align: center;
+}
+
+.name {
+  font-family: "Roboto", sans-serif; /* Example font */
+  font-size: 2.5em; /* Adjust size as needed */
+  font-weight: bold; /* Emphasize the name */
+  color: #333; /* Dark color for contrast */
+}
+
+.expertise {
+  font-family: "Arial", sans-serif; /* Example font */
+  font-size: 1.5em; /* Adjust size as needed */
+  font-weight: bold; /* Emphasize the name */
+  color: #333; /* Dark color for contrast */
+}
+
+.personal-details p {
+  margin: 10px 0;
+}
+
+.age,
+.phone,
+.email {
+  font-family: "Helvetica", sans-serif; /* Example font */
+  font-size: 1em; /* Adjust size as needed */
+  color: #333; /* Dark color for contrast */
+  font-weight: bold;
+}
+
+/* Right (Profile Details) */
+.profile-details {
+  flex: 2; /* Takes up 2 parts of the space, making it wider than the left side */
+  max-width: 65%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bio,
+.goals,
+.interests {
+  position: relative; /* Necessary for absolute positioning */
+  padding: 10px; /* Add padding for spacing */
+  background-color: #f9f9f9; /* Optional: Light background for visibility */
+  border-radius: 5px; /* Optional: Rounded corners */
+  margin-bottom: 10px; /* Space below the bio section */
+}
+
+.card-title {
+  position: relative; /* Keep it relative to the parent */
+  top: 0; /* This ensures it starts at the top */
+  left: 0; /* This ensures it starts at the left */
+  font-weight: bold; /* Make the title bold */
+  margin-bottom: 5px; /* Space below the title */
+  font-size: 1.5em; /* Adjust font size as needed */
+}
+
+/* Image Styling */
+.profile-picture img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid #0dce44;
+  margin-bottom: -20px;
+}
+
+/* Container for Profile */
+.profile-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+  text-align: center;
+  color: #000000;
+  font-size: 2rem;
+  margin: 10px;
+}
+
+/* Profile Picture */
+.profile-picture {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-picture img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 3px solid #e0e0e0;
+}
+
+/* Profile Info */
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.profile-info p {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+.profile-info p span {
+  font-weight: bold;
+  color: #333;
+}
+
+.profile-actions {
+  text-align: center;
+}
+
+.profile-actions a {
+  display: inline-block;
+  background-color: #3498db;
+  color: #fff;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.profile-actions a:hover {
+  background-color: #2980b9;
+}
+
+.profile-actions button {
+  background-color: #e74c3c;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.profile-actions button:hover {
+  background-color: #c0392b;
+}
+
+.update-profile-btn {
+  width: 200px;
+  padding: 15px;
+  background-color: #277938;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.update-profile-btn:hover {
+  background-color: #05900c;
+}
+
+.create-btn {
+  width: 200px; /* You can adjust the button width */
+  padding: 15px;
+  background-color: #106fdc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px; /* Adds a bit more spacing between icon and button */
+}
+
+.create-btn:hover {
+  background-color: #031d6c;
+}
+
+.outdated-container {
+  margin-top: 20px;
+}
+
+.outdated {
+  font-size: 2.5em;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  margin-bottom: 20px;
+}
+
+.icon-and-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.missingIcon {
+  width: 25%; /* Adjust the size of the icon */
+  height: auto;
+  margin-left: 20px;
+  margin-bottom: 10px; /* Spacing between the icon and the button */
+}
+
+/* Formatted for non-updated profiles */
+.no-profile {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.no-profile p {
+  font-size: 1.3rem;
+  color: #555;
+}
+
+.no-profile a {
+  display: inline-block;
+  background-color: #2ecc71;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.no-profile a:hover {
+  background-color: #27ae60;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .profile-container {
+    width: 95%;
+  }
+
+  .profile-picture img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-info p {
+    font-size: 1rem;
+  }
+}
+
+.delete-profile-btn {
+  width: 200px; /* You can adjust the button width */
+  padding: 15px;
+  background-color: #dd0808;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px; /* Adds a bit more spacing between icon and button */
+}
+
+.delete-profile-btn:hover {
+  background-color: #890505;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-around;
+  margin: auto;
+  align-items: center;
+}

@@ -23,7 +23,7 @@ function Logout() {
         setUser(null);
         navigate("/");
       } else {
-        navigate("/dashboard");
+        navigate("/");
       }
     });
   }, [MySwal, setUser, navigate]);

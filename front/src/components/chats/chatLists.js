@@ -21,8 +21,8 @@ function ChatLists({ chats }) {
           <br />
           <span
             style={{
-              display: "block", 
-              textAlign: "right", 
+              display: "block",
+              textAlign: "right",
               fontSize: "11.2px",
             }}
           >
@@ -53,7 +53,7 @@ function ChatLists({ chats }) {
             isSender={chat.username === user.username}
           />
         ))}
-        <div ref={endOfMessages}></div>
+        {/*<div ref={endOfMessages}></div>*/}
       </div>
     </div>
   );

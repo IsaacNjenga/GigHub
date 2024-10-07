@@ -1,18 +1,48 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { UserContext } from "../../App";
 import Loader from "../../components/loader";
+import "../../assets/css/gigsCss/applyGig.css";
+import { format } from "date-fns";
 
 function ApplyGig() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const { user } = useContext(UserContext);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [values, setValues] = useState([]);
+  const [fetchedGig, setFetchedGig] = useState([]);
+
+  const fetchGig = useCallback(async () => {
+    setLoading(true);
+    try {
+      axios
+        .get(`fetchGigs`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        })
+        .then((result) => {
+          const gig = result.data.gigs;
+          const gigFetched = gig.find((job) => job._id === id);
+          setFetchedGig(gigFetched);
+          setLoading(false);
+        });
+    } catch (error) {
+      setLoading(false);
+      alert("An error occurred. Try refreshing the page");
+      console.log("Error", error);
+    }
+  });
+
+  useEffect(() => {
+    if (user) {
+      fetchGig();
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     if (e.target.type === "file") {
@@ -98,42 +128,144 @@ function ApplyGig() {
   return (
     <>
       {loading && <Loader />}
-      <Navbar />
-      <div>
-        <h1>Application</h1>
-        <button onClick={back}>Back</button>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Attach Résumé/Cover Letter</label>
-            <input
-              type="file"
-              name="resume"
-              accept=".pdf, .doc, .docx"
-              onChange={handleChange}
-            />
+      <div className="application-background">
+        <Navbar />
+        <div>
+          <h1>Application</h1>
+          <button onClick={back} className="back-btn">
+            Back
+          </button>
+          <div className="application-container">
+            <div className="gig-div">
+              {fetchedGig && (
+                <div>
+                  <h3 className="gig-description">
+                    <strong>Title:</strong> {fetchedGig.title}
+                  </h3>
+                  {fetchedGig.createdAt && (
+                    <p className="gig-info">
+                      <strong>Posted on: </strong>
+                      {format(
+                        new Date(fetchedGig.createdAt),
+                        "EEEE do, MM yyyy"
+                      )}
+                    </p>
+                  )}
+                  <p className="gig-info">
+                    <strong>Contractor:</strong>{" "}
+                    {fetchedGig.username
+                      ? fetchedGig.username.replace(
+                          /^./,
+                          fetchedGig.username[0].toUpperCase()
+                        )
+                      : fetchedGig.username}
+                  </p>
+                  <p className="gig-info">
+                    <strong>Type:</strong> {fetchedGig.type}
+                  </p>
+                  <p className="gig-info">
+                    <strong>Location:</strong> {fetchedGig.location}
+                  </p>
+                  <div className="gig-info">
+                    <strong>Work Environment:</strong>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: fetchedGig.environment,
+                      }}
+                    />
+                  </div>
+                  <div className="gig-info">
+                    <strong>Organisation & Company:</strong>{" "}
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: fetchedGig.organisation,
+                      }}
+                    />
+                  </div>
+                  <div className="gig-info">
+                    <strong>Requirements:</strong>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: fetchedGig.requirements,
+                      }}
+                    />
+                  </div>
+                  <div className="gig-info">
+                    <strong>Responsibilities:</strong>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: fetchedGig.responsibilities,
+                      }}
+                    />
+                  </div>
+                  <div className="gig-info">
+                    <strong>Job Summary:</strong>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: fetchedGig.summary,
+                      }}
+                    />
+                  </div>
+                  <div className="gig-info">
+                    <strong>Additional Info:</strong>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: fetchedGig.info }}
+                    />
+                  </div>
+                  <div className="gig-info">
+                    <strong>Work Benefits & Compensation:</strong>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: fetchedGig.benefits,
+                      }}
+                    />
+                  </div>
+                  <div className="gig-info">
+                    <strong>How To Apply:</strong>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: fetchedGig.apply }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="application-div">
+              <form onSubmit={handleSubmit}>
+                <div>
+                  <label>Attach Résumé/Cover Letter</label>
+                  <input
+                    type="file"
+                    name="resume"
+                    accept=".pdf, .doc, .docx"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  Message Contractor:{" "}
+                  <button onClick={messageContractor}>Message</button>
+                </div>
+                <div>
+                  <button type="submit">Submit</button>{" "}
+                </div>
+              </form>
+              {data.length > 0 ? (
+                <div>
+                  {data.map((applicant, index) => (
+                    <div key={index}>
+                      <p>Resume: {applicant.filename}</p>
+                      {createDownloadLink(
+                        applicant.data,
+                        applicant.filename,
+                        applicant.contentType
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </div>
-          <div>
-            Message Contractor:{" "}
-            <button onClick={messageContractor}>Message</button>
-          </div>
-          <div>
-            <button type="submit">Submit</button>{" "}
-          </div>
-        </form>
-        {data.length > 0 ? (
-          <div>
-            {data.map((applicant, index) => (
-              <div key={index}>
-                <p>Resume: {applicant.filename}</p>
-                {createDownloadLink(
-                  applicant.data,
-                  applicant.filename,
-                  applicant.contentType
-                )}
-              </div>
-            ))}
-          </div>
-        ) : null}
+        </div>
       </div>
     </>
   );

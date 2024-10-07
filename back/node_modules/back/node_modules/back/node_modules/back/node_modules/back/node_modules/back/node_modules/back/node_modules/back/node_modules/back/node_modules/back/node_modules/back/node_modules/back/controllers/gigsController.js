@@ -90,9 +90,7 @@ const fetchGigs = async (req, res) => {
 };
 
 const fetchGig = async (req, res) => {
-  //console.log("Request received at /fetchGig/:id");
   const { id } = req.params;
-  //console.log(id);
   if (!id) {
     return res.status(400).json({ error: "No ID specified" });
   }

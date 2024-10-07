@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Loader from "../../components/loader";
+import "../../assets/css/profileCss/profile.css";
+import missingProfile from "../../assets/icons/question.png";
 
 const MySwal = withReactContent(Swal);
 
@@ -118,52 +120,95 @@ function Profile() {
   return (
     <>
       {loading && <Loader />}
-      <Navbar />
-      <div>
-        {values ? (
-          <div>
-            <h1>User Profile Page</h1>
+      <div className="profile-background">
+        <Navbar />
+        <div className="profile-container">
+          {values ? (
             <div>
-              {" "}
-              <div className="profile-picture">
-                <img
-                  src={profilePicPreview}
-                  alt="Profile"
-                  className="profile-img"
-                />
+              <h3>User Profile</h3>
+              <div className="user-profile">
+                <div className="personal-details">
+                  <div className="profile-picture">
+                    <img
+                      src={profilePicPreview}
+                      alt="Profile"
+                      className="profile-img"
+                    />
+                  </div>
+                  <hr />
+                  <p className="username">
+                    @
+                    <i>
+                      {user.username.replace(
+                        /^./,
+                        user.username[0].toUpperCase()
+                      )}
+                    </i>
+                  </p>{" "}
+                  <p className="name">
+                    <strong>
+                      {data.firstname} {data.lastname}
+                    </strong>
+                  </p>{" "}
+                  <p className="expertise">{data.expertise}</p> <br />
+                  <p className="age">Age: {data.age} yrs</p>
+                  <p className="phone">Phone: {data.phone}</p>
+                  <p className="email">Email: {data.email}</p>
+                  {/*<p>{data.gender}</p>*/}
+                </div>
+
+                <div className="profile-details">
+                  <div className="bio">
+                    <p className="card-title">Bio</p>
+                    <hr />
+                    <p dangerouslySetInnerHTML={{ __html: data.bio }} />
+                  </div>
+                  <div className="goals">
+                    <p className="card-title">Goals</p>
+                    <hr />
+                    <p dangerouslySetInnerHTML={{ __html: data.goals }} />
+                  </div>
+                  <div className="interests">
+                    <p className="card-title">Interests</p>
+                    <hr />
+                    <p dangerouslySetInnerHTML={{ __html: data.interests }} />
+                  </div>
+                </div>
               </div>
-              <p>
-                Username:
-                {user.username.replace(/^./, user.username[0].toUpperCase())}
-              </p>
-              <p>
-                {data.firstname} {data.lastname}
-              </p>
-              <p>{data.gender}</p>
-              <p>{data.email}</p>
-              <p>{data.phone}</p>
-              <p>{data.age} yrs</p>
-              <p>{data.expertise}</p>
-              <p>{data.bio}</p>
-              <p>{data.goals}</p>
-              <p>{data.interests}</p>
+              <div className="button-container">
+                <Link
+                  className="update-profile-btn"
+                  to={`/update-profile/${user._id}`}
+                >
+                  Update your profile
+                </Link>
+                <br />
+                <button
+                  className="delete-profile-btn"
+                  onClick={() => deleteProfile(user._id)}
+                >
+                  Delete your profile
+                </button>
+              </div>
             </div>
-            <div>
-              <Link to={`/update-profile/${user._id}`}>
-                Update your profile
-              </Link>
-              <br />
-              <button onClick={() => deleteProfile(user._id)}>
-                Delete your profile
-              </button>
+          ) : (
+            <div className="outdated-container">
+              <p className="outdated">
+                Looks like your profile is not updated...
+              </p>
+              <div className="icon-and-btn">
+                <img
+                  src={missingProfile}
+                  className="missingIcon"
+                  alt="missingIcon"
+                />
+                <Link className="create-btn" to="/create-profile">
+                  Create your profile here
+                </Link>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div>
-            <p>Looks like your profile isn't updated</p>
-            <Link to="/create-profile">Create your profile here</Link>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </>
   );

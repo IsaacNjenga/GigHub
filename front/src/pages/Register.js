@@ -5,6 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../components/loader";
+import "../assets/css/registerCss/register.css";
 
 function Register() {
   const navigate = useNavigate();
@@ -46,52 +47,57 @@ function Register() {
   return (
     <>
       {loading && <Loader />}
-      <Navbar />
-      <div>
-        <h1>Sign Up page</h1>
-        <div>
-          <form onSubmit={handleSubmit}>
-            <label>Username:</label>
-            <input
-              type="text"
-              placeholder="username"
-              name="username"
-              onChange={handleChange}
-            />
-            <label>Password:</label>
-            <input
-              type="password"
-              placeholder="password"
-              name="password"
-              onChange={handleChange}
-            />
-            <label>Role:</label>
-            <input
-              type="text"
-              placeholder="role"
-              name="role"
-              onChange={handleChange}
-            />
-            <label>E-mail Address:</label>
-            <input
-              type="email"
-              placeholder="E-mail"
-              name="email"
-              onChange={handleChange}
-            />
-            {serverErrors.length > 0 &&
-              serverErrors.map((error, index) => (
-                <p className="error" key={index}>
-                  {error.msg}
+      <div className="register-background">
+        <Navbar />
+        <div className="register-container">
+          <h1>Sign Up </h1>
+          <hr />
+          <div className="form-container">
+            <form onSubmit={handleSubmit}>
+              <label>Username:</label>
+              <input
+                type="text"
+                name="username"
+                onChange={handleChange}
+                className="input"
+              />
+              <label>Password:</label>
+              <input
+                type="password"
+                name="password"
+                onChange={handleChange}
+                className="input"
+              />
+              <label>Role:</label>
+              <input
+                type="text"
+                name="role"
+                onChange={handleChange}
+                className="input"
+              />
+              <label>E-mail Address:</label>
+              <input
+                type="email"
+                name="email"
+                onChange={handleChange}
+                className="input"
+              />
+              {serverErrors.length > 0 &&
+                serverErrors.map((error, index) => (
+                  <p className="error" key={index}>
+                    {error.msg}
+                  </p>
+                ))}{" "}
+              <div className="form-footer">
+                <p>
+                  Already have an account? <Link to="/login">Sign in</Link>
                 </p>
-              ))}
-            <p>
-              Already have an account? <Link to="/login">Sign in</Link>
-            </p>
-            <button type="submit" className="submit-btn">
-              Sign Up
-            </button>
-          </form>
+                <button type="submit" className="submit-btn">
+                  Sign Up
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>

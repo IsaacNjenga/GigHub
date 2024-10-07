@@ -17,6 +17,7 @@ import CreateGig from "./pages/gigs/createGig";
 import UpdateGig from "./pages/gigs/updateGig";
 import ApplyGig from "./pages/gigs/applyGig";
 import Reviews from "./pages/reviews/reviews";
+import Chats from "./components/chats/chats";
 
 export const UserContext = createContext(null);
 
@@ -91,7 +92,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/apply-gig",
+    path: "/apply-gig/:id",
     element: (
       <ProtectedRoutes>
         <ApplyGig />
@@ -103,6 +104,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoutes>
         <Reviews />
+      </ProtectedRoutes>
+    ),
+  },
+  {
+    path: "/chats",
+    element: (
+      <ProtectedRoutes>
+        <Chats />
       </ProtectedRoutes>
     ),
   },

@@ -1,0 +1,160 @@
+/* Container for the entire profile creation page */
+.profile-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.773);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative; /* Ensures the background image behaves correctly */
+  z-index: 2; /* Ensures the form content appears above the background */
+}
+
+/* Title for the form */
+.profile-container h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  color: #333;
+}
+
+/* Grouping sections for better structure */
+.create-profile-form-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Basic Details section styling */
+.basic-details {
+  display: flex;
+  flex-direction: column;
+  width: 150%;
+  gap: 10px;
+}
+
+.personal-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Profile picture section */
+.profile-picture {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+/* Form labels */
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+}
+
+/* Inputs styling */
+.input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Text areas for bio, goals, and interests */
+textarea.input {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Grouping inputs into two columns for personal details */
+.personal-group input {
+  width: 100%;
+  flex: 1;
+}
+
+.personal-group label {
+  margin-bottom: 0;
+}
+
+.radio-group {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  margin: auto;
+  align-items: center;
+}
+
+.radio-group label {
+  font-weight: normal;
+}
+
+/* Grouping textarea sections */
+.bio,
+.goals,
+.interests {
+  margin-bottom: 20px;
+}
+
+.bio textarea,
+.goals textarea,
+.interests textarea {
+  height: 100px;
+}
+
+/* Submit button styling */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-items: center;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Background styling */
+.create-background {
+  background-image: linear-gradient(rgba(59, 56, 56, 0.2), rgba(0, 0, 0, 0.5)),
+    url("../../images/createProfile.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Ensures the background stays behind content */
+  overflow: auto;
+}

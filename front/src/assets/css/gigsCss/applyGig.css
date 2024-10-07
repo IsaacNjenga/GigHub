@@ -1,0 +1,76 @@
+.application-background {
+  background-image: linear-gradient(rgba(140, 134, 134, 0.347), rgba(0, 0, 0, 0.812)),
+    url("../../images/application.jpg");
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Behind the content */
+  overflow: auto;
+}
+
+.application-container {
+  display: flex;
+  width: 100%;
+  margin: 10px;
+  height: 100vh; /* Full viewport height for the chat container */
+}
+
+.gig-div {
+  width: 55%; /* Left side takes 30% */
+  background-color: #fbffffad; /* Light background for the left side */
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-y: auto; /* Allows scrolling for long chat lists */
+}
+
+.application-div {
+  width: 45%; /* Right side takes 70% */
+  padding: 5px;
+  border-radius: 5px;
+  border-right: 5px;
+  border-bottom: 5px;
+  background-color: #ffffff94;
+  box-sizing: border-box;
+  display: flex; /* Add flexbox layout */
+  flex-direction: column; /* Stack elements vertically */
+  height: 100vh; /* Set height to full viewport height */
+  overflow-y: hidden; /* Remove scrollbar */
+}
+
+.back-btn {
+  width: 150px;
+  padding: 10px;
+  background-color: #e70606;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 17px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 10px;
+}
+
+.back-btn:hover {
+  background-color: #c11515;
+}
+
+.gig-div::-webkit-scrollbar {
+  width: 8px;
+}
+
+.gig-div::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+.gig-div::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}

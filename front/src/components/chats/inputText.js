@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../assets/css/chatsCss/inputText.css";
-
+import sendIcon from "../../assets/icons/paper-plane.png";
 function InputText({ addMessage }) {
   const [value, setValue] = useState("");
 
@@ -13,16 +13,17 @@ function InputText({ addMessage }) {
 
   return (
     <>
-      <hr cols="6" /> <br />
       <div className="inputtext-container">
         <textarea
           name="message"
-          rows="6"
-          placeholder="Message..."
+          rows="15"
+          placeholder="Type a message"
           onChange={(e) => setValue(e.target.value)}
           value={value}
         />
-        <button onClick={sendMessage}>Send</button>
+        <button onClick={sendMessage}>
+          <img src={sendIcon} alt="sendIcon" className="send-icon" />
+        </button>
       </div>
     </>
   );

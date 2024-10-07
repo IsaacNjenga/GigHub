@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import { toast } from "react-toastify";
 import Loader from "../components/loader";
+import "../assets/css/loginCss/login.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -33,8 +34,8 @@ function Login() {
           setLoading(false);
           setUser(res.data.user);
           toast.success(`Welcome ${res.data.user.username}`, {
-            position: "top-right",
-            autoClose: 900,
+            position: "top-left",
+            autoClose: 1000,
           });
           navigate("/");
         } else {
@@ -55,38 +56,43 @@ function Login() {
   return (
     <>
       {loading && <Loader />}
-      <Navbar />
-      <div>
-        <h1>Login page</h1>
-        <div>
-          <form onSubmit={handleSubmit}>
-            <label>E-mail Address:</label>
-            <input
-              type="email"
-              placeholder="E-mail"
-              name="email"
-              onChange={handleChange}
-            />
-            <label>Password:</label>
-            <input
-              type="password"
-              placeholder="password"
-              name="password"
-              onChange={handleChange}
-            />
-            {serverErrors.length > 0 &&
-              serverErrors.map((error, index) => (
-                <p className="error" key={index}>
-                  {error.msg}
+      <div className="login-background">
+        <Navbar />
+        <div className="login-container">
+          <h1>Sign In</h1>
+          <hr />
+          <div className="form-container">
+            <form onSubmit={handleSubmit}>
+              <label>E-mail Address:</label>
+              <input
+                type="email"
+                name="email"
+                onChange={handleChange}
+                className="input"
+              />
+              <label>Password:</label>
+              <input
+                type="password"
+                name="password"
+                onChange={handleChange}
+                className="input"
+              />
+              {serverErrors.length > 0 &&
+                serverErrors.map((error, index) => (
+                  <p className="error" key={index}>
+                    {error.msg}
+                  </p>
+                ))}
+              <div className="form-footer">
+                <p>
+                  Don't have an account? <Link to="/register">Sign up</Link>
                 </p>
-              ))}
-            <p>
-              Don't have an account? <Link to="/register">Sign up</Link>
-            </p>
-            <button type="submit" className="submit-btn">
-              Login
-            </button>
-          </form>
+                <button type="submit" className="submit-btn">
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>
