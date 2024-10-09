@@ -21,8 +21,10 @@ import Chats from "./components/chats/chats";
 
 export const UserContext = createContext(null);
 
-axios.defaults.baseURL = "http://localhost:3001/gighub";
+axios.defaults.baseURL = "https://gig-hub-liart.vercel.app/gighub";
 axios.defaults.withCredentials = true;
+//https://gig-hub-liart.vercel.app/
+//http://localhost:3001/
 
 const router = createBrowserRouter([
   {
