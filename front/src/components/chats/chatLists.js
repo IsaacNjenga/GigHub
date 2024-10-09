@@ -16,7 +16,15 @@ function ChatLists({ chats }) {
     return (
       <div className={isSender ? "chat-sender" : "chat-receiver"}>
         <p>
-          {/*<p>{username}</p>*/}
+          <span
+            style={{
+              display: "block",
+              textAlign: "left",
+              fontSize: "11px",
+            }}
+          >
+            {username}
+          </span>
           {message}
           <br />
           <span

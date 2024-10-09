@@ -1,6 +1,11 @@
 import express from "express";
 
-import { Login, Register, Auth } from "../controllers/userController.js";
+import {
+  Login,
+  Register,
+  Auth,
+  fetchUserName,
+} from "../controllers/userController.js";
 
 import {
   profile,
@@ -90,6 +95,7 @@ router.post(
 );
 
 router.get("/verify", VerifyUser, Auth);
+router.get("/user", VerifyUser, fetchUserName);
 
 //profile routes
 router.post("/createProfile", VerifyUser, createProfile);

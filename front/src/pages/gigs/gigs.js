@@ -305,7 +305,13 @@ function GigList() {
                   }}
                 >
                   <div className="container-profile">
-                    <h1 className="profile-modal-title">Username</h1>
+                    <h1 className="profile-modal-title">
+                      @
+                      {selectedProfile.username.replace(
+                        /^./,
+                        selectedProfile.username[0].toUpperCase()
+                      )}
+                    </h1>
                     <div className="profile-modal-body">
                       <div className="profile-details">
                         <img
@@ -314,7 +320,7 @@ function GigList() {
                           className="profile-pfp"
                         />
                         <div className="profile-body">
-                          <p>
+                          <p style={{ textAlign: "center" }}>
                             {selectedProfile.firstname}{" "}
                             {selectedProfile.lastname}
                           </p>

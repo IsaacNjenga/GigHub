@@ -14,6 +14,7 @@ const createProfile = async (req, res) => {
       bio,
       goals,
       interests,
+      username,
     } = req.body;
 
     const newProfile = new ProfileModel({
@@ -28,6 +29,7 @@ const createProfile = async (req, res) => {
       bio,
       goals,
       interests,
+      username,
       postedBy: req.user._id,
     });
 

@@ -19,6 +19,7 @@ function UpdateProfile() {
   const [loading, setLoading] = useState(false);
   const [serverErrors, setServerErrors] = useState([]);
   const [profilePicPreview, setProfilePicPreview] = useState(defaultProfilePic);
+  const [profileName, setProfileName] = useState([]);
   const [data, setData] = useState({
     firstname: "",
     lastname: "",
@@ -32,6 +33,22 @@ function UpdateProfile() {
     age: "",
     interests: "",
   });
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const response = await axios.get("user", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        if (response.data.success) {
+          setProfileName(response.data.user);
+        }
+      } catch (error) {
+        console.log("Error fetching users:", error);
+      }
+    };
+    fetchUsername();
+  }, []);
 
   const fetchProfile = useCallback(async () => {
     setLoading(true);
@@ -117,7 +134,7 @@ function UpdateProfile() {
   const handleSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
-    const profileData = { ...data, profileImage: image };
+    const profileData = { ...data, profileImage: image, username: profileName };
     axios
       .put(`updateProfile/${id}`, profileData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -185,7 +202,7 @@ function UpdateProfile() {
                     onChange={handleImageUpload}
                   />
                 </div>
-
+                <p>Username: {profileName}</p>
                 <label>
                   <u>Personal Details</u>
                 </label>

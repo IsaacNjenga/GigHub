@@ -13,6 +13,7 @@ const ProfileSchema = new mongoose.Schema(
     bio: { type: String },
     goals: { type: String },
     interests: { type: String },
+    username: { type: String },
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
   },
   { collection: "profile", timestamps: true }

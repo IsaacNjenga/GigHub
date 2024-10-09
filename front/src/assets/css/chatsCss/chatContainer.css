@@ -1,43 +1,5 @@
-.chats_header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
 
 .chat-main{
   background-color: red;
 }
 
-.chats-header {
-  display: flex;
-  background-color: #34c3daca;
-  align-items: center;
-  padding: 5px;
-}
-
-.pfp {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px; /* increased margin to create space between pfp and text */
-}
-
-.profile-info {
-  display: flex;
-  flex-direction: column; /* changed from column to row */
-  align-items: flex-start;
-}
-
-.username {
-  font-size: 1.4em;
-  font-weight: bold;
-  color: white;
-  margin: 0;
-}
-
-.time {
-  font-size: 0.8em;
-  color: #ffffff;
-  margin-top: 2px; /* added margin to create space between username and time */
-}

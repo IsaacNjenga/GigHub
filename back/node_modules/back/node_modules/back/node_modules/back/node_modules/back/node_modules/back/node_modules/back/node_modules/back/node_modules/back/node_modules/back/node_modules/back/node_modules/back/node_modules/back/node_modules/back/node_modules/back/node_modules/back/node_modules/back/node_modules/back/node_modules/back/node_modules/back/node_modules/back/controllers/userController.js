@@ -70,4 +70,15 @@ const Auth = async (req, res) => {
   return res.status(201).json({ success: true, user: { ...req.user._doc } });
 };
 
-export { Register, Login, Auth };
+const fetchUserName = async (req, res) => {
+  try {
+    const id = req.user._id;
+    const user = await UserModel.findOne({ _id: id }, { username: 1 });
+    return res.status(200).json({ success: true, user: user.username });
+  } catch (error) {
+    console.log(err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export { Register, Login, Auth, fetchUserName };

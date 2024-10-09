@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import defaultProfilePic from "../../assets/images/defaultProfilePic.png";
 import axios from "axios";
@@ -15,6 +15,7 @@ function CreateProfile() {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
   const [serverErrors, setServerErrors] = useState([]);
+  const [profileName, setProfileName] = useState([]);
   const [profilePicPreview, setProfilePicPreview] = useState(defaultProfilePic);
 
   const handleChange = (e, content = null, fieldName = null) => {
@@ -30,6 +31,22 @@ function CreateProfile() {
       });
     }
   };
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const response = await axios.get("user", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        if (response.data.success) {
+          setProfileName(response.data.user);
+        }
+      } catch (error) {
+        console.log("Error fetching users:", error);
+      }
+    };
+    fetchUsername();
+  }, []);
 
   const convertFileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -55,7 +72,11 @@ function CreateProfile() {
   const handleSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
-    const profileData = { ...values, profileImage: image };
+    const profileData = {
+      ...values,
+      profileImage: image,
+      username: profileName,
+    };
     axios
       .post("createProfile", profileData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -119,7 +140,7 @@ function CreateProfile() {
                     onChange={handleImageUpload}
                   />
                 </div>
-
+                <p>Username: {profileName}</p>
                 <label>
                   <u>Personal Details</u>
                 </label>

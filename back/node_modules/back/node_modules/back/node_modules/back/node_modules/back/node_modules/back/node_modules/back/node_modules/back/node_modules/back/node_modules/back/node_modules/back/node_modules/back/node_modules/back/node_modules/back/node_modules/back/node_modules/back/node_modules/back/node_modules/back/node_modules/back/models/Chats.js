@@ -3,9 +3,11 @@ import mongoose from "mongoose";
 const chatSchema = new mongoose.Schema(
   {
     username: { type: String },
+    receiverName: { type: String },
     message: { type: String },
-    //senderId: { type: String },
-    //receiverId: { type: String },
+    senderId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    receiverId: { type: String },
+    avatar: { type: String },
   },
   { collection: "chats", timestamps: true }
 );

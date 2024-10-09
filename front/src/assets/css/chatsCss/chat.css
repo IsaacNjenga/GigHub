@@ -29,6 +29,40 @@
   overflow-y: hidden; /* Remove scrollbar */
 }
 
+.chats-header {
+  display: flex;
+  background-color: #34c3daca;
+  align-items: center;
+  padding: 5px;
+}
+
+.pfp {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px; /* increased margin to create space between pfp and text */
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column; /* changed from column to row */
+  align-items: flex-start;
+}
+
+.username {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+}
+
+.time {
+  font-size: 0.8em;
+  color: #ffffff;
+  margin-top: 2px; /* added margin to create space between username and time */
+}
+
 /* Divider line between left and right */
 .chats-container::before {
   content: "";
@@ -56,7 +90,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2px 0;
+  padding: 4px 0;
+  margin-bottom: 9px;
+  border-bottom: 1px white solid;
 }
 
 .chat-info {
@@ -65,8 +101,8 @@
 }
 
 .chat-pfp {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   object-fit: cover;
   margin-right: 8px;
@@ -80,11 +116,11 @@
 .username {
   font-weight: bold;
   font-size: 1em;
-  margin:0;
+  margin: 0;
 }
 
 .chat-preview {
-  font-size: 0.9em;
+  font-size: 1em;
   color: #666;
   margin: 0;
 }
