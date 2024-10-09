@@ -1,5 +1,8 @@
 .application-background {
-  background-image: linear-gradient(rgba(140, 134, 134, 0.347), rgba(0, 0, 0, 0.812)),
+  background-image: linear-gradient(
+      rgba(140, 134, 134, 0.347),
+      rgba(0, 0, 0, 0.812)
+    ),
     url("../../images/application.jpg");
   background-size: 100%;
   background-position: center;
@@ -59,6 +62,44 @@
 
 .back-btn:hover {
   background-color: #c11515;
+}
+
+.submit-application-btn {
+  width: 150px;
+  padding: 10px;
+  background-color: #16d14b;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 17px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 10px;
+}
+
+.submit-application-btn:hover {
+  background-color: #03723e;
+}
+
+.delete-application-btn {
+  width: 200px;
+  padding: 10px;
+  background-color: #d11616;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 17px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 10px;
+}
+
+.delete-application-btn:hover {
+  background-color: #a50606;
 }
 
 .gig-div::-webkit-scrollbar {

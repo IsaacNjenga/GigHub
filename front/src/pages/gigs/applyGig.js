@@ -7,7 +7,10 @@ import { UserContext } from "../../App";
 import Loader from "../../components/loader";
 import "../../assets/css/gigsCss/applyGig.css";
 import { format } from "date-fns";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
+const MySwal = withReactContent(Swal);
 function ApplyGig() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -17,6 +20,31 @@ function ApplyGig() {
   const [data, setData] = useState([]);
   const [values, setValues] = useState([]);
   const [fetchedGig, setFetchedGig] = useState([]);
+  const [profileData, setProfileData] = useState([]);
+
+  const fetchUserProfile = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("profile", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      const profileDetails = response.data.profile.find(
+        (profile) => profile.postedBy === user._id
+      );
+      setProfileData({
+        firstname: profileDetails.firstname,
+        lastname: profileDetails.lastname,
+        email: profileDetails.email,
+        phone: profileDetails.phone,
+        expertise: profileDetails.expertise,
+        profileImage: profileDetails.profileImage,
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching profile:", error);
+    }
+  }, [user]);
 
   const fetchGig = useCallback(async () => {
     setLoading(true);
@@ -41,8 +69,9 @@ function ApplyGig() {
   useEffect(() => {
     if (user) {
       fetchGig();
+      fetchUserProfile();
     }
-  }, [user]);
+  }, [user, fetchUserProfile]);
 
   const handleChange = (e) => {
     if (e.target.type === "file") {
@@ -55,9 +84,18 @@ function ApplyGig() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log("Values", values);
+    const profileInformation = { ...profileData, jobId: id };
+    console.log(profileInformation);
+    const valuesData = { ...values, ...profileInformation };
+    console.log("valuesdata", valuesData);
     const formData = new FormData();
     formData.append("resume", file);
-    formData.append("otherField", values.otherField);
+    for (const key in valuesData) {
+      if (valuesData.hasOwnProperty(key)) {
+        formData.append(key, valuesData[key]);
+      }
+    }
 
     try {
       const res = await axios.post("/apply", formData, {
@@ -88,7 +126,7 @@ function ApplyGig() {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const fetchedApplications = response.data.applicants.filter(
-        (applicant) => applicant.postedBy === user._id
+        (applicant) => applicant.postedBy === user._id && applicant.jobId === id
       );
       setData(fetchedApplications);
     } catch (error) {
@@ -105,8 +143,52 @@ function ApplyGig() {
     }
   }, [user, fetchApplicants]);
 
+  console.log(id);
+  const handleDelete = (id) => {
+    MySwal.fire({
+      title: "Are you sure you want to withdraw your application?",
+      text: "You won't be able to revert this action!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .delete(`deleteApplication/${id}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            })
+            .then((res) => {
+              const fetchedApplications = res.data.applicants.filter(
+                (applicant) =>
+                  applicant.postedBy === user._id && applicant.jobId === id
+              );
+              setData(fetchedApplications);
+              MySwal.fire({
+                title: "Deleted!",
+                text: "Deleted Successfully",
+                icon: "success",
+              });
+            });
+        }
+      })
+      .catch((err) => {
+        MySwal.fire({
+          title: "Error!",
+          text: "An error occured",
+          icon: "error",
+        });
+        console.log(err);
+      });
+  };
+
   const messageContractor = (e) => {
     e.preventDefault();
+    navigate("/chats");
   };
 
   const back = (e) => {
@@ -245,13 +327,33 @@ function ApplyGig() {
                   Message Contractor:{" "}
                   <button onClick={messageContractor}>Message</button>
                 </div>
-                <div>
-                  <button type="submit">Submit</button>{" "}
+                <br />
+                <div className="application-button-container">
+                  <button
+                    type="submit"
+                    style={
+                      data.length > 0
+                        ? { backgroundColor: "grey", cursor: "not-allowed" }
+                        : {}
+                    }
+                    className="submit-application-btn"
+                    disabled={data.length > 0}
+                  >
+                    Submit
+                  </button>
                 </div>
               </form>
+              <button className="delete-application-btn" onClick={handleDelete}>
+                Withdraw application
+              </button>
               {data.length > 0 ? (
                 <div>
-                  {data.map((applicant, index) => (
+                  <div>
+                    <p style={{ color: "green" }}>
+                      Application submitted. The contractor will be notified.
+                    </p>
+                  </div>
+                  {/*data.map((applicant, index) => (
                     <div key={index}>
                       <p>Resume: {applicant.filename}</p>
                       {createDownloadLink(
@@ -260,7 +362,7 @@ function ApplyGig() {
                         applicant.contentType
                       )}
                     </div>
-                  ))}
+                      ))*/}
                 </div>
               ) : null}
             </div>

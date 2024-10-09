@@ -6,6 +6,14 @@ const applicantSchema = new mongoose.Schema(
     data: Buffer,
     contentType: { type: String },
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    jobId: { type: String },
+    username: { type: String },
+    firstname: { type: String },
+    lastname: { type: String },
+    expertise: { type: String },
+    email: { type: String },
+    phone: { type: String },
+    profileImage: { type: String },
   },
   { collection: "applicant", timestamps: true }
 );
