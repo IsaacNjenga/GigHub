@@ -7,7 +7,7 @@ const chatSchema = new mongoose.Schema(
     message: { type: String },
     senderId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     receiverId: { type: String },
-    avatar: { type: String },
+   // avatar: { type: String },
   },
   { collection: "chats", timestamps: true }
 );

@@ -33,6 +33,7 @@ import {
   createChat,
   deleteChat,
   fetchChats,
+  fetchLastChatForUser,
   updateChat,
 } from "../controllers/chatController.js";
 
@@ -124,6 +125,7 @@ router.post("/createChat", VerifyUser, createChat);
 router.get("/fetchChats", VerifyUser, fetchChats);
 router.put("/updateChat/:id", VerifyUser, updateChat);
 router.delete("/deleteChat/:id", VerifyUser, deleteChat);
+router.get("/fetchLastChatForUser", VerifyUser, fetchLastChatForUser);
 
 //review routes
 router.post("/createReview", VerifyUser, createReview);

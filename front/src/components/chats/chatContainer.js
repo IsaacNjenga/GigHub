@@ -69,7 +69,6 @@ function ChatContainer({ selectedReceiverId }) {
         );
         if (res.data.success) {
           setChats(res.data.chats);
-          console.log(chats);
           setLoading(false);
         }
       } catch (err) {
@@ -78,7 +77,7 @@ function ChatContainer({ selectedReceiverId }) {
       }
     };
     fetchChats();
-    const intervalId = setInterval(fetchChats, 5000); //updates every 5 seconds
+    const intervalId = setInterval(fetchChats, 3000); //updates every 5 seconds
     return () => clearInterval(intervalId); // Then clean up on unmount
   }, [selectedReceiverId]);
 
@@ -86,7 +85,7 @@ function ChatContainer({ selectedReceiverId }) {
     const newChat = {
       username: user.username,
       message: chat,
-      avatar: profileData.profileImage,
+      //avatar: profileData.profileImage,
       senderId: user._id,
       receiverId: selectedReceiverId,
     };
