@@ -21,7 +21,7 @@ import Chats from "./components/chats/chats";
 
 export const UserContext = createContext(null);
 
-axios.defaults.baseURL = "https://gig-hub-liart.vercel.app/gighub";
+axios.defaults.baseURL = "http://localhost:3001/gighub";
 axios.defaults.withCredentials = true;
 //https://gig-hub-liart.vercel.app/
 //http://localhost:3001/
@@ -123,13 +123,17 @@ const router = createBrowserRouter([
 ]);
 function App() {
   const [user, setUser] = useState();
+  const [isOnline, setIsOnline] = useState(false);
 
   useEffect(() => {
     axios
-      .get("verify")
+      .get("verify", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => {
         if (res.data.success) {
           setUser(res.data.user);
+          setIsOnline(true);
         }
       })
       .catch((err) => {
@@ -139,7 +143,7 @@ function App() {
   return (
     <>
       <ToastContainer />
-      <UserContext.Provider value={{ user, setUser }}>
+      <UserContext.Provider value={{ user, setUser, setIsOnline, isOnline }}>
         <RouterProvider router={router} />
       </UserContext.Provider>
     </>

@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../App";
 import "../assets/css/navbarCss/navbar.css";
 import gighub from "../assets/icons/gighub.png";
+import OnlineIndicator from "./onlineIndicator";
 
 function Navbar() {
-  const { user } = useContext(UserContext);
+  const { user, isOnline } = useContext(UserContext);
+  console.log(isOnline);
   return (
     <div className="navbar">
       <div className="navbar-left">
@@ -21,7 +23,8 @@ function Navbar() {
               Home
             </Link>
             <Link to="/profile" className="navbar-link">
-              {user.username.replace(/^./, user.username[0].toUpperCase())}
+              {user.username.replace(/^./, user.username[0].toUpperCase())}{" "}
+              {isOnline && <OnlineIndicator />}
             </Link>
             <Link to="/dashboard" className="navbar-link">
               Dashboard

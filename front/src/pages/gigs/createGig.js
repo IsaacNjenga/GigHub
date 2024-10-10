@@ -107,7 +107,7 @@ function CreateGig() {
                   modules={{
                     toolbar: toolbarOptions,
                   }}
-                />
+                /><br/>
                 <label>Type</label>
                 <select
                   name="type"

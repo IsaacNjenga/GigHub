@@ -111,6 +111,7 @@ function Chats() {
 
   return (
     <>
+      {loading && <Loader />}
       <Navbar />
       <div className="chats-container">
         <div className="chat-div">
@@ -138,7 +139,8 @@ function Chats() {
                     className="chat-pfp"
                   />
                   <div className="chat-details">
-                    <p className="chat-username">
+                    <p className="chat-username">@{user.username}</p>
+                    <p className="chat-name">
                       {user.firstname} {user.lastname}
                     </p>
                     <p className="chat-preview">{lastMessage}</p>
