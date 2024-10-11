@@ -14,7 +14,7 @@
 }
 
 .review-container {
-  max-width: 95%;
+  max-width:95%;
   margin: 0px auto;
   padding: 20px;
   height: 100vh;
@@ -52,6 +52,10 @@
   flex-direction: column; /* Stack elements vertically */
   height: 100vh; /* Set height to full viewport height */
   overflow-y: hidden; /* Remove scrollbar */
+}
+
+.review-body{
+  width:1000px
 }
 
 .user-details {

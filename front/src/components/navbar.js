@@ -7,7 +7,6 @@ import OnlineIndicator from "./onlineIndicator";
 
 function Navbar() {
   const { user, isOnline } = useContext(UserContext);
-  console.log(isOnline);
   return (
     <div className="navbar">
       <div className="navbar-left">

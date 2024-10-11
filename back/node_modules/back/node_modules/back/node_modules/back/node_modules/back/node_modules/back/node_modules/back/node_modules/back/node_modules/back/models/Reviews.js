@@ -5,6 +5,7 @@ const reviewSchema = new mongoose.Schema(
     rating: { type: String },
     review: { type: String },
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    revieweeId: { type: String },
   },
   { collection: "reviews", timestamps: true }
 );

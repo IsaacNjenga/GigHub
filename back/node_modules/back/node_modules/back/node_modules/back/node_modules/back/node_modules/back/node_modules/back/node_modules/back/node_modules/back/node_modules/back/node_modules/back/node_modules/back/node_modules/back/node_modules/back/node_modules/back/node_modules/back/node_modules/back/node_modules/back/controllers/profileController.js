@@ -50,6 +50,16 @@ const profile = async (req, res) => {
   }
 };
 
+const fetchReviewProfile = async (req, res) => {
+  const { reviewerId } = req.query;  try {
+    const profileData = await ProfileModel.find({ postedBy: reviewerId });
+    return res.status(200).json({ success: true, profileData });
+  } catch (error) {
+    console.error("Error fetching user profile", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 const fetchProfile = async (req, res) => {
   try {
     const profile = await ProfileModel.find({});
@@ -100,4 +110,11 @@ const updateProfile = async (req, res) => {
   }
 };
 
-export { createProfile, profile, deleteProfile, updateProfile, fetchProfile };
+export {
+  createProfile,
+  profile,
+  deleteProfile,
+  updateProfile,
+  fetchProfile,
+  fetchReviewProfile,
+};

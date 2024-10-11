@@ -13,6 +13,7 @@ import {
   updateProfile,
   deleteProfile,
   fetchProfile,
+  fetchReviewProfile,
 } from "../controllers/profileController.js";
 
 import {
@@ -102,6 +103,7 @@ router.get("/user", VerifyUser, fetchUserName);
 router.post("/createProfile", VerifyUser, createProfile);
 router.get("/profile", VerifyUser, profile);
 router.get("/fetchProfile", VerifyUser, fetchProfile);
+router.get("/reviewerProfile", VerifyUser, fetchReviewProfile);
 router.put("/updateProfile/:id", VerifyUser, updateProfile);
 router.delete("/deleteProfile/:id", VerifyUser, deleteProfile);
 
