@@ -51,7 +51,8 @@ const profile = async (req, res) => {
 };
 
 const fetchReviewProfile = async (req, res) => {
-  const { reviewerId } = req.query;  try {
+  const { reviewerId } = req.query;
+  try {
     const profileData = await ProfileModel.find({ postedBy: reviewerId });
     return res.status(200).json({ success: true, profileData });
   } catch (error) {

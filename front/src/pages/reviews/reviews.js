@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import axios from "axios";
 import Loader from "../../components/loader";
@@ -6,8 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
 import "../../assets/css/reviewCss/review.css";
+import { Link } from "react-router-dom";
+import { UserContext } from "../../App";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
+const MySwal = withReactContent(Swal);
 function Reviews() {
+  const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [selectedReviewee, setSelectedReviewee] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -85,6 +91,44 @@ function Reviews() {
     fetchUserReviews(user.postedBy);
   };
 
+  const deleteReview = (id) => {
+    MySwal.fire({
+      title: "Are you sure you want to delete this review?",
+      text: "You won't be able to revert this action!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .delete(`deleteReview?id=${id}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            })
+            .then((res) => {
+              //setGigs(res.data.gigs);
+              MySwal.fire({
+                title: "Deleted!",
+                text: "Deleted Successfully",
+                icon: "success",
+              });
+            });
+        }
+      })
+      .catch((err) => {
+        MySwal.fire({
+          title: "Error!",
+          text: "An error occured",
+          icon: "error",
+        });
+        console.log(err);
+      });
+  };
+
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -145,10 +189,17 @@ function Reviews() {
               <div className="review-body">
                 {selectedReviewee ? (
                   <div>
-                    <p style={{ textAlign: "center", fontWeight: "bold" }}>
-                      Reviews for {selectedReviewee.firstname}{" "}
-                      {selectedReviewee.lastname}
-                    </p>
+                    <div className="review-bar">
+                      <Link to={`/add-review/${selectedReviewee.postedBy}`}>
+                        Write a review
+                      </Link>
+                      <p style={{ textAlign: "center", fontWeight: "bold" }}>
+                        <u>
+                          Reviews for {selectedReviewee.firstname}{" "}
+                          {selectedReviewee.lastname}
+                        </u>
+                      </p>
+                    </div>
                     {reviews.length > 0 ? (
                       reviews.map((review) => (
                         <div key={review._id}>
@@ -184,13 +235,25 @@ function Reviews() {
                               <p>{review.rating}/5</p>
                             </span>
                           </div>
-                          <p>{review.review}</p>
-                          <div className="reviews-button-container">
-                            <button className="edit-review-btn">Edit</button>
-                            <button className="delete-review-btn">
-                              Delete
-                            </button>
-                          </div>
+                          <p
+                            dangerouslySetInnerHTML={{ __html: review.review }}
+                          />
+                          {review.postedBy === user._id ? (
+                            <div className="reviews-button-container">
+                              <button className="edit-review-btn">
+                                <Link to={`/update-review/${review._id}`}>
+                                  Edit
+                                </Link>
+                              </button>
+                              <button
+                                className="delete-review-btn"
+                                onClick={() => deleteReview(review._id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          ) : null}
+
                           <hr />
                         </div>
                       ))

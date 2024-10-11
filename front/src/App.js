@@ -17,7 +17,9 @@ import CreateGig from "./pages/gigs/createGig";
 import UpdateGig from "./pages/gigs/updateGig";
 import ApplyGig from "./pages/gigs/applyGig";
 import Reviews from "./pages/reviews/reviews";
+import AddReview from "./pages/reviews/addReview";
 import Chats from "./components/chats/chats";
+import UpdateReview from "./pages/reviews/updateReview";
 
 export const UserContext = createContext(null);
 
@@ -115,6 +117,22 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoutes>
         <Chats />
+      </ProtectedRoutes>
+    ),
+  },
+  {
+    path: "/add-review/:id",
+    element: (
+      <ProtectedRoutes>
+        <AddReview />
+      </ProtectedRoutes>
+    ),
+  },
+  {
+    path: "/update-review/:id",
+    element: (
+      <ProtectedRoutes>
+        <UpdateReview />
       </ProtectedRoutes>
     ),
   },

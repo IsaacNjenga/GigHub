@@ -20,19 +20,7 @@ function UpdateProfile() {
   const [serverErrors, setServerErrors] = useState([]);
   const [profilePicPreview, setProfilePicPreview] = useState(defaultProfilePic);
   const [profileName, setProfileName] = useState([]);
-  const [data, setData] = useState({
-    firstname: "",
-    lastname: "",
-    gender: "",
-    email: "",
-    phone: "",
-    dob: "",
-    expertise: "",
-    bio: "",
-    goals: "",
-    age: "",
-    interests: "",
-  });
+  const [data, setData] = useState({});
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -62,23 +50,8 @@ function UpdateProfile() {
       const profileDetails = response.data.profile.find(
         (profile) => profile.postedBy === user._id
       );
-      const dob = new Date(profileDetails.dob);
-      const ageInMilli = new Date() - dob;
-      const age = Math.floor(ageInMilli / (1000 * 60 * 60 * 24 * 365.25));
-      setData({
-        firstname: profileDetails.firstname,
-        lastname: profileDetails.lastname,
-        gender: profileDetails.gender,
-        email: profileDetails.email,
-        phone: profileDetails.phone,
-        dob: profileDetails.dob,
-        expertise: profileDetails.expertise,
-        bio: profileDetails.bio,
-        age: age,
-        goals: profileDetails.goals,
-        interests: profileDetails.interests,
-        profileImage: profileDetails.profileImage,
-      });
+
+      setData((prevData) => ({ ...prevData, ...profileDetails }));
       if (profileDetails.profileImage) {
         setProfilePicPreview(profileDetails.profileImage);
       }
@@ -98,15 +71,21 @@ function UpdateProfile() {
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
-      setData({
-        ...data,
-        [fieldName]: content,
-      });
+      // Only update the state if the content has changed
+      if (values[fieldName] !== content) {
+        setValues({
+          ...values,
+          [fieldName]: content,
+        });
+      }
     } else {
-      setData({
-        ...data,
-        [e.target.name]: e.target.value,
-      });
+      // Update state only if input value has changed
+      if (values[e.target.name] !== e.target.value) {
+        setValues({
+          ...values,
+          [e.target.name]: e.target.value,
+        });
+      }
     }
   };
 

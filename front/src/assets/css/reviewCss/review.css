@@ -14,7 +14,7 @@
 }
 
 .review-container {
-  max-width:95%;
+  max-width: 95%;
   margin: 0px auto;
   padding: 20px;
   height: 100vh;
@@ -54,8 +54,8 @@
   overflow-y: hidden; /* Remove scrollbar */
 }
 
-.review-body{
-  width:1000px
+.review-body {
+  width: 1000px;
 }
 
 .user-details {
@@ -78,6 +78,16 @@
   font-size: 16px;
   font-weight: bold;
   margin-top: 2px; /* Add some space between the username and name */
+}
+
+.review-bar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff4f; /* add a background color to cover the content below */
+  z-index: 1; /* make sure it's on top of other elements */
+  padding: 1px; /* add some padding to make it look better */
 }
 
 .reviews-search-bar {

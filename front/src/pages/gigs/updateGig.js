@@ -14,19 +14,7 @@ function UpdateGig() {
   const { id } = useParams();
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState({
-    title: "",
-    summary: "",
-    type: "",
-    responsibilities: "",
-    requirements: "",
-    environment: "",
-    benefits: "",
-    location: "",
-    organisation: "",
-    apply: "",
-    info: "",
-  });
+  const [values, setValues] = useState({});
   const [data, setData] = useState(false);
 
   const fetchGigs = useCallback(async () => {
@@ -37,47 +25,41 @@ function UpdateGig() {
       });
       if (response.data.gigs) {
         setData(true);
-        console.log(data);
+        const fetchedGig = response.data.gigs.find((gig) => gig._id === id);
+        setValues((prevValues) => ({ ...prevValues, ...fetchedGig }));
+        console.log(values);
       }
-      const fetchedGig = response.data.gigs.find((gig) => gig._id === id);
-      setValues({
-        title: fetchedGig.title,
-        summary: fetchedGig.summary,
-        type: fetchedGig.type,
-        responsibilities: fetchedGig.responsibilities,
-        requirements: fetchedGig.requirements,
-        environment: fetchedGig.environment,
-        benefits: fetchedGig.benefits,
-        location: fetchedGig.location,
-        organisation: fetchedGig.organisation,
-        apply: fetchedGig.apply,
-        info: fetchedGig.info,
-      });
       setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error("Error fetching:", error);
       toast.error("Error fetching data", { position: "top-right" });
     }
-  }, [user]);
+  }, [user, id]);
 
   useEffect(() => {
     if (user) {
       fetchGigs();
     }
-  }, [user]);
+  }, [user, fetchGigs]);
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
-      setValues({
-        ...values,
-        [fieldName]: content,
-      });
+      // Only update the state if the content has changed
+      if (values[fieldName] !== content) {
+        setValues({
+          ...values,
+          [fieldName]: content,
+        });
+      }
     } else {
-      setValues({
-        ...values,
-        [e.target.name]: e.target.value,
-      });
+      // Update state only if input value has changed
+      if (values[e.target.name] !== e.target.value) {
+        setValues({
+          ...values,
+          [e.target.name]: e.target.value,
+        });
+      }
     }
   };
 
@@ -132,155 +114,161 @@ function UpdateGig() {
         <div className="update-gig-container">
           <h1>Edit gig</h1> <hr />
           <br />
-          <div className="create-gig-form">
-            <form onSubmit={handleSubmit}>
-              <div>
-                <label>Job Title</label>
-                <input
-                  type="text"
-                  className="input"
-                  onChange={handleChange}
-                  name="title"
-                  value={values.title}
-                />
-                <label>Summary</label>
-                <ReactQuill
-                  value={values.summary || ""}
-                  onChange={(content) => handleChange(null, content, "summary")}
-                  theme="snow"
-                  modules={{
-                    toolbar: toolbarOptions,
-                  }}
-                />
-                <label>Type</label>
-                <select
-                  name="type"
-                  onChange={handleChange}
-                  className="type-select"
-                  value={values.type}
-                >
-                  <option value="">Select Type</option>
-                  {jobTypes.map((job) => (
-                    <option key={job} value={job}>
-                      {job}
-                    </option>
-                  ))}
-                </select>{" "}
-                <br />
-                <br />
-                <hr />
-                <label>Responsibilities</label>{" "}
-                <ReactQuill
-                  value={values.responsibilities || ""}
-                  onChange={(content) =>
-                    handleChange(null, content, "responsibilities")
-                  }
-                  theme="snow"
-                  modules={{
-                    toolbar: toolbarOptions,
-                  }}
-                />
-                <label>Requirements</label>{" "}
-                <ReactQuill
-                  value={values.requirements || ""}
-                  onChange={(content) =>
-                    handleChange(null, content, "requirements")
-                  }
-                  theme="snow"
-                  modules={{
-                    toolbar: toolbarOptions,
-                  }}
-                />
-                <label>Work Environment</label>{" "}
-                <ReactQuill
-                  value={values.environment || ""}
-                  onChange={(content) =>
-                    handleChange(null, content, "environment")
-                  }
-                  theme="snow"
-                  modules={{
-                    toolbar: toolbarOptions,
-                  }}
-                />
-                <label>Compensation & Benefits</label>{" "}
-                <ReactQuill
-                  value={values.benefits || ""}
-                  onChange={(content) =>
-                    handleChange(null, content, "benefits")
-                  }
-                  theme="snow"
-                  modules={{
-                    toolbar: toolbarOptions,
-                  }}
-                />
-                <br /> 
-                <br />
-                <div className="radio-input">
-                  <label>Location</label>
+          {data ? (
+            <div className="create-gig-form">
+              <form onSubmit={handleSubmit}>
+                <div>
+                  <label>Job Title</label>
+                  <input
+                    type="text"
+                    className="input"
+                    onChange={handleChange}
+                    name="title"
+                    value={values.title}
+                  />
+                  <label>Summary</label>
+                  <ReactQuill
+                    value={values.summary || ""}
+                    onChange={(content) =>
+                      handleChange(null, content, "summary")
+                    }
+                    theme="snow"
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
+                  />
+                  <label>Type</label>
+                  <select
+                    name="type"
+                    onChange={handleChange}
+                    className="type-select"
+                    value={values.type}
+                  >
+                    <option value="">Select Type</option>
+                    {jobTypes.map((job) => (
+                      <option key={job} value={job}>
+                        {job}
+                      </option>
+                    ))}
+                  </select>{" "}
                   <br />
-                  <input
-                    type="radio"
-                    onChange={handleChange}
-                    name="location"
-                    id="on-site"
-                    value="On-site"
-                    checked={values.location === "On-site"}
-                    className="form-radio"
+                  <br />
+                  <hr />
+                  <label>Responsibilities</label>{" "}
+                  <ReactQuill
+                    value={values.responsibilities || ""}
+                    onChange={(content) =>
+                      handleChange(null, content, "responsibilities")
+                    }
+                    theme="snow"
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
                   />
-                  <label>On-Site</label>
-                  <input
-                    type="radio"
-                    onChange={handleChange}
-                    name="location"
-                    id="remote"
-                    value="Remote"
-                    checked={values.location === "Remote"}
-                    className="form-radio"
+                  <label>Requirements</label>{" "}
+                  <ReactQuill
+                    value={values.requirements || ""}
+                    onChange={(content) =>
+                      handleChange(null, content, "requirements")
+                    }
+                    theme="snow"
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
                   />
-                  <label>Remote</label>
+                  <label>Work Environment</label>{" "}
+                  <ReactQuill
+                    value={values.environment || ""}
+                    onChange={(content) =>
+                      handleChange(null, content, "environment")
+                    }
+                    theme="snow"
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
+                  />
+                  <label>Compensation & Benefits</label>{" "}
+                  <ReactQuill
+                    value={values.benefits || ""}
+                    onChange={(content) =>
+                      handleChange(null, content, "benefits")
+                    }
+                    theme="snow"
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
+                  />
+                  <br />
+                  <br />
+                  <div className="radio-input">
+                    <label>Location</label>
+                    <br />
+                    <input
+                      type="radio"
+                      onChange={handleChange}
+                      name="location"
+                      id="on-site"
+                      value="On-site"
+                      checked={values.location === "On-site"}
+                      className="form-radio"
+                    />
+                    <label>On-Site</label>
+                    <input
+                      type="radio"
+                      onChange={handleChange}
+                      name="location"
+                      id="remote"
+                      value="Remote"
+                      checked={values.location === "Remote"}
+                      className="form-radio"
+                    />
+                    <label>Remote</label>
+                  </div>
+                  <br />
+                  <hr />
+                  <label>Organisation & Company</label>{" "}
+                  <ReactQuill
+                    value={values.organisation || ""}
+                    onChange={(content) =>
+                      handleChange(null, content, "organisation")
+                    }
+                    theme="snow"
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
+                  />
+                  <label>How to Apply</label>{" "}
+                  <ReactQuill
+                    value={values.apply || ""}
+                    onChange={(content) => handleChange(null, content, "apply")}
+                    theme="snow"
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
+                  />
+                  <label>Additional Information</label>{" "}
+                  <ReactQuill
+                    value={values.info || ""}
+                    onChange={(content) => handleChange(null, content, "info")}
+                    theme="snow"
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
+                  />
                 </div>
-                <br />
-                <hr />
-                <label>Organisation & Company</label>{" "}
-                <ReactQuill
-                  value={values.organisation || ""}
-                  onChange={(content) =>
-                    handleChange(null, content, "organisation")
-                  }
-                  theme="snow"
-                  modules={{
-                    toolbar: toolbarOptions,
-                  }}
-                />
-                <label>How to Apply</label>{" "}
-                <ReactQuill
-                  value={values.apply || ""}
-                  onChange={(content) => handleChange(null, content, "apply")}
-                  theme="snow"
-                  modules={{
-                    toolbar: toolbarOptions,
-                  }}
-                />
-                <label>Additional Information</label>{" "}
-                <ReactQuill
-                  value={values.info || ""}
-                  onChange={(content) => handleChange(null, content, "info")}
-                  theme="snow"
-                  modules={{
-                    toolbar: toolbarOptions,
-                  }}
-                />
-              </div>
-              <div className="button-container">
-                <button type="submit" className="submit-gig-btn">
-                  Update Gig
-                </button>
-                <button onClick={back} className="cancel-gig-btn">
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+                <div className="button-container">
+                  <button type="submit" className="submit-gig-btn">
+                    Update Gig
+                  </button>
+                  <button onClick={back} className="cancel-gig-btn">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <Loader />
+          )}
         </div>
       </div>
     </>

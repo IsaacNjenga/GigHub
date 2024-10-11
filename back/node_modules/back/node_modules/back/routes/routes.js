@@ -41,6 +41,7 @@ import {
 import {
   createReview,
   deleteReview,
+  fetchReview,
   fetchReviews,
   updateReview,
 } from "../controllers/reviewController.js";
@@ -132,7 +133,8 @@ router.get("/fetchLastChatForUser", VerifyUser, fetchLastChatForUser);
 //review routes
 router.post("/createReview", VerifyUser, createReview);
 router.get("/fetchReviews", VerifyUser, fetchReviews);
+router.get("/fetchReview/:id", VerifyUser, fetchReview);
 router.put("/updateReview/:id", VerifyUser, updateReview);
-router.delete("/deleteReview/:id", VerifyUser, deleteReview);
+router.delete("/deleteReview", VerifyUser, deleteReview); //deleting with a query
 
 export { router as Router };

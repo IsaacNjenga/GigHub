@@ -12,6 +12,7 @@ import Loader from "../../components/loader";
 import { toast } from "react-toastify";
 import ChatContainer from "../../components/chats/chatContainer";
 import DOMPurify from "dompurify";
+import CustomMoment from "../../components/customMoment";
 
 const MySwal = withReactContent(Swal);
 function GigList() {
@@ -166,23 +167,26 @@ function GigList() {
       name: "Location",
       selector: (row) => row.location,
     },
+
+    // {
+    //   name: "Message",
+    //   selector: (row) => (
+    //     <>
+    //       <p
+    //         onClick={() => viewMessage(row.postedBy)}
+    //         style={{ cursor: "pointer" }}
+    //       >
+    //         Message
+    //       </p>
+    //     </>
+    //   ),
+    // },
     {
-      name: "Organisation",
+      name: "Posted",
       selector: (row) => (
-        <div dangerouslySetInnerHTML={{ __html: row.organisation }} />
-      ),
-    },
-    {
-      name: "Message",
-      selector: (row) => (
-        <>
-          <p
-            onClick={() => viewMessage(row.postedBy)}
-            style={{ cursor: "pointer" }}
-          >
-            Message
-          </p>
-        </>
+        <CustomMoment
+          postedTime={row.createdAt ? row.createdAt : row.updatedAt}
+        />
       ),
     },
     {
@@ -196,7 +200,7 @@ function GigList() {
       ),
     },
     {
-      name: "Actions",
+      name: "",
       selector: (row) => (
         <>
           {row.postedBy === user._id ? (
@@ -257,7 +261,9 @@ function GigList() {
       <div className="gig-background">
         <Navbar />
         <div className="gig-container">
-          <h1>Gigs List</h1>
+          <h1>
+            <u>Gigs List</u>
+          </h1>
           <Link to="/create-gig" className="post-gig">
             Post a Gig
           </Link>
@@ -367,7 +373,11 @@ function GigList() {
                       <p className="gig-info">
                         <strong>Posted on: </strong>
                         {format(
-                          new Date(selectedGig.createdAt),
+                          new Date(
+                            selectedGig.createdAt
+                              ? selectedGig.createdAt
+                              : selectedGig.updatedAt
+                          ),
                           "EEEE do, MM yyyy"
                         )}
                       </p>

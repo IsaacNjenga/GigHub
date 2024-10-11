@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Navbar from "../../components/navbar";
-import { UserContext } from "../../App";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,13 +9,14 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import Loader from "../../components/loader";
 import "../../assets/css/reviewCss/addReview.css";
+import { useNavigate, useParams } from "react-router-dom";
 
 function AddReview() {
-  const { user } = useContext(UserContext);
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(false);
   const [stars, setStars] = useState([false, false, false, false, false]);
-  console.log(user);
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
@@ -42,7 +42,7 @@ function AddReview() {
     setLoading(true);
     e.preventDefault();
     const rating = stars.filter((star) => star).length;
-    const valuesData = { ...values, rating };
+    const valuesData = { ...values, rating, revieweeId: id };
     axios
       .post("createReview", valuesData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -54,6 +54,7 @@ function AddReview() {
             position: "top-right",
             autoClose: 800,
           });
+          navigate("/reviews");
         }
       })
       .catch((error) => {
