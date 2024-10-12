@@ -4,7 +4,10 @@ import "../../assets/css/chatsCss/chat.css";
 import ChatContainer from "./chatContainer";
 //import pfp from "../../assets/images/createProfile.jpg";
 import axios from "axios";
+import { format, differenceInDays, isToday, isYesterday } from "date-fns";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import Loader from "../loader";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //import { UserContext } from "../../App";
 
 function Chats() {
@@ -69,18 +72,39 @@ function Chats() {
               lastMessage: res.data.lastChat
                 ? res.data.lastChat.message
                 : "No messages yet",
+              lastMessageTime: res.data.lastChat?.createdAt,
+              isRead: res.data.lastChat?.isRead || false,
             });
           }
         } catch (error) {
           console.log("Error fetching last chat:", error);
         }
+        lastMessages.sort(
+          (a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
+        );
         setChatView(lastMessages);
-        console.log(lastMessages);
         setLoading(false);
       }
     };
     fetchLastMessages();
   }, [users]);
+
+  const getFormattedTime = (lastMessageTime) => {
+    const now = new Date();
+    const messageTime = new Date(lastMessageTime);
+    const diffInDays = differenceInDays(now, messageTime);
+
+    if (isToday(messageTime)) {
+      return format(messageTime, "HH:mm"); // If it's today, display time in "HH:mm"
+    } else if (isYesterday(messageTime)) {
+      return "Yesterday"; // If it was yesterday
+    } else if (diffInDays < 7) {
+      return format(messageTime, "EEEE"); // Day of the week (e.g., Monday)
+    } else {
+      // If it's more than a week ago, show the date in "dd/MM/yyyy"
+      return format(messageTime, "dd/MM/yyyy");
+    }
+  };
 
   // useEffect(() => {
   //   const fetchLastMessages = async () => {
@@ -122,34 +146,48 @@ function Chats() {
             <br />
             <br />
             <div>
-              {chatView.map(({ user, lastMessage }) => (
-                <div
-                  key={user._id}
-                  onClick={() => {
-                    setSelectedReceiver(user);
-                    setSelectedReceiverId(user.postedBy);
-                  }}
-                  className={`chat-item ${
-                    selectedReceiver?._id === user._id ? "active" : ""
-                  }`}
-                >
-                  <div className="chat-info">
-                    <img
-                      src={user.profileImage}
-                      alt="avatar"
-                      className="chat-pfp"
-                    />
-                    <div className="chat-details">
-                      <p className="chat-username">@{user.username}</p>
-                      <p className="chat-name">
-                        {user.firstname} {user.lastname}
-                      </p>
-                      <p className="chat-preview">{lastMessage}</p>
+              {chatView.map(
+                ({ user, lastMessage, lastMessageTime, isRead }) => (
+                  <div
+                    key={user._id}
+                    onClick={() => {
+                      setSelectedReceiver(user);
+                      setSelectedReceiverId(user.postedBy);
+                    }}
+                    className={`chat-item ${
+                      selectedReceiver?._id === user._id ? "active" : ""
+                    }`}
+                  >
+                    <div className="chat-info">
+                      <img
+                        src={user.profileImage}
+                        alt="avatar"
+                        className="chat-pfp"
+                      />
+                      <div className="chat-details">
+                        <p className="chat-username">@{user.username}</p>
+                        <p className="chat-name">
+                          {user.firstname} {user.lastname}
+                        </p>
+                        <div className="message-details">
+                          {isRead ? (
+                            <FontAwesomeIcon
+                              icon={faCircle}
+                              className="circle"
+                            />
+                          ) : (
+                            ""
+                          )}{" "}
+                          <p className="chat-preview">{lastMessage}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="chat-time">
+                      {getFormattedTime(lastMessageTime)}
                     </div>
                   </div>
-                  <div className="chat-time">{time}</div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
 
