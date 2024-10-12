@@ -5,7 +5,7 @@ import ChatContainer from "./chatContainer";
 //import pfp from "../../assets/images/createProfile.jpg";
 import axios from "axios";
 import Loader from "../loader";
-import { UserContext } from "../../App";
+//import { UserContext } from "../../App";
 
 function Chats() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -112,70 +112,74 @@ function Chats() {
   return (
     <>
       {loading && <Loader />}
-      <Navbar />
-      <div className="chats-container">
-        <div className="chat-div">
-          {loading && <Loader />}
-          <h2>Chats</h2>
-          <input type="text" placeholder="Search..." className="search-bar" />
-          <br />
-          <br />
-          <div>
-            {chatView.map(({ user, lastMessage }) => (
-              <div
-                key={user._id}
-                onClick={() => {
-                  setSelectedReceiver(user);
-                  setSelectedReceiverId(user.postedBy);
-                }}
-                className={`chat-item ${
-                  selectedReceiver?._id === user._id ? "active" : ""
-                }`}
-              >
-                <div className="chat-info">
+      <div className="chats-page-background">
+        <Navbar />
+        <div className="chats-container">
+          <div className="chat-div">
+            {loading && <Loader />}
+            <h2>Chats</h2>
+            <input type="text" placeholder="Search..." className="search-bar" />
+            <br />
+            <br />
+            <div>
+              {chatView.map(({ user, lastMessage }) => (
+                <div
+                  key={user._id}
+                  onClick={() => {
+                    setSelectedReceiver(user);
+                    setSelectedReceiverId(user.postedBy);
+                  }}
+                  className={`chat-item ${
+                    selectedReceiver?._id === user._id ? "active" : ""
+                  }`}
+                >
+                  <div className="chat-info">
+                    <img
+                      src={user.profileImage}
+                      alt="avatar"
+                      className="chat-pfp"
+                    />
+                    <div className="chat-details">
+                      <p className="chat-username">@{user.username}</p>
+                      <p className="chat-name">
+                        {user.firstname} {user.lastname}
+                      </p>
+                      <p className="chat-preview">{lastMessage}</p>
+                    </div>
+                  </div>
+                  <div className="chat-time">{time}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="chat-page">
+            {selectedReceiver ? (
+              <>
+                <div className="chats-header">
                   <img
-                    src={user.profileImage}
-                    alt="avatar"
-                    className="chat-pfp"
+                    src={selectedReceiver.profileImage}
+                    alt="pfp"
+                    className="pfp"
                   />
-                  <div className="chat-details">
-                    <p className="chat-username">@{user.username}</p>
-                    <p className="chat-name">
-                      {user.firstname} {user.lastname}
-                    </p>
-                    <p className="chat-preview">{lastMessage}</p>
+                  <div className="profile-info">
+                    <span className="username">
+                      {selectedReceiver.firstname} {selectedReceiver.lastname}
+                    </span>
+                    <span className="username">
+                      @{selectedReceiver.username}
+                    </span>
+                    <span className="time">{time}</span>
                   </div>
                 </div>
-                <div className="chat-time">{time}</div>
-              </div>
-            ))}
+                <ChatContainer selectedReceiverId={selectedReceiverId} />
+              </>
+            ) : (
+              <p style={{ textAlign: "center" }}>
+                Select a user to start chatting
+              </p>
+            )}
           </div>
-        </div>
-
-        <div className="chat-page">
-          {selectedReceiver ? (
-            <>
-              <div className="chats-header">
-                <img
-                  src={selectedReceiver.profileImage}
-                  alt="pfp"
-                  className="pfp"
-                />
-                <div className="profile-info">
-                  <span className="username">
-                    {selectedReceiver.firstname} {selectedReceiver.lastname}
-                  </span>
-                  <span className="username">@{selectedReceiver.username}</span>
-                  <span className="time">{time}</span>
-                </div>
-              </div>
-              <ChatContainer selectedReceiverId={selectedReceiverId} />
-            </>
-          ) : (
-            <p style={{ textAlign: "center" }}>
-              Select a user to start chatting
-            </p>
-          )}
         </div>
       </div>
     </>

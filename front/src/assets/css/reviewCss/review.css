@@ -14,7 +14,7 @@
 }
 
 .review-container {
-  max-width: 95%;
+  max-width: 100%;
   margin: 0px auto;
   padding: 20px;
   height: 100vh;
@@ -46,7 +46,7 @@
   border-radius: 5px;
   border-right: 5px;
   border-bottom: 5px;
-  background-color: #ffffff0f;
+  background-color: #cf0d0d0f;
   box-sizing: border-box;
   display: flex; /* Add flexbox layout */
   flex-direction: column; /* Stack elements vertically */
@@ -55,7 +55,7 @@
 }
 
 .review-body {
-  width: 1000px;
+  width: 800px;
 }
 
 .user-details {

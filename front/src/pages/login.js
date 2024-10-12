@@ -33,10 +33,16 @@ function Login() {
           localStorage.setItem("token", res.data.token);
           setLoading(false);
           setUser(res.data.user);
-          toast.success(`Welcome ${res.data.user.username}`, {
-            position: "top-left",
-            autoClose: 1000,
-          });
+          toast.success(
+            `Welcome ${res.data.user.username.replace(
+              /^./,
+              res.data.user.username[0].toUpperCase()
+            )}`,
+            {
+              position: "top-left",
+              autoClose: 1000,
+            }
+          );
           navigate("/");
         } else {
           alert("Incorrect login details. Try again");

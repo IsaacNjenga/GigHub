@@ -3,8 +3,10 @@ import Navbar from "../../components/navbar";
 import axios from "axios";
 import Loader from "../../components/loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faT } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import "../../assets/css/reviewCss/review.css";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../App";
@@ -184,20 +186,22 @@ function Reviews() {
               ))}
             </div>
           </div>
+          
           <div className="review-div">
             <div className="review-container">
               <div className="review-body">
                 {selectedReviewee ? (
                   <div>
                     <div className="review-bar">
-                      <Link to={`/add-review/${selectedReviewee.postedBy}`}>
-                        Write a review
+                      <Link
+                        to={`/add-review/${selectedReviewee.postedBy}`}
+                        style={{ fontSize: "17px" }}
+                      >
+                        <strong>Write a review</strong>
                       </Link>
                       <p style={{ textAlign: "center", fontWeight: "bold" }}>
-                        <u>
-                          Reviews for {selectedReviewee.firstname}{" "}
-                          {selectedReviewee.lastname}
-                        </u>
+                        Reviews for {selectedReviewee.firstname}{" "}
+                        {selectedReviewee.lastname}
                       </p>
                     </div>
                     {reviews.length > 0 ? (
@@ -214,7 +218,11 @@ function Reviews() {
                                   className="chat-pfp"
                                 />
                                 <div className="user-details">
-                                  <p>@{review.reviewerProfile[0].username}</p>
+                                  <p
+                                    style={{ color: "#666", fontSize: "15px" }}
+                                  >
+                                    @{review.reviewerProfile[0].username}
+                                  </p>
                                   <p>
                                     <strong>
                                       <span>
@@ -232,7 +240,9 @@ function Reviews() {
                           <div>
                             <span>
                               {renderStars(review.rating)}{" "}
-                              <p>{review.rating}/5</p>
+                              <p>
+                                <strong>{review.rating}/5</strong>
+                              </p>
                             </span>
                           </div>
                           <p
@@ -241,15 +251,21 @@ function Reviews() {
                           {review.postedBy === user._id ? (
                             <div className="reviews-button-container">
                               <button className="edit-review-btn">
-                                <Link to={`/update-review/${review._id}`}>
-                                  Edit
+                                <Link
+                                  to={`/update-review/${review._id}`}
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "white",
+                                  }}
+                                >
+                                  <FontAwesomeIcon icon={faPenToSquare} />
                                 </Link>
                               </button>
                               <button
                                 className="delete-review-btn"
                                 onClick={() => deleteReview(review._id)}
                               >
-                                Delete
+                                <FontAwesomeIcon icon={faTrash} />
                               </button>
                             </div>
                           ) : null}

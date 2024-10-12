@@ -355,3 +355,55 @@
   border-radius: 5px;
   outline: 1px solid slategrey;
 }
+
+.apply-gig-btn {
+  width: 70px;
+  padding: 10px;
+  border: none;
+  border-radius: 7px;
+  font-size: 1.1em;
+  cursor: pointer;
+  background-color: #17c646;
+  text-decoration: none;
+  margin: 2px;
+  color: #fff;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.apply-gig-btn:hover {
+  background-color: #0a6538;
+}
+
+.delete-gig-btn,
+.update-gig-btn,
+.view-gig-btn {
+  width: 70px;
+  padding: 10px;
+  border: none;
+  margin: 2px;
+  border-radius: 7px;
+  font-size: 1.1em;
+  cursor: pointer;
+  color: white;
+}
+
+.view-gig-btn {
+  background-color: rgb(31, 159, 185);
+  width: 100px;
+}
+
+.update-gig-btn {
+  background-color: rgb(21, 84, 218);
+}
+
+.delete-gig-btn {
+  background-color: red;
+}
+
+.update-gig-btn:hover {
+  background-color: rgb(14, 60, 159);
+}
+
+.delete-gig-btn:hover {
+  background-color: rgb(169, 10, 10);
+}

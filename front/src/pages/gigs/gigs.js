@@ -10,9 +10,11 @@ import withReactContent from "sweetalert2-react-content";
 import "../../assets/css/gigsCss/gigs.css";
 import Loader from "../../components/loader";
 import { toast } from "react-toastify";
-import ChatContainer from "../../components/chats/chatContainer";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import DOMPurify from "dompurify";
 import CustomMoment from "../../components/customMoment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const MySwal = withReactContent(Swal);
 function GigList() {
@@ -21,7 +23,6 @@ function GigList() {
   const [loading, setLoading] = useState(false);
   const [selectedGig, setSelectedGig] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
-  const [selectedMessage, setSelectedMessage] = useState(null);
 
   const fetchGigs = useCallback(async () => {
     setLoading(true);
@@ -89,18 +90,12 @@ function GigList() {
     }
   };
 
-  const viewMessage = (id) => {};
-
   const closeGigModal = () => {
     setSelectedGig(null);
   };
 
   const closeProfileModal = () => {
     setSelectedProfile(null);
-  };
-
-  const closeMessageModal = () => {
-    setSelectedMessage(null);
   };
 
   const deleteGig = (id) => {
@@ -166,21 +161,8 @@ function GigList() {
     {
       name: "Location",
       selector: (row) => row.location,
+      grow: 0,
     },
-
-    // {
-    //   name: "Message",
-    //   selector: (row) => (
-    //     <>
-    //       <p
-    //         onClick={() => viewMessage(row.postedBy)}
-    //         style={{ cursor: "pointer" }}
-    //       >
-    //         Message
-    //       </p>
-    //     </>
-    //   ),
-    // },
     {
       name: "Posted",
       selector: (row) => (
@@ -188,14 +170,19 @@ function GigList() {
           postedTime={row.createdAt ? row.createdAt : row.updatedAt}
         />
       ),
+      grow: 0,
     },
     {
       name: "More",
       selector: (row) => (
         <>
-          <p onClick={() => viewGig(row._id)} style={{ cursor: "pointer" }}>
+          <button
+            onClick={() => viewGig(row._id)}
+            style={{ cursor: "pointer" }}
+            className="view-gig-btn"
+          >
             View Details
-          </p>
+          </button>
         </>
       ),
     },
@@ -205,19 +192,30 @@ function GigList() {
         <>
           {row.postedBy === user._id ? (
             <div>
-              <button>
-                <Link to={`/update-gig/${row._id}`}>Update</Link>
+              <button className="update-gig-btn">
+                <Link
+                  to={`/update-gig/${row._id}`}
+                  style={{ textDecoration: "none", color: "white" }}
+                >
+                  <FontAwesomeIcon icon={faPenToSquare} />
+                </Link>
               </button>
               <button
                 onClick={() => deleteGig(row._id)}
                 style={{ cursor: "pointer" }}
+                className="delete-gig-btn"
               >
-                Delete
+                <FontAwesomeIcon icon={faTrash} />
               </button>
             </div>
           ) : (
-            <button>
-              <Link to={`/apply-gig/${row._id}`}>Apply</Link>
+            <button className="apply-gig-btn">
+              <Link
+                to={`/apply-gig/${row._id}`}
+                style={{ textDecoration: "none", color: "white" }}
+              >
+                Apply
+              </Link>
             </button>
           )}
         </>
@@ -267,7 +265,7 @@ function GigList() {
           <Link to="/create-gig" className="post-gig">
             Post a Gig
           </Link>
-          <p>Gigs Available:</p>
+          <h2>Gigs Available:</h2>
           <div className="gigs-list">
             <DataTable
               columns={columns}
@@ -276,25 +274,7 @@ function GigList() {
               pagination
             />
           </div>
-          {selectedMessage && (
-            <div className="chat-modal-overlay" onClick={closeMessageModal}>
-              <div
-                className="chat-modal-content"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button className="close-btn" onClick={closeMessageModal}>
-                  &times;
-                </button>
-                <h1 className="chat-modal-title">Receiver's name and pfp</h1>
-                <hr cols="3" /> <br />
-                <div className="chat-modal-body">
-                  <div className="chat-body">
-                    <ChatContainer />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+
           {selectedProfile && (
             <div className="profile-modal-overlay" onClick={closeProfileModal}>
               <div
