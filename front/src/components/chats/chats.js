@@ -90,8 +90,13 @@ function Chats() {
   }, [users]);
 
   const getFormattedTime = (lastMessageTime) => {
-    const now = new Date();
+    if (!lastMessageTime) return "";
+
     const messageTime = new Date(lastMessageTime);
+    if (isNaN(messageTime.getTime())) {
+      return "";
+    }
+    const now = new Date();
     const diffInDays = differenceInDays(now, messageTime);
 
     if (isToday(messageTime)) {
@@ -182,9 +187,11 @@ function Chats() {
                         </div>
                       </div>
                     </div>
-                    <div className="chat-time">
-                      {getFormattedTime(lastMessageTime)}
-                    </div>
+                    {lastMessageTime ? (
+                      <div className="chat-time">
+                        {getFormattedTime(lastMessageTime)}
+                      </div>
+                    ) : null}
                   </div>
                 )
               )}

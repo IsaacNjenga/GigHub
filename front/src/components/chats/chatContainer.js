@@ -7,8 +7,10 @@ import { UserContext } from "../../App";
 import Login from "../../pages/login";
 import pfp from "../../assets/images/createProfile.jpg";
 import Chats from "./chats";
+import { toast } from "react-toastify";
+import Loader from "../loader";
 
-function ChatContainer({ selectedReceiverId }) {
+function ChatContainer({ selectedReceiverId, onNewMessage }) {
   const { user } = useContext(UserContext);
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -77,7 +79,7 @@ function ChatContainer({ selectedReceiverId }) {
       }
     };
     fetchChats();
-    const intervalId = setInterval(fetchChats, 3000); //updates every 5 seconds
+    const intervalId = setInterval(fetchChats, 6000); //updates every 6 seconds
     return () => clearInterval(intervalId); // Then clean up on unmount
   }, [selectedReceiverId]);
 
@@ -85,7 +87,6 @@ function ChatContainer({ selectedReceiverId }) {
     const newChat = {
       username: user.username,
       message: chat,
-      //avatar: profileData.profileImage,
       senderId: user._id,
       receiverId: selectedReceiverId,
     };
@@ -96,6 +97,7 @@ function ChatContainer({ selectedReceiverId }) {
       });
       if (res.data.success) {
         setLoading(false);
+        onNewMessage();
         setChats((prevChats) => [...prevChats, res.data.result]);
         //setChats((prevChats) => [...prevChats, newChat]);
       }
@@ -109,8 +111,10 @@ function ChatContainer({ selectedReceiverId }) {
     <>
       {user ? (
         <div className="home">
-          <ChatLists chats={chats} />
-          <InputText addMessage={addMessage} />
+          <>
+            <ChatLists chats={chats} />
+            <InputText addMessage={addMessage} />
+          </>
         </div>
       ) : (
         <Login />
