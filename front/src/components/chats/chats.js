@@ -5,15 +5,16 @@ import ChatContainer from "./chatContainer";
 //import pfp from "../../assets/images/createProfile.jpg";
 import axios from "axios";
 import { format, differenceInDays, isToday, isYesterday } from "date-fns";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCheckDouble } from "@fortawesome/free-solid-svg-icons";
 import Loader from "../loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-//import { UserContext } from "../../App";
+import { UserContext } from "../../App";
 
 function Chats() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  //const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [users, setUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState([]);
   const [selectedReceiverId, setSelectedReceiverId] = useState(null);
   const [selectedReceiver, setSelectedReceiver] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,14 @@ function Chats() {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         if (res.data.success) {
-          setUsers(res.data.profile);
+          const otherUsers = res.data.profile.filter(
+            (userProfile) => userProfile.postedBy !== user._id
+          );
+          const thisUser = res.data.profile.filter(
+            (userProfile) => userProfile.postedBy === user._id
+          );
+          setUsers(otherUsers);
+          setCurrentUser(thisUser);
           setLoading(false);
         }
       } catch (error) {
@@ -47,47 +55,49 @@ function Chats() {
         console.log("Error fetching users:", error);
       }
     };
-
     fetchUsers();
   }, []);
 
-  useEffect(() => {
-    const fetchLastMessages = async () => {
-      setLoading(true);
-      const lastMessages = [];
+  const fetchLastMessages = async () => {
+    setLoading(true);
+    const lastMessages = [];
 
-      for (const user of users) {
-        try {
-          const res = await axios.get(
-            `fetchLastChatForUser?recipientId=${user.postedBy}`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
-          if (res.data.success) {
-            lastMessages.push({
-              user,
-              lastMessage: res.data.lastChat
-                ? res.data.lastChat.message
-                : "No messages yet",
-              lastMessageTime: res.data.lastChat?.createdAt,
-              isRead: res.data.lastChat?.isRead || false,
-            });
+    for (const user of users) {
+      try {
+        const res = await axios.get(
+          `fetchLastChatForUser?recipientId=${user.postedBy}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
           }
-        } catch (error) {
-          console.log("Error fetching last chat:", error);
-        }
-        lastMessages.sort(
-          (a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
         );
-        setChatView(lastMessages);
-        setLoading(false);
+        if (res.data.success) {
+          lastMessages.push({
+            user,
+            lastMessage: res.data.lastChat ? res.data.lastChat.message : "",
+            lastMessageTime: res.data.lastChat?.createdAt,
+            isRead: res.data.lastChat?.isRead || false,
+          });
+        }
+      } catch (error) {
+        console.log("Error fetching last chat:", error);
       }
-    };
+      lastMessages.sort(
+        (a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
+      );
+      setChatView(lastMessages);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchLastMessages();
   }, [users]);
+  
+  const handleNewMessage = () => {
+    fetchLastMessages();
+  };
 
   const getFormattedTime = (lastMessageTime) => {
     if (!lastMessageTime) return "";
@@ -111,33 +121,6 @@ function Chats() {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchLastMessages = async () => {
-  //     // Only fetch if the window is active
-  //     if (document.visibilityState === "visible") {
-  //       // Fetch your data here
-  //     }
-  //   };
-
-  //   const intervalId = setInterval(fetchLastMessages, 3000);
-
-  //   // Clean up on component unmount or visibility change
-  //   const handleVisibilityChange = () => {
-  //     if (document.visibilityState === "hidden") {
-  //       clearInterval(intervalId);
-  //     } else {
-  //       fetchLastMessages(); // Trigger fetch if the user comes back
-  //     }
-  //   };
-
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-
-  //   return () => {
-  //     clearInterval(intervalId);
-  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
-  //   };
-  // }, [users]);
-
   return (
     <>
       {loading && <Loader />}
@@ -146,6 +129,19 @@ function Chats() {
         <div className="chats-container">
           <div className="chat-div">
             {loading && <Loader />}
+            {currentUser.map((liveUser) => (
+              <div key={liveUser._id} className="chat-info">
+                <img src={liveUser.profileImage} alt="" className="chat-pfp" />
+                <div className="chat-details">
+                  <p className="chat-username">
+                    <u>@{user.username}</u>
+                  </p>
+                  <p className="chat-name">
+                    {liveUser.firstname} {liveUser.lastname}
+                  </p>
+                </div>
+              </div>
+            ))}
             <h2>Chats</h2>
             <input type="text" placeholder="Search..." className="search-bar" />
             <br />
@@ -166,22 +162,27 @@ function Chats() {
                     <div className="chat-info">
                       <img
                         src={user.profileImage}
-                        alt="avatar"
+                        alt=""
                         className="chat-pfp"
                       />
                       <div className="chat-details">
-                        <p className="chat-username">@{user.username}</p>
+                        <p className="chat-username">
+                          <u>@{user.username}</u>
+                        </p>
                         <p className="chat-name">
                           {user.firstname} {user.lastname}
                         </p>
                         <div className="message-details">
                           {isRead ? (
                             <FontAwesomeIcon
-                              icon={faCircle}
-                              className="circle"
+                              icon={faCheckDouble}
+                              className="circle-read"
                             />
                           ) : (
-                            ""
+                            <FontAwesomeIcon
+                              icon={faCheck}
+                              className="circle-unread"
+                            />
                           )}{" "}
                           <p className="chat-preview">{lastMessage}</p>
                         </div>
@@ -217,7 +218,10 @@ function Chats() {
                     <span className="time">{time}</span>
                   </div>
                 </div>
-                <ChatContainer selectedReceiverId={selectedReceiverId} />
+                <ChatContainer
+                  selectedReceiverId={selectedReceiverId}
+                  onNewMessage={handleNewMessage}
+                />
               </>
             ) : (
               <p style={{ textAlign: "center" }}>

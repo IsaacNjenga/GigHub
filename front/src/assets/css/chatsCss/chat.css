@@ -26,7 +26,7 @@
 /* Left side: chat list */
 .chat-div {
   width: 30%; /* Left side takes 30% */
-  background-color: #bdd3d16f; /* Light background for the left side */
+  background-color: #b3bbba52; /* Light background for the left side */
   padding: 20px;
   box-sizing: border-box;
   overflow-y: auto; /* Allows scrolling for long chat lists */
@@ -111,6 +111,7 @@
   padding: 4px 0;
   margin-bottom: 9px;
   border-bottom: 1px white solid;
+  cursor: pointer;
 }
 
 .chat-info {
@@ -137,8 +138,13 @@
   justify-content: space-between;
 }
 
-.circle {
-  color: rgb(22, 223, 22);
+.circle-read {
+  color: rgb(13, 146, 235);
+  padding: 5px;
+}
+
+.circle-unread {
+  color: rgb(161, 162, 165);
   padding: 5px;
 }
 

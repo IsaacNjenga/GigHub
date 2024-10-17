@@ -7,7 +7,7 @@ function ChatLists({ chats }) {
   const { user } = useContext(UserContext);
   const endOfMessages = useRef();
 
-  function ChatMessage({ message, username, createdAt, isSender }) {
+  function ChatMessage({ message, createdAt, isSender }) {
     let formattedTime = "Invalid time";
     if (createdAt && !isNaN(new Date(createdAt))) {
       formattedTime = format(new Date(createdAt), "HH:mm");
@@ -16,15 +16,6 @@ function ChatLists({ chats }) {
     return (
       <div className={isSender ? "chat-sender" : "chat-receiver"}>
         <p>
-          {/*<span
-            style={{
-              display: "block",
-              textAlign: "left",
-              fontSize: "11px",
-            }}
-          >
-            {username}
-          </span>*/}
           {message}
           <br />
           <span
@@ -61,7 +52,7 @@ function ChatLists({ chats }) {
             isSender={chat.username === user.username}
           />
         ))}
-        {/*<div ref={endOfMessages}></div>*/}
+        {<div ref={endOfMessages}></div>}
       </div>
     </div>
   );

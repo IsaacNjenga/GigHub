@@ -1,33 +1,19 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import "../../assets/css/chatsCss/chatContainer.css";
+import io from "socket.io-client";
 import InputText from "./inputText";
 import ChatLists from "./chatLists";
 import axios from "axios";
 import { UserContext } from "../../App";
 import Login from "../../pages/login";
-import pfp from "../../assets/images/createProfile.jpg";
-import Chats from "./chats";
-import { toast } from "react-toastify";
-import Loader from "../loader";
-
+//import { toast } from "react-toastify";
+//import Loader from "../loader";
+let socket;
 function ChatContainer({ selectedReceiverId, onNewMessage }) {
   const { user } = useContext(UserContext);
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState([]);
-  let [currentDateTime, setCurrentDateTime] = useState(new Date());
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentDateTime(new Date());
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const time = currentDateTime.toLocaleTimeString("en-Us", {
-    timeStyle: "short",
-    hour12: false,
-  });
 
   const fetchUserProfile = useCallback(async () => {
     setLoading(true);
@@ -99,7 +85,6 @@ function ChatContainer({ selectedReceiverId, onNewMessage }) {
         setLoading(false);
         onNewMessage();
         setChats((prevChats) => [...prevChats, res.data.result]);
-        //setChats((prevChats) => [...prevChats, newChat]);
       }
     } catch (err) {
       setLoading(false);
