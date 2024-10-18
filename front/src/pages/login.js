@@ -43,7 +43,7 @@ function Login() {
               autoClose: 1000,
             }
           );
-          navigate("/");
+          navigate("/dashboard");
         } else {
           alert("Incorrect login details. Try again");
         }
