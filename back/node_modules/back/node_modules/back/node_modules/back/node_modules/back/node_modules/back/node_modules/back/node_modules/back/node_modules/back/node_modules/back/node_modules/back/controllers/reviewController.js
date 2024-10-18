@@ -16,6 +16,7 @@ const createReview = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
 const fetchReviews = async (req, res) => {
   const { revieweeId } = req.query;
   const user = req.user._id;
@@ -29,6 +30,7 @@ const fetchReviews = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
 
 const fetchReview = async (req, res) => {
   const { id } = req.params;

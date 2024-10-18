@@ -15,6 +15,7 @@ const ProfileSchema = new mongoose.Schema(
     interests: { type: String },
     username: { type: String },
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    role: { type: String },
   },
   { collection: "profile", timestamps: true }
 );

@@ -73,8 +73,8 @@ const Auth = async (req, res) => {
 const fetchUserName = async (req, res) => {
   try {
     const id = req.user._id;
-    const user = await UserModel.findOne({ _id: id }, { username: 1 });
-    return res.status(200).json({ success: true, user: user.username });
+    const user = await UserModel.findOne({ _id: id });
+    return res.status(200).json({ success: true, user });
   } catch (error) {
     console.log(err);
     return res.status(500).json({ error: err.message });

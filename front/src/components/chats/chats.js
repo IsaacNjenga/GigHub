@@ -87,6 +87,7 @@ function Chats() {
         (a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
       );
       setChatView(lastMessages);
+      console.log(lastMessages)
       setLoading(false);
     }
   };
@@ -94,7 +95,7 @@ function Chats() {
   useEffect(() => {
     fetchLastMessages();
   }, [users]);
-  
+
   const handleNewMessage = () => {
     fetchLastMessages();
   };
@@ -215,7 +216,9 @@ function Chats() {
                     <span className="username">
                       @{selectedReceiver.username}
                     </span>
-                    <span className="time">{time}</span>
+                    <span className="time">
+                      {selectedReceiver.role}
+                    </span>
                   </div>
                 </div>
                 <ChatContainer

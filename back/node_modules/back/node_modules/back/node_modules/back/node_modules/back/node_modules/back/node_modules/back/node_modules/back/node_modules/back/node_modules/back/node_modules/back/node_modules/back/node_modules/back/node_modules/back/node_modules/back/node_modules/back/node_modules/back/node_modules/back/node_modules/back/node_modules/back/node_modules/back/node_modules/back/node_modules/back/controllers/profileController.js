@@ -15,6 +15,7 @@ const createProfile = async (req, res) => {
       goals,
       interests,
       username,
+      role,
     } = req.body;
 
     const newProfile = new ProfileModel({
@@ -30,6 +31,7 @@ const createProfile = async (req, res) => {
       goals,
       interests,
       username,
+      role,
       postedBy: req.user._id,
     });
 
@@ -64,6 +66,20 @@ const fetchReviewProfile = async (req, res) => {
 const fetchProfile = async (req, res) => {
   try {
     const profile = await ProfileModel.find({});
+    return res.status(200).json({ success: true, profile });
+  } catch (error) {
+    console.error("Error fetching user profile", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const fetchCurrentUser = async (req, res) => {
+  const { userId } = req.query;
+  if (!userId) {
+    return res.status(404).json({ error: "no ID specified" });
+  }
+  try {
+    const profile = await ProfileModel.find({ postedBy: userId });
     return res.status(200).json({ success: true, profile });
   } catch (error) {
     console.error("Error fetching user profile", error);
@@ -118,4 +134,5 @@ export {
   updateProfile,
   fetchProfile,
   fetchReviewProfile,
+  fetchCurrentUser,
 };

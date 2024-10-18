@@ -14,7 +14,7 @@ function Register() {
   const [serverErrors, setServerErrors] = useState([]);
 
   const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
+    setValues({ ...values, [e.target.name]: e.target.value || e.target.id });
   };
   const handleSubmit = (e) => {
     setLoading(true);
@@ -69,12 +69,26 @@ function Register() {
                 className="input"
               />
               <label>Role:</label>
-              <input
-                type="text"
-                name="role"
-                onChange={handleChange}
-                className="input"
-              />
+              <div className="radio-group">
+                <input
+                  type="radio"
+                  id="freelancer"
+                  name="role"
+                  value="Freelancer"
+                  onChange={handleChange}
+                  style={{ cursor: "pointer" }}
+                />
+                <label>I am looking for work</label>
+                <input
+                  type="radio"
+                  id="contractor"
+                  name="role"
+                  value="Contractor"
+                  onChange={handleChange}
+                  style={{ cursor: "pointer" }}
+                />
+                <label>I am looking to offer work</label>
+              </div>
               <label>E-mail Address:</label>
               <input
                 type="email"

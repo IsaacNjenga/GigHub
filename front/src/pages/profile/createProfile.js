@@ -75,7 +75,8 @@ function CreateProfile() {
     const profileData = {
       ...values,
       profileImage: image,
-      username: profileName,
+      username: profileName.username,
+      role: profileName.role,
     };
     axios
       .post("createProfile", profileData, {
@@ -140,7 +141,9 @@ function CreateProfile() {
                     onChange={handleImageUpload}
                   />
                 </div>
-                <p>Username: {profileName}</p>
+                <p>
+                  {profileName.username}, {profileName.role}
+                </p>
                 <label>
                   <u>Personal Details</u>
                 </label>

@@ -19,7 +19,7 @@ function UpdateProfile() {
   const [loading, setLoading] = useState(false);
   const [serverErrors, setServerErrors] = useState([]);
   const [profilePicPreview, setProfilePicPreview] = useState(defaultProfilePic);
-  const [profileName, setProfileName] = useState([]);
+  const [profileName, setProfileName] = useState({});
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -71,7 +71,6 @@ function UpdateProfile() {
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
-      // Only update the state if the content has changed
       if (values[fieldName] !== content) {
         setValues({
           ...values,
@@ -79,7 +78,6 @@ function UpdateProfile() {
         });
       }
     } else {
-      // Update state only if input value has changed
       if (values[e.target.name] !== e.target.value) {
         setValues({
           ...values,
@@ -113,7 +111,13 @@ function UpdateProfile() {
   const handleSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
-    const profileData = { ...data, profileImage: image, username: profileName };
+    const profileData = {
+      ...data,
+      profileImage: image,
+      username: profileName.username,
+      role: profileName.role,
+    };
+    
     axios
       .put(`updateProfile/${id}`, profileData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -181,7 +185,9 @@ function UpdateProfile() {
                     onChange={handleImageUpload}
                   />
                 </div>
-                <p>Username: {profileName}</p>
+                <p>
+                  {profileName.username}, {profileName.role}
+                </p>
                 <label>
                   <u>Personal Details</u>
                 </label>
