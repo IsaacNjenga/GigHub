@@ -75,6 +75,25 @@
   color: #333;
 }
 
+.user-details-div {
+  background-color: #ffffff5d;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 25%;
+  transition: transform 0.2s ease-in-out;
+}
+
+.rating-div {
+  background-color: #ffffffe2;
+  border-radius: 12px;
+  padding: 10px;
+  margin: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 95%;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Three equal columns */
@@ -88,7 +107,7 @@
   padding: 15px;
   margin: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 350px;
+  width: 85%;
   transition: transform 0.2s ease-in-out;
 }
 

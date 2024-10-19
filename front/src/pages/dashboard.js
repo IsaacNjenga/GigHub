@@ -11,6 +11,7 @@ import "../assets/css/dashboardCss/dashboard.css";
 import { XAxis, YAxis, Tooltip, Rectangle } from "recharts";
 import { BarChart, Bar } from "recharts";
 import CustomMoment from "../components/customMoment";
+import { format } from "date-fns";
 
 function Dashboard() {
   const { user } = useContext(UserContext);
@@ -22,6 +23,7 @@ function Dashboard() {
   const [totalRating, setTotalRating] = useState(0);
   const [viewReviews, setViewReviews] = useState(false);
   const [gigsApplied, setGigsApplied] = useState([]);
+  const [viewGig, setViewGig] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -131,6 +133,30 @@ function Dashboard() {
     setViewReviews(false);
   };
 
+  const openGigModal = (id) => {
+    setLoading(true);
+    try {
+      axios
+        .get(`fetchGigs`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        })
+        .then((result) => {
+          const gig = result.data.gigs;
+          const fetchedGig = gig.find((job) => job._id === id);
+          setViewGig(fetchedGig);
+          setLoading(false);
+        });
+    } catch (error) {
+      setLoading(false);
+      alert("An error occurred. Try refreshing the page");
+      console.log("Error", error);
+    }
+  };
+
+  const closeGigModal = () => {
+    setViewGig(null);
+  };
+
   useEffect(() => {
     const fetchApplications = async () => {
       setLoading(true);
@@ -164,7 +190,7 @@ function Dashboard() {
       });
       if (res.data.success) {
         const fetchedGig = res.data.gig;
-        console.log(fetchedGig);
+
         const updatedGigApplication = {
           ...gigsApplied,
           fetchedGig,
@@ -218,7 +244,7 @@ function Dashboard() {
         <div className="dashboard-container">
           <div>
             <h1>Dashboard</h1>
-            <div>
+            <div className="user-details-div">
               {currentUser.map((user) => (
                 <div key={user._postedBy} className="chat-info">
                   <img src={user.profileImage} alt="_" className="chat-pfp" />
@@ -233,54 +259,65 @@ function Dashboard() {
                         </span>
                       </strong>
                     </p>
+                    <p>{user.role}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <h2>Ratings & Reviews</h2>
-            <div style={{ display: "flex", alignItems: "flex-start" }}>
-              <div style={{ flex: 1, paddingRight: "20px" }}>
-                <BarChart
-                  layout="vertical" //horizontal graph
-                  width={500}
-                  height={200}
-                  data={reviewsCount}
-                  margin={{ top: 10, right: 25, left: 80, bottom: 7 }}
-                >
-                  <YAxis type="category" dataKey="name" width={85} />
-                  <XAxis type="number" hide={true} />
-                  <Tooltip />
+            <div className="rating-div">
+              <h2 style={{ textAlign: "center" }}>Ratings & Reviews</h2>
+              <br />
+              {Array.isArray(reviewsCount) && reviewsCount.some((review) => review.count > 0) ? (
+                <>
+                  <div style={{ display: "flex", alignItems: "flex-start" }}>
+                    <div style={{ flex: 1, paddingRight: "20px" }}>
+                      <BarChart
+                        layout="vertical"
+                        width={500}
+                        height={200}
+                        data={reviewsCount}
+                        margin={{ top: 10, right: 25, left: 80, bottom: 7 }}
+                      >
+                        <YAxis type="category" dataKey="name" width={85} />
+                        <XAxis type="number" hide={true} />
+                        <Tooltip />
 
-                  <Bar dataKey="count" fill="yellow" barSize={10}>
-                    {reviewsCount.map((entry, index) => (
-                      <Rectangle
-                        key={`bar-${index}`}
-                        width={2}
-                        height={entry.count}
-                        fill="#8884d8"
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </div>
-              <div style={{ flex: 1 }}>
-                {averageRate && totalRating && (
-                  <div>
-                    <p style={{ fontSize: "70px", margin: 0 }}>
-                      <strong>
-                        {(Math.round(averageRate * 100) / 100).toFixed(1)}
-                      </strong>
-                    </p>
-                    {renderAverageStars(averageRate)}
-                    <p style={{ color: "grey" }}>{totalRating} ratings</p>
+                        <Bar dataKey="count" fill="yellow" barSize={10}>
+                          {reviewsCount.map((entry, index) => (
+                            <Rectangle
+                              key={`bar-${index}`}
+                              width={2}
+                              height={entry.count}
+                              fill="#8884d8"
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      {averageRate && totalRating && (
+                        <div>
+                          <p style={{ fontSize: "70px", margin: 0 }}>
+                            <strong>
+                              {(Math.round(averageRate * 100) / 100).toFixed(1)}
+                            </strong>
+                          </p>
+                          {renderAverageStars(averageRate)}
+                          <p style={{ color: "grey" }}>{totalRating} ratings</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
-              </div>
+                  <p onClick={openReviewsModal} className="view-more">
+                    View ratings
+                  </p>
+                </>
+              ) : (
+                <span>Not yet rated</span>
+              )}
             </div>
-            <p onClick={openReviewsModal} className="view-more">
-              View more
-            </p>
+
             {viewReviews && (
               <div className="reviews-modal-overlay" onClick={closeReviewModal}>
                 <div
@@ -397,10 +434,127 @@ function Dashboard() {
                     </p>
                   </div>
                   <div className="card-footer">
-                    <p className="view-more">View More</p>
+                    <p
+                      className="view-more"
+                      onClick={() => openGigModal(gigs.jobId)}
+                    >
+                      View More
+                    </p>
                   </div>
                 </div>
               ))}
+              {viewGig && (
+                <div className="modal-overlay" onClick={closeGigModal}>
+                  <div
+                    className="modal-content"
+                    onClick={(e) => e.stopPropagation()}
+                    role="dialog"
+                    aria-modal="true"
+                  >
+                    <button
+                      className="close-btn"
+                      onClick={closeGigModal}
+                      aria-label="Close Modal"
+                    >
+                      &times;
+                    </button>
+                    <h1 className="modal-title">Gig Details</h1>
+                    <div className="modal-body">
+                      <div className="gig-details">
+                        <h3 className="gig-description">
+                          <strong>Title:</strong> {viewGig.title}
+                        </h3>
+                        {viewGig.createdAt && (
+                          <p className="gig-info">
+                            <strong>Posted on: </strong>
+                            {format(
+                              new Date(
+                                viewGig.createdAt
+                                  ? viewGig.createdAt
+                                  : viewGig.updatedAt
+                              ),
+                              "EEEE do, MM yyyy"
+                            )}
+                          </p>
+                        )}
+                        <p className="gig-info">
+                          <strong>Contractor:</strong>{" "}
+                          {viewGig.username.replace(
+                            /^./,
+                            viewGig.username[0].toUpperCase()
+                          )}
+                        </p>
+                        <p className="gig-info">
+                          <strong>Type:</strong> {viewGig.type}
+                        </p>
+                        <p className="gig-info">
+                          <strong>Location:</strong> {viewGig.location}
+                        </p>
+                        <div className="gig-info">
+                          <strong>Work Environment:</strong>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: viewGig.environment,
+                            }}
+                          />
+                        </div>
+                        <div className="gig-info">
+                          <strong>Organisation & Company:</strong>{" "}
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: viewGig.organisation,
+                            }}
+                          />
+                        </div>
+                        <div className="gig-info">
+                          <strong>Requirements:</strong>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: viewGig.requirements,
+                            }}
+                          />
+                        </div>
+                        <div className="gig-info">
+                          <strong>Responsibilities:</strong>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: viewGig.responsibilities,
+                            }}
+                          />
+                        </div>
+                        <div className="gig-info">
+                          <strong>Job Summary:</strong>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: viewGig.summary,
+                            }}
+                          />
+                        </div>
+                        <div className="gig-info">
+                          <strong>Additional Info:</strong>
+                          <div
+                            dangerouslySetInnerHTML={{ __html: viewGig.info }}
+                          />
+                        </div>
+                        <div className="gig-info">
+                          <strong>Work Benefits & Compensation:</strong>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: viewGig.benefits,
+                            }}
+                          />
+                        </div>
+                        <div className="gig-info">
+                          <strong>How To Apply:</strong>
+                          <div
+                            dangerouslySetInnerHTML={{ __html: viewGig.apply }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
