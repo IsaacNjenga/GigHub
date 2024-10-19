@@ -48,6 +48,20 @@ const fetchApplicants = async (req, res) => {
   }
 };
 
+const fetchUserApplications = async (req, res) => {
+  const { userId } = req.query;
+  if (!userId) {
+    return res.status(400).json({ error: "No user ID specified" });
+  }
+  try {
+    const applicants = await ApplicantModel.find({ postedBy: userId });
+    return res.status(200).json({ success: true, applicants });
+  } catch (error) {
+    console.error("Error", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 const updateApplicant = async (req, res) => {};
 
 const deleteApplicant = async (req, res) => {
@@ -71,4 +85,10 @@ const deleteApplicant = async (req, res) => {
   }
 };
 
-export { createApplicant, fetchApplicants, updateApplicant, deleteApplicant };
+export {
+  createApplicant,
+  fetchApplicants,
+  updateApplicant,
+  deleteApplicant,
+  fetchUserApplications,
+};

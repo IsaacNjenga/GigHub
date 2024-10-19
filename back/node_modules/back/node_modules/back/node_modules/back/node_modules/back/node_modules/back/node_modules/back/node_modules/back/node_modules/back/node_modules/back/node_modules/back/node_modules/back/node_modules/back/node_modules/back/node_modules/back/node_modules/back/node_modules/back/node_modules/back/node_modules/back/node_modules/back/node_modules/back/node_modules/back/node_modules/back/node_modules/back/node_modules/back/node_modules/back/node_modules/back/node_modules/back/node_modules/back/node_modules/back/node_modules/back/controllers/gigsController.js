@@ -109,10 +109,10 @@ const fetchGig = async (req, res) => {
 const fetchUserGigs = async (req, res) => {
   const { jobId } = req.query;
   if (!jobId) {
-    return res.status(400).json({ error: "No ID specified" });
+    return res.status(400).json({ error: "No Gig ID specified" });
   }
   try {
-    const gig = await GigsModel.find({ _id: jobId });
+    const gig = await GigsModel.findOne({ _id: jobId }); //find only one record
     if (!gig) {
       return res.status(404).json({ error: "Gig not found" });
     }

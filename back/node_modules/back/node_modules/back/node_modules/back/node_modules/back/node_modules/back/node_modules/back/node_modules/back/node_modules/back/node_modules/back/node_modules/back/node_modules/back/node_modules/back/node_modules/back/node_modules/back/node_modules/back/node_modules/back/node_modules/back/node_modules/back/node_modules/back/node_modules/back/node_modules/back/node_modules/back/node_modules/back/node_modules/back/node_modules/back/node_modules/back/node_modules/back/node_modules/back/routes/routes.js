@@ -30,6 +30,7 @@ import {
   createApplicant,
   deleteApplicant,
   fetchApplicants,
+  fetchUserApplications,
 } from "../controllers/applicantController.js";
 
 import {
@@ -125,6 +126,7 @@ const upload = multer({ storage: storage });
 
 router.post("/apply", upload.single("resume"), VerifyUser, createApplicant);
 router.get("/applicants", VerifyUser, fetchApplicants);
+router.get("/fetchUserApplicants", VerifyUser, fetchUserApplications);
 router.delete("/deleteApplication/:id", VerifyUser, deleteApplicant);
 
 //chat routes

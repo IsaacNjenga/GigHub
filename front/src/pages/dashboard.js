@@ -10,6 +10,7 @@ import defaultPfp from "../assets/images/defaultProfilePic.png";
 import "../assets/css/dashboardCss/dashboard.css";
 import { XAxis, YAxis, Tooltip, Rectangle } from "recharts";
 import { BarChart, Bar } from "recharts";
+import CustomMoment from "../components/customMoment";
 
 function Dashboard() {
   const { user } = useContext(UserContext);
@@ -134,12 +135,13 @@ function Dashboard() {
     const fetchApplications = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("applicants", {
+        const res = await axios.get(`fetchUserApplicants?userId=${user._id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         if (res.data.success) {
           setLoading(false);
           const applications = res.data.applicants;
+
           const fetchedApplications = applications.filter(
             (application) => application.postedBy === user._id
           );
@@ -161,7 +163,8 @@ function Dashboard() {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       if (res.data.success) {
-        const fetchedGig = res.data.gig[0];
+        const fetchedGig = res.data.gig;
+        console.log(fetchedGig);
         const updatedGigApplication = {
           ...gigsApplied,
           fetchedGig,
@@ -170,10 +173,6 @@ function Dashboard() {
           prevGigs.map((g) =>
             g.jobId === gigsApplied.jobId ? updatedGigApplication : g
           )
-        );
-        console.log(
-          "Updated application with gig details:",
-          updatedGigApplication
         );
       }
       setLoading(false);
@@ -219,12 +218,27 @@ function Dashboard() {
         <div className="dashboard-container">
           <div>
             <h1>Dashboard</h1>
-            {currentUser.map((user) => (
-              <div key={user._postedBy}>
-                <p>{user.username}</p>
-              </div>
-            ))}
-            <h2>Ratings & feedback</h2>
+            <div>
+              {currentUser.map((user) => (
+                <div key={user._postedBy} className="chat-info">
+                  <img src={user.profileImage} alt="_" className="chat-pfp" />
+                  <div className="user-details">
+                    <p style={{ color: "#666", fontSize: "15px" }}>
+                      @{user.username}
+                    </p>
+                    <p>
+                      <strong>
+                        <span>
+                          {user.firstname} {user.lastname}
+                        </span>
+                      </strong>
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <h2>Ratings & Reviews</h2>
             <div style={{ display: "flex", alignItems: "flex-start" }}>
               <div style={{ flex: 1, paddingRight: "20px" }}>
                 <BarChart
@@ -264,15 +278,8 @@ function Dashboard() {
                 )}
               </div>
             </div>
-            <p
-              onClick={openReviewsModal}
-              style={{
-                textDecoration: "underline",
-                color: "blue",
-                cursor: "pointer",
-              }}
-            >
-              Click to view more
+            <p onClick={openReviewsModal} className="view-more">
+              View more
             </p>
             {viewReviews && (
               <div className="reviews-modal-overlay" onClick={closeReviewModal}>
@@ -334,28 +341,67 @@ function Dashboard() {
             )}
           </div>
           <div>
-            <p>Recent Activity</p>
-            <p>Jobs applied</p>
-            <div>
+            <h2>Recent Activity</h2>
+            <div className="grid-container">
               {gigsApplied.map((gigs) => (
-                <div key={gigs._id}>
-                  <div>
+                <div key={gigs._id} className="card">
+                  <div className="card-header">
+                    {gigs.fetchedGig ? (
+                      <h2>{gigs.fetchedGig.title}</h2>
+                    ) : (
+                      <h2>
+                        <span>Loading...</span>
+                      </h2>
+                    )}
+                    <span className="time-ago">
+                      Applied:{" "}
+                      <CustomMoment
+                        postedTime={
+                          gigs.createdAt ? gigs.createdAt : gigs.updatedAt
+                        }
+                      />
+                    </span>
+                  </div>
+                  <div className="card-body">
                     {gigs.fetchedGig ? (
                       <>
-                        <p>Job title:{gigs.fetchedGig.title}</p>
-                        <p>Type:{gigs.fetchedGig.type}</p>
-                        <p>Organisation:{gigs.fetchedGig.organisation}</p>
-                        <p>Location:{gigs.fetchedGig.location}</p>
+                        <span style={{ textAlign: "center" }}>
+                          <b
+                            dangerouslySetInnerHTML={{
+                              __html: gigs.fetchedGig.organisation,
+                            }}
+                          />
+                        </span>
+                        <p>
+                          <strong>Type:</strong> {gigs.fetchedGig.type}
+                        </p>
+                        <p>
+                          <strong>Location:</strong> {gigs.fetchedGig.location}
+                        </p>
+                        <p>
+                          <strong>Posted:</strong>{" "}
+                          <CustomMoment
+                            postedTime={
+                              gigs.fetchedGig.createdAt
+                                ? gigs.fetchedGig.createdAt
+                                : gigs.fetchedGig.updatedAt
+                            }
+                          />
+                        </p>
                       </>
                     ) : (
                       <span>Loading...</span>
                     )}
+                    <p>
+                      <strong>Résumé attached:</strong> {gigs.filename}
+                    </p>
                   </div>
-                  <p>{gigs.filename}</p>
+                  <div className="card-footer">
+                    <p className="view-more">View More</p>
+                  </div>
                 </div>
               ))}
             </div>
-            <p>Profile</p>
           </div>
         </div>
       </div>
