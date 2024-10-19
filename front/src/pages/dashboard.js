@@ -20,6 +20,7 @@ function Dashboard() {
   const [averageRate, setAverageRate] = useState(0);
   const [totalRating, setTotalRating] = useState(0);
   const [viewReviews, setViewReviews] = useState(false);
+  const [gigsApplied, setGigsApplied] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -99,7 +100,6 @@ function Dashboard() {
             fetchReviewerProfile(review);
           });
           let averageRating = ratingCount > 0 ? totalRatings / ratingCount : 0;
-          //console.log("Average Rating:", averageRating);
           setAverageRate(averageRating);
           setTotalRating(ratingCount);
           ratingsChart(ratingCounts);
@@ -130,6 +130,59 @@ function Dashboard() {
     setViewReviews(false);
   };
 
+  useEffect(() => {
+    const fetchApplications = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get("applicants", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        if (res.data.success) {
+          setLoading(false);
+          const applications = res.data.applicants;
+          const fetchedApplications = applications.filter(
+            (application) => application.postedBy === user._id
+          );
+          setGigsApplied(fetchedApplications);
+          applications.forEach((application) => fetchGig(application));
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log("Error fetching gig applied:", error);
+      }
+    };
+    if (user) fetchApplications();
+  }, [user]);
+
+  const fetchGig = async (gigsApplied) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`fetchUserGigs?jobId=${gigsApplied.jobId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      if (res.data.success) {
+        const fetchedGig = res.data.gig[0];
+        const updatedGigApplication = {
+          ...gigsApplied,
+          fetchedGig,
+        };
+        setGigsApplied((prevGigs) =>
+          prevGigs.map((g) =>
+            g.jobId === gigsApplied.jobId ? updatedGigApplication : g
+          )
+        );
+        console.log(
+          "Updated application with gig details:",
+          updatedGigApplication
+        );
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching gig details:", error);
+    }
+  };
+
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -151,7 +204,7 @@ function Dashboard() {
         <FontAwesomeIcon
           key={i}
           icon={i <= rating ? faStar : faRegularStar}
-          style={{ color: "yellow" }}
+          style={{ color: "yellow", fontSize: "20px" }}
         />
       );
     }
@@ -166,7 +219,6 @@ function Dashboard() {
         <div className="dashboard-container">
           <div>
             <h1>Dashboard</h1>
-
             {currentUser.map((user) => (
               <div key={user._postedBy}>
                 <p>{user.username}</p>
@@ -284,6 +336,25 @@ function Dashboard() {
           <div>
             <p>Recent Activity</p>
             <p>Jobs applied</p>
+            <div>
+              {gigsApplied.map((gigs) => (
+                <div key={gigs._id}>
+                  <div>
+                    {gigs.fetchedGig ? (
+                      <>
+                        <p>Job title:{gigs.fetchedGig.title}</p>
+                        <p>Type:{gigs.fetchedGig.type}</p>
+                        <p>Organisation:{gigs.fetchedGig.organisation}</p>
+                        <p>Location:{gigs.fetchedGig.location}</p>
+                      </>
+                    ) : (
+                      <span>Loading...</span>
+                    )}
+                  </div>
+                  <p>{gigs.filename}</p>
+                </div>
+              ))}
+            </div>
             <p>Profile</p>
           </div>
         </div>

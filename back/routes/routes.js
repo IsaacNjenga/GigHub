@@ -23,6 +23,7 @@ import {
   fetchGig,
   updateGig,
   deleteGig,
+  fetchUserGigs,
 } from "../controllers/gigsController.js";
 
 import {
@@ -112,7 +113,8 @@ router.delete("/deleteProfile/:id", VerifyUser, deleteProfile);
 
 //gig routes
 router.get("/fetchGigs", VerifyUser, fetchGigs);
-router.get("fetchGig/:id", VerifyUser, fetchGig);
+router.get("/fetchGig/:id", VerifyUser, fetchGig);
+router.get("/fetchUserGigs", VerifyUser, fetchUserGigs);
 router.post("/createGig", VerifyUser, createGig);
 router.put("/updateGig/:id", VerifyUser, updateGig);
 router.delete("/deleteGig/:id", VerifyUser, deleteGig);

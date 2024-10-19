@@ -106,4 +106,21 @@ const fetchGig = async (req, res) => {
   }
 };
 
-export { createGig, updateGig, deleteGig, fetchGigs, fetchGig };
+const fetchUserGigs = async (req, res) => {
+  const { jobId } = req.query;
+  if (!jobId) {
+    return res.status(400).json({ error: "No ID specified" });
+  }
+  try {
+    const gig = await GigsModel.find({ _id: jobId });
+    if (!gig) {
+      return res.status(404).json({ error: "Gig not found" });
+    }
+    return res.status(200).json({ success: true, gig });
+  } catch (error) {
+    console.error("Error fetching Gig", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+export { createGig, updateGig, deleteGig, fetchGigs, fetchGig, fetchUserGigs };
