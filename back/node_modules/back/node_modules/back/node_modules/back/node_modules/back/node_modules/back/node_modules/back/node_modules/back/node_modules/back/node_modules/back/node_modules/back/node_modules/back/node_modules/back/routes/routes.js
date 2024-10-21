@@ -24,6 +24,7 @@ import {
   updateGig,
   deleteGig,
   fetchUserGigs,
+  fetchedContractorGigs,
 } from "../controllers/gigsController.js";
 
 import {
@@ -114,6 +115,7 @@ router.delete("/deleteProfile/:id", VerifyUser, deleteProfile);
 
 //gig routes
 router.get("/fetchGigs", VerifyUser, fetchGigs);
+router.get("/fetchContractorGigs", VerifyUser, fetchedContractorGigs);
 router.get("/fetchGig/:id", VerifyUser, fetchGig);
 router.get("/fetchUserGigs", VerifyUser, fetchUserGigs);
 router.post("/createGig", VerifyUser, createGig);

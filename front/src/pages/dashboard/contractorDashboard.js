@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import axios from "axios";
 import { XAxis, YAxis, Tooltip, Rectangle } from "recharts";
@@ -9,6 +9,11 @@ import { faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
 import defaultPfp from "../../assets/images/defaultProfilePic.png";
 import Loader from "../../components/loader";
 import { UserContext } from "../../App";
+import { format } from "date-fns";
+import CustomMoment from "../../components/customMoment";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import "../../assets/css/dashboardCss/contractorDashboard.css";
 
 function ContractorDashboard({ userDetails }) {
   const { user } = useContext(UserContext);
@@ -53,46 +58,47 @@ function ContractorDashboard({ userDetails }) {
     }
   };
 
-  useEffect(() => {
-    const fetchUserReviews = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.get(`fetchReviews?revieweeId=${user._id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  const fetchUserReviews = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`fetchReviews?revieweeId=${user._id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      if (res.data.success) {
+        const reviewsWithProfiles = res.data.reviews;
+        setUserReviews(reviewsWithProfiles);
+        const ratingCounts = {
+          1: 0,
+          2: 0,
+          3: 0,
+          4: 0,
+          5: 0,
+        };
+
+        let totalRatings = 0;
+        let ratingCount = 0;
+
+        reviewsWithProfiles.forEach((review) => {
+          if (review.rating >= 1 && review.rating <= 5) {
+            ratingCounts[review.rating] += 1;
+            totalRatings += review.rating++;
+            ratingCount++;
+          }
+          fetchReviewerProfile(review);
         });
-        if (res.data.success) {
-          const reviewsWithProfiles = res.data.reviews;
-          setUserReviews(reviewsWithProfiles);
-          const ratingCounts = {
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 0,
-            5: 0,
-          };
-
-          let totalRatings = 0;
-          let ratingCount = 0;
-
-          reviewsWithProfiles.forEach((review) => {
-            if (review.rating >= 1 && review.rating <= 5) {
-              ratingCounts[review.rating] += 1;
-              totalRatings += review.rating++;
-              ratingCount++;
-            }
-            fetchReviewerProfile(review);
-          });
-          let averageRating = ratingCount > 0 ? totalRatings / ratingCount : 0;
-          setAverageRate(averageRating);
-          setTotalRating(ratingCount);
-          ratingsChart(ratingCounts);
-        }
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log("Error fetching user:", error);
+        let averageRating = ratingCount > 0 ? totalRatings / ratingCount : 0;
+        setAverageRate(averageRating);
+        setTotalRating(ratingCount);
+        ratingsChart(ratingCounts);
       }
-    };
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching user:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchUserReviews();
   }, [user]);
 
@@ -111,58 +117,126 @@ function ContractorDashboard({ userDetails }) {
   const closeReviewModal = () => {
     setViewReviews(false);
   };
+
+  const openGigModal = (id) => {
+    setLoading(true);
+    try {
+      axios
+        .get(`fetchGigs`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        })
+        .then((result) => {
+          const gig = result.data.gigs;
+          const fetchedGig = gig.find((job) => job._id === id);
+          setViewGig(fetchedGig);
+          setLoading(false);
+        });
+    } catch (error) {
+      setLoading(false);
+      alert("An error occurred. Try refreshing the page");
+      console.log("Error", error);
+    }
+  };
+
+  const closeGigModal = () => {
+    setViewGig(null);
+  };
+
+  const fetchApplications = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`applicants`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+
+      if (res.data.success) {
+        const applications = res.data.applicants;
+
+        // Group applications by jobId to calculate total applicants
+        const groupedApplications = applications.reduce((acc, application) => {
+          if (!acc[application.jobId]) {
+            acc[application.jobId] = [];
+          }
+          acc[application.jobId].push(application);
+          return acc;
+        }, {});
+
+        // Set the gigs applied for the current contractor
+        const fetchedApplications = applications.filter(
+          (application) => application.contractorId === user._id
+        );
+        setGigsApplied(fetchedApplications);
+
+        // Call fetchGig for each application and pass total applicants
+        applications.forEach((application) => {
+          const totalApplicants = groupedApplications[application.jobId].length;
+          fetchGig(application, totalApplicants); // Pass total applicants here
+        });
+
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching gig application:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchApplications = async () => {
+    fetchApplications();
+  }, [user]);
+
+  const fetchGig = useCallback(
+    async (gigsApplied, totalApplicants) => {
       setLoading(true);
       try {
-        const res = await axios.get(`applicants`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        const res = await axios.get(
+          `fetchContractorGigs?contractorId=${user._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         if (res.data.success) {
-          setLoading(false);
-          const applications = res.data.applicants;
-          const fetchedApplications = applications.filter(
-            (application) => application.contractorId === user._id
+          const fetchedGig = res.data.gigs;
+
+          const updatedGigApplication = {
+            ...gigsApplied,
+            fetchedGig,
+            totalApplicants,
+          };
+          setGigsApplied((prevGigs) =>
+            prevGigs.map((g) =>
+              g.jobId === gigsApplied.jobId ? updatedGigApplication : g
+            )
           );
-          setGigsApplied(fetchedApplications);
-          console.log("filtered", fetchedApplications);
-          applications.forEach((application) => fetchGig(application));
+
+          setLoading(false);
         }
       } catch (error) {
         setLoading(false);
-        console.log("Error fetching gig application:", error);
+        console.log("Error fetching gig details:", error);
       }
-    };
-    if (user) fetchApplications();
-  }, [user]);
+    },
+    [user._id]
+  );
 
-  const fetchGig = () => {};
-  //   const fetchGig = async (gigsApplied) => {
-  //     setLoading(true);
-  //     try {
-  //       const res = await axios.get(`fetchUserGigs?jobId=${gigsApplied.jobId}`, {
-  //         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-  //       });
-  //       if (res.data.success) {
-  //         const fetchedGig = res.data.gig;
+  const groupApplicationsByJob = (applications) => {
+    const groupedApplications = {};
+    applications.forEach((app) => {
+      if (!groupedApplications[app.jobId]) {
+        groupedApplications[app.jobId] = {
+          ...app,
+          applicants: [app],
+        };
+      } else {
+        groupedApplications[app.jobId].applicants.push(app);
+      }
+    });
+    return Object.values(groupedApplications);
+  };
 
-  //         const updatedGigApplication = {
-  //           ...gigsApplied,
-  //           fetchedGig,
-  //         };
-  //         setGigsApplied((prevGigs) =>
-  //           prevGigs.map((g) =>
-  //             g.jobId === gigsApplied.jobId ? updatedGigApplication : g
-  //           )
-  //         );
-  //       }
-  //       setLoading(false);
-  //     } catch (error) {
-  //       setLoading(false);
-  //       console.log("Error fetching gig details:", error);
-  //     }
-  //   };
-
+  const groupedGigsApplied = groupApplicationsByJob(gigsApplied);
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -271,7 +345,7 @@ function ContractorDashboard({ userDetails }) {
               ) : (
                 <span>Not yet rated</span>
               )}
-            </div>{" "}
+            </div>
             {viewReviews && (
               <div className="reviews-modal-overlay" onClick={closeReviewModal}>
                 <div
@@ -328,6 +402,250 @@ function ContractorDashboard({ userDetails }) {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+          </div>
+          <div>
+            <h2>Recent Activity</h2>
+            {loading ? (
+              <div>
+                <div>
+                  <Skeleton
+                    height={50}
+                    count={5}
+                    style={{ marginBottom: "10px" }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="grid-container">
+                {groupedGigsApplied.map((gigs) => (
+                  <div key={gigs.jobId} className="card">
+                    <div className="card-header">
+                      {gigs.fetchedGig ? (
+                        <h2>{gigs.fetchedGig.title}</h2>
+                      ) : (
+                        <h2>
+                          <span>Loading...</span>
+                        </h2>
+                      )}{" "}
+                      <span className="time-ago">
+                        Posted:{" "}
+                        <CustomMoment
+                          postedTime={
+                            gigs.fetchedGig?.createdAt ||
+                            gigs.fetchedGig?.updatedAt
+                          }
+                        />
+                      </span>
+                    </div>
+                    <div className="card-body">
+                      {" "}
+                      {gigs.fetchedGig ? (
+                        <>
+                          <span style={{ textAlign: "center" }}>
+                            <b
+                              dangerouslySetInnerHTML={{
+                                __html: gigs.fetchedGig.organisation,
+                              }}
+                            />
+                          </span>
+                        </>
+                      ) : (
+                        <span>Loading...</span>
+                      )}
+                      <p>
+                        <strong>Total Applicants:</strong>{" "}
+                        {gigs.applicants.length}
+                      </p>
+                      {gigs.fetchedGig ? (
+                        <>
+                          <p>
+                            <strong>Type:</strong> {gigs.fetchedGig.type}
+                          </p>
+                          <p>
+                            <strong>Location:</strong>{" "}
+                            {gigs.fetchedGig.location}
+                          </p>
+                        </>
+                      ) : (
+                        <span>Loading...</span>
+                      )}
+                    </div>
+                    <div className="card-footer">
+                      <p
+                        className="view-more"
+                        onClick={() => openGigModal(gigs.jobId)}
+                      >
+                        View More
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                {viewGig && (
+                  <div
+                    className="contractor-modal-overlay"
+                    onClick={closeGigModal}
+                  >
+                    <div
+                      className="contractor-modal-content"
+                      onClick={(e) => e.stopPropagation()}
+                      role="dialog"
+                      aria-modal="true"
+                    >
+                      <button
+                        className="close-btn"
+                        onClick={closeGigModal}
+                        aria-label="Close Modal"
+                      >
+                        &times;
+                      </button>
+                      <div className="gig-modal-container">
+                        <div className="gig-info-div">
+                          <h1 className="modal-title">Gig Details</h1>
+                          <div className="modal-body">
+                            <div className="gig-details">
+                              <h3 className="gig-description">
+                                <strong>Title:</strong> {viewGig.title}
+                              </h3>
+                              {viewGig.createdAt && (
+                                <p className="gig-info">
+                                  <strong>Posted on: </strong>
+                                  {format(
+                                    new Date(
+                                      viewGig.createdAt
+                                        ? viewGig.createdAt
+                                        : viewGig.updatedAt
+                                    ),
+                                    "EEEE do, MM yyyy"
+                                  )}
+                                </p>
+                              )}
+                              <p className="gig-info">
+                                <strong>Contractor:</strong>{" "}
+                                {viewGig.username.replace(
+                                  /^./,
+                                  viewGig.username[0].toUpperCase()
+                                )}
+                              </p>
+                              <p className="gig-info">
+                                <strong>Type:</strong> {viewGig.type}
+                              </p>
+                              <p className="gig-info">
+                                <strong>Location:</strong> {viewGig.location}
+                              </p>
+                              <div className="gig-info">
+                                <strong>Work Environment:</strong>
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: viewGig.environment,
+                                  }}
+                                />
+                              </div>
+                              <div className="gig-info">
+                                <strong>Organisation & Company:</strong>{" "}
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: viewGig.organisation,
+                                  }}
+                                />
+                              </div>
+                              <div className="gig-info">
+                                <strong>Requirements:</strong>
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: viewGig.requirements,
+                                  }}
+                                />
+                              </div>
+                              <div className="gig-info">
+                                <strong>Responsibilities:</strong>
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: viewGig.responsibilities,
+                                  }}
+                                />
+                              </div>
+                              <div className="gig-info">
+                                <strong>Job Summary:</strong>
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: viewGig.summary,
+                                  }}
+                                />
+                              </div>
+                              <div className="gig-info">
+                                <strong>Additional Info:</strong>
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: viewGig.info,
+                                  }}
+                                />
+                              </div>
+                              <div className="gig-info">
+                                <strong>Work Benefits & Compensation:</strong>
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: viewGig.benefits,
+                                  }}
+                                />
+                              </div>
+                              <div className="gig-info">
+                                <strong>How To Apply:</strong>
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: viewGig.apply,
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="gig-application-div">
+                          <h1 className="modal-title">Applicant Details</h1>
+                          {gigsApplied.map((gig) => (
+                            <div key={gig._id}>
+                              {" "}
+                              <div className="chat-info">
+                                <img
+                                  src={defaultPfp}
+                                  alt="_"
+                                  className="chat-pfp"
+                                />
+                                <div className="user-details">
+                                  <p
+                                    style={{ color: "#666", fontSize: "15px" }}
+                                  >
+                                    @username
+                                  </p>
+                                  <p>
+                                    <strong>
+                                      <span>Pipi Kaka</span>
+                                    </strong>
+                                  </p>
+                                  <p>Role</p>
+                                </div>
+                              </div>
+                              <p>
+                                <strong>E-mail:</strong>
+                              </p>
+                              <p>
+                                <strong>Phone No.</strong> 07505927424
+                              </p>
+                              <p>
+                                <strong>Expertise:</strong>
+                              </p>
+                              <p>
+                                <strong>Resume:</strong>
+                              </p>
+                              <p>download resume</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

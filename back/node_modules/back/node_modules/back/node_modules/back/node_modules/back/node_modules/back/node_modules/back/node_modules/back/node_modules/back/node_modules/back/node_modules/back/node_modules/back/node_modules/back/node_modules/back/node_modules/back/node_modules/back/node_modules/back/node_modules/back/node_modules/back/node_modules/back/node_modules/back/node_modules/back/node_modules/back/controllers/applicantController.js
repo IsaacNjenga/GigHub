@@ -15,6 +15,8 @@ const createApplicant = async (req, res) => {
       profileImage,
       jobId,
       contractorId,
+      username,
+      role,
     } = req.body;
 
     const newFile = new ApplicantModel({
@@ -27,9 +29,11 @@ const createApplicant = async (req, res) => {
       expertise,
       jobId,
       email,
+      username,
       phone,
       profileImage,
       contractorId,
+      role,
     });
     const result = await newFile.save();
     return res.status(201).json({ success: true, result });

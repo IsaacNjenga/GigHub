@@ -87,7 +87,6 @@ function Chats() {
         (a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
       );
       setChatView(lastMessages);
-      console.log(lastMessages)
       setLoading(false);
     }
   };

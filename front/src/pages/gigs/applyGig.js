@@ -35,6 +35,8 @@ function ApplyGig() {
       setProfileData({
         firstname: profileDetails.firstname,
         lastname: profileDetails.lastname,
+        username: profileData.username,
+        role: profileData.role,
         email: profileDetails.email,
         phone: profileDetails.phone,
         expertise: profileDetails.expertise,
