@@ -4,7 +4,7 @@ import axios from "axios";
 import { XAxis, YAxis, Tooltip, Rectangle } from "recharts";
 import { BarChart, Bar } from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faStarHalfAlt } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
 import defaultPfp from "../../assets/images/defaultProfilePic.png";
 import Loader from "../../components/loader";
@@ -26,6 +26,7 @@ function ContractorDashboard({ userDetails }) {
   const [viewReviews, setViewReviews] = useState(false);
   const [gigsApplied, setGigsApplied] = useState([]);
   const [viewGig, setViewGig] = useState(null);
+  const [viewDetails, setViewDetails] = useState([]);
 
   useEffect(() => {
     setCurrentUser(userDetails);
@@ -151,27 +152,19 @@ function ContractorDashboard({ userDetails }) {
 
       if (res.data.success) {
         const applications = res.data.applicants;
-
-        // Group applications by jobId to calculate total applicants
-        const groupedApplications = applications.reduce((acc, application) => {
-          if (!acc[application.jobId]) {
-            acc[application.jobId] = [];
-          }
-          acc[application.jobId].push(application);
-          return acc;
-        }, {});
-
-        // Set the gigs applied for the current contractor
         const fetchedApplications = applications.filter(
           (application) => application.contractorId === user._id
         );
-        setGigsApplied(fetchedApplications);
+        const groupedApplications = groupApplicationsByJob(fetchedApplications);
 
-        // Call fetchGig for each application and pass total applicants
-        applications.forEach((application) => {
-          const totalApplicants = groupedApplications[application.jobId].length;
-          fetchGig(application, totalApplicants); // Pass total applicants here
-        });
+        setGigsApplied(groupedApplications);
+        setViewDetails(groupedApplications);
+        console.log("groupedApps", groupedApplications);
+
+        const uniqueJobIds = [
+          ...new Set(fetchedApplications.map((app) => app.jobId)),
+        ];
+        uniqueJobIds.forEach((jobId) => fetchGig(jobId));
 
         setLoading(false);
       }
@@ -186,11 +179,11 @@ function ContractorDashboard({ userDetails }) {
   }, [user]);
 
   const fetchGig = useCallback(
-    async (gigsApplied, totalApplicants) => {
+    async (jobId) => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `fetchContractorGigs?contractorId=${user._id}`,
+          `fetchContractorGigs?contractorId=${user._id}&jobId=${jobId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -198,19 +191,11 @@ function ContractorDashboard({ userDetails }) {
           }
         );
         if (res.data.success) {
-          const fetchedGig = res.data.gigs;
+          const fetchedGig = res.data.gigs[0];
 
-          const updatedGigApplication = {
-            ...gigsApplied,
-            fetchedGig,
-            totalApplicants,
-          };
           setGigsApplied((prevGigs) =>
-            prevGigs.map((g) =>
-              g.jobId === gigsApplied.jobId ? updatedGigApplication : g
-            )
+            prevGigs.map((g) => (g.jobId === jobId ? { ...g, fetchedGig } : g))
           );
-
           setLoading(false);
         }
       } catch (error) {
@@ -227,16 +212,19 @@ function ContractorDashboard({ userDetails }) {
       if (!groupedApplications[app.jobId]) {
         groupedApplications[app.jobId] = {
           ...app,
-          applicants: [app],
+          applicants: [app], // Initial applicant
+          totalApplicants: 1, // Starting with 1
         };
       } else {
         groupedApplications[app.jobId].applicants.push(app);
+        groupedApplications[app.jobId].totalApplicants += 1; // Increment count
       }
     });
     return Object.values(groupedApplications);
   };
 
-  const groupedGigsApplied = groupApplicationsByJob(gigsApplied);
+  //const groupedGigsApplied = groupApplicationsByJob(gigsApplied);
+
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -254,13 +242,31 @@ function ContractorDashboard({ userDetails }) {
   const renderAverageStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <FontAwesomeIcon
-          key={i}
-          icon={i <= rating ? faStar : faRegularStar}
-          style={{ color: "yellow", fontSize: "20px" }}
-        />
-      );
+      if (i <= rating) {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faStar}
+            style={{ color: "yellow", fontSize: "20px" }}
+          />
+        );
+      } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faStarHalfAlt}
+            style={{ color: "yellow", fontSize: "20px" }}
+          />
+        );
+      } else {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faRegularStar}
+            style={{ color: "yellow", fontSize: "20px" }}
+          />
+        );
+      }
     }
     return stars;
   };
@@ -419,7 +425,7 @@ function ContractorDashboard({ userDetails }) {
               </div>
             ) : (
               <div className="grid-container">
-                {groupedGigsApplied.map((gigs) => (
+                {gigsApplied.map((gigs) => (
                   <div key={gigs.jobId} className="card">
                     <div className="card-header">
                       {gigs.fetchedGig ? (
@@ -439,6 +445,7 @@ function ContractorDashboard({ userDetails }) {
                         />
                       </span>
                     </div>
+                    <hr />
                     <div className="card-body">
                       {" "}
                       {gigs.fetchedGig ? (
@@ -602,43 +609,67 @@ function ContractorDashboard({ userDetails }) {
                           </div>
                         </div>
                         <div className="gig-application-div">
-                          <h1 className="modal-title">Applicant Details</h1>
-                          {gigsApplied.map((gig) => (
-                            <div key={gig._id}>
-                              {" "}
-                              <div className="chat-info">
-                                <img
-                                  src={defaultPfp}
-                                  alt="_"
-                                  className="chat-pfp"
-                                />
-                                <div className="user-details">
-                                  <p
-                                    style={{ color: "#666", fontSize: "15px" }}
-                                  >
-                                    @username
+                          <h1 className="modal-title">Applicants' Details</h1>
+                          {viewDetails.map((details) => (
+                            <div key={details.jobId}>
+                              {details.applicants.map((applicant) => (
+                                <div key={applicant._id}>
+                                  <div className="chat-info">
+                                    <img
+                                      src={applicant.profileImage}
+                                      alt="_"
+                                      className="chat-pfp"
+                                    />
+                                    <div className="user-details">
+                                      <p
+                                        style={{
+                                          color: "#666",
+                                          fontSize: "15px",
+                                        }}
+                                      >
+                                        @{applicant.username}
+                                      </p>
+                                      <p>
+                                        <strong>
+                                          <span>
+                                            {applicant.firstname}{" "}
+                                            {applicant.lastname}
+                                          </span>
+                                        </strong>
+                                      </p>
+                                      <p>{applicant.role}</p>
+                                    </div>
+                                  </div>
+                                  <p>
+                                    <strong>E-mail:</strong> {applicant.email}
                                   </p>
                                   <p>
-                                    <strong>
-                                      <span>Pipi Kaka</span>
-                                    </strong>
+                                    <strong>Phone No.:</strong>{" "}
+                                    {applicant.phone}
                                   </p>
-                                  <p>Role</p>
+                                  <p>
+                                    <strong>Expertise:</strong>{" "}
+                                    {applicant.expertise}
+                                  </p>
+                                  <p>
+                                    <strong>Resume:</strong>{" "}
+                                    {applicant.filename}
+                                  </p>
+                                  <p>Download resume</p>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <button>
+                                      Message {applicant.username}
+                                    </button>
+                                  </div>
+                                  <br />
+                                  <hr />
                                 </div>
-                              </div>
-                              <p>
-                                <strong>E-mail:</strong>
-                              </p>
-                              <p>
-                                <strong>Phone No.</strong> 07505927424
-                              </p>
-                              <p>
-                                <strong>Expertise:</strong>
-                              </p>
-                              <p>
-                                <strong>Resume:</strong>
-                              </p>
-                              <p>download resume</p>
+                              ))}
                             </div>
                           ))}
                         </div>

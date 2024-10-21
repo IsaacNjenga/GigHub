@@ -4,7 +4,7 @@ import Loader from "../../components/loader";
 import { UserContext } from "../../App";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faStarHalfAlt } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
 import defaultPfp from "../../assets/images/defaultProfilePic.png";
 import "../../assets/css/dashboardCss/dashboard.css";
@@ -225,13 +225,31 @@ function FreelancerDashboard() {
   const renderAverageStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <FontAwesomeIcon
-          key={i}
-          icon={i <= rating ? faStar : faRegularStar}
-          style={{ color: "yellow", fontSize: "20px" }}
-        />
-      );
+      if (i <= rating) {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faStar}
+            style={{ color: "yellow", fontSize: "20px" }}
+          />
+        );
+      } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faStarHalfAlt}
+            style={{ color: "yellow", fontSize: "20px" }}
+          />
+        );
+      } else {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faRegularStar}
+            style={{ color: "yellow", fontSize: "20px" }}
+          />
+        );
+      }
     }
     return stars;
   };
