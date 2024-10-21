@@ -14,6 +14,7 @@ const applicantSchema = new mongoose.Schema(
     email: { type: String },
     phone: { type: String },
     profileImage: { type: String },
+    contractorId: { type: String },
   },
   { collection: "applicant", timestamps: true }
 );

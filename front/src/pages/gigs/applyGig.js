@@ -21,6 +21,7 @@ function ApplyGig() {
   const [values, setValues] = useState([]);
   const [fetchedGig, setFetchedGig] = useState([]);
   const [profileData, setProfileData] = useState([]);
+  const [contractorId, setContractorId] = useState("");
 
   const fetchUserProfile = useCallback(async () => {
     setLoading(true);
@@ -56,6 +57,7 @@ function ApplyGig() {
         .then((result) => {
           const gig = result.data.gigs;
           const gigFetched = gig.find((job) => job._id === id);
+          setContractorId(gigFetched.postedBy);
           setFetchedGig(gigFetched);
           setLoading(false);
         });
@@ -80,15 +82,15 @@ function ApplyGig() {
       setValues({ ...values, [e.target.name]: e.target.value || e.target.id });
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log("Values", values);
-    const profileInformation = { ...profileData, jobId: id };
-    console.log(profileInformation);
+    const profileInformation = {
+      ...profileData,
+      jobId: id,
+      contractorId: contractorId,
+    };
     const valuesData = { ...values, ...profileInformation };
-    console.log("valuesdata", valuesData);
     const formData = new FormData();
     formData.append("resume", file);
     for (const key in valuesData) {
@@ -143,7 +145,6 @@ function ApplyGig() {
     }
   }, [user, fetchApplicants]);
 
-  console.log(id);
   const handleDelete = (id) => {
     MySwal.fire({
       title: "Are you sure you want to withdraw your application?",
