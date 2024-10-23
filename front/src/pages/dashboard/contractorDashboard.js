@@ -19,6 +19,7 @@ function ContractorDashboard({ userDetails }) {
   const { user } = useContext(UserContext);
   const [currentUser, setCurrentUser] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [gigsLoading, setGigsLoading] = useState(false);
   const [userReviews, setUserReviews] = useState([]);
   const [reviewsCount, setReviewsCount] = useState([]);
   const [averageRate, setAverageRate] = useState(0);
@@ -130,6 +131,10 @@ function ContractorDashboard({ userDetails }) {
           const gig = result.data.gigs;
           const fetchedGig = gig.find((job) => job._id === id);
           setViewGig(fetchedGig);
+          const selectedJobDetails = gigsApplied.find(
+            (gig) => gig.jobId === id
+          );
+          setViewDetails(selectedJobDetails ? [selectedJobDetails] : []);
           setLoading(false);
         });
     } catch (error) {
@@ -144,7 +149,7 @@ function ContractorDashboard({ userDetails }) {
   };
 
   const fetchApplications = async () => {
-    setLoading(true);
+    setGigsLoading(true);
     try {
       const res = await axios.get(`applicants`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -159,17 +164,17 @@ function ContractorDashboard({ userDetails }) {
 
         setGigsApplied(groupedApplications);
         setViewDetails(groupedApplications);
-        console.log("groupedApps", groupedApplications);
+        // console.log("groupedApps", groupedApplications);
 
         const uniqueJobIds = [
           ...new Set(fetchedApplications.map((app) => app.jobId)),
         ];
         uniqueJobIds.forEach((jobId) => fetchGig(jobId));
 
-        setLoading(false);
+        setGigsLoading(false);
       }
     } catch (error) {
-      setLoading(false);
+      setGigsLoading(false);
       console.log("Error fetching gig application:", error);
     }
   };
@@ -180,7 +185,7 @@ function ContractorDashboard({ userDetails }) {
 
   const fetchGig = useCallback(
     async (jobId) => {
-      setLoading(true);
+      setGigsLoading(true);
       try {
         const res = await axios.get(
           `fetchContractorGigs?contractorId=${user._id}&jobId=${jobId}`,
@@ -196,10 +201,10 @@ function ContractorDashboard({ userDetails }) {
           setGigsApplied((prevGigs) =>
             prevGigs.map((g) => (g.jobId === jobId ? { ...g, fetchedGig } : g))
           );
-          setLoading(false);
+          setGigsLoading(false);
         }
       } catch (error) {
-        setLoading(false);
+        setGigsLoading(false);
         console.log("Error fetching gig details:", error);
       }
     },
@@ -413,14 +418,22 @@ function ContractorDashboard({ userDetails }) {
           </div>
           <div>
             <h2>Recent Activity</h2>
-            {loading ? (
+            {gigsLoading ? (
               <div>
-                <div>
-                  <Skeleton
-                    height={50}
-                    count={5}
-                    style={{ marginBottom: "10px" }}
-                  />
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: "10px",
+                  }}
+                >
+                  {[1, 2, 3, 4, 5, 6].map((item, index) => (
+                    <Skeleton
+                      key={index}
+                      height={100}
+                      style={{ marginBottom: "10px" }}
+                    />
+                  ))}
                 </div>
               </div>
             ) : (

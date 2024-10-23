@@ -23,12 +23,12 @@ import UpdateReview from "./pages/reviews/updateReview";
 
 export const UserContext = createContext(null);
 
-axios.defaults.baseURL = "https://gig-hub-liart.vercel.app/gighub";
+axios.defaults.baseURL = "https://gig-hub-liart.vercel.app/gighub"; // deployed version
+//axios.defaults.baseURL = "http://localhost:3001/gighub"; // local version
 axios.defaults.withCredentials = true;
-//https://gig-hub-liart.vercel.app/
-//http://localhost:3001/
-//
+
 //"dev": "nodemon index.js"
+
 const router = createBrowserRouter([
   {
     path: "/",
