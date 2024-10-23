@@ -12,10 +12,13 @@ import { XAxis, YAxis, Tooltip, Rectangle } from "recharts";
 import { BarChart, Bar } from "recharts";
 import { format } from "date-fns";
 import CustomMoment from "../../components/customMoment";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function FreelancerDashboard() {
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
+  const [gigsLoading, setGigsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
   const [reviewsCount, setReviewsCount] = useState([]);
@@ -159,13 +162,13 @@ function FreelancerDashboard() {
 
   useEffect(() => {
     const fetchApplications = async () => {
-      setLoading(true);
+      setGigsLoading(true);
       try {
         const res = await axios.get(`fetchUserApplicants?userId=${user._id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         if (res.data.success) {
-          setLoading(false);
+          setGigsLoading(false);
           const applications = res.data.applicants;
 
           const fetchedApplications = applications.filter(
@@ -175,7 +178,7 @@ function FreelancerDashboard() {
           applications.forEach((application) => fetchGig(application));
         }
       } catch (error) {
-        setLoading(false);
+        setGigsLoading(false);
         console.log("Error fetching gig applied:", error);
       }
     };
@@ -183,7 +186,7 @@ function FreelancerDashboard() {
   }, [user]);
 
   const fetchGig = async (gigsApplied) => {
-    setLoading(true);
+    setGigsLoading(true);
     try {
       const res = await axios.get(`fetchUserGigs?jobId=${gigsApplied.jobId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -201,9 +204,9 @@ function FreelancerDashboard() {
           )
         );
       }
-      setLoading(false);
+      setGigsLoading(false);
     } catch (error) {
-      setLoading(false);
+      setGigsLoading(false);
       console.log("Error fetching gig details:", error);
     }
   };
@@ -398,183 +401,206 @@ function FreelancerDashboard() {
           </div>
           <div>
             <h2>Recent Activity</h2>
-            <div className="grid-container">
-              {gigsApplied.map((gigs) => (
-                <div key={gigs._id} className="card">
-                  <div className="card-header">
-                    {gigs.fetchedGig ? (
-                      <h2>{gigs.fetchedGig.title}</h2>
-                    ) : (
-                      <h2>
-                        <span>Loading...</span>
-                      </h2>
-                    )}
-                    <span className="time-ago">
-                      Applied:{" "}
-                      <CustomMoment
-                        postedTime={
-                          gigs.createdAt ? gigs.createdAt : gigs.updatedAt
-                        }
-                      />
-                    </span>
-                  </div>
-                  <div className="card-body">
-                    {gigs.fetchedGig ? (
-                      <>
-                        <span style={{ textAlign: "center" }}>
-                          <b
-                            dangerouslySetInnerHTML={{
-                              __html: gigs.fetchedGig.organisation,
-                            }}
-                          />
-                        </span>
-                        <p>
-                          <strong>Type:</strong> {gigs.fetchedGig.type}
-                        </p>
-                        <p>
-                          <strong>Location:</strong> {gigs.fetchedGig.location}
-                        </p>
-                        <p>
-                          <strong>Posted:</strong>{" "}
-                          <CustomMoment
-                            postedTime={
-                              gigs.fetchedGig.createdAt
-                                ? gigs.fetchedGig.createdAt
-                                : gigs.fetchedGig.updatedAt
-                            }
-                          />
-                        </p>
-                      </>
-                    ) : (
-                      <span>Loading...</span>
-                    )}
-                    <p>
-                      <strong>Résumé attached:</strong> {gigs.filename}
-                    </p>
-                  </div>
-                  <div className="card-footer">
-                    <p
-                      className="view-more"
-                      onClick={() => openGigModal(gigs.jobId)}
-                    >
-                      View More
-                    </p>
-                  </div>
+            {gigsLoading ? (
+              <div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: "10px",
+                  }}
+                >
+                  {[1, 2, 3, 4, 5, 6].map((item, index) => (
+                    <Skeleton
+                      key={index}
+                      height={100}
+                      style={{ marginBottom: "10px" }}
+                    />
+                  ))}
                 </div>
-              ))}
-              {viewGig && (
-                <div className="modal-overlay" onClick={closeGigModal}>
-                  <div
-                    className="modal-content"
-                    onClick={(e) => e.stopPropagation()}
-                    role="dialog"
-                    aria-modal="true"
-                  >
-                    <button
-                      className="close-btn"
-                      onClick={closeGigModal}
-                      aria-label="Close Modal"
+              </div>
+            ) : (
+              <div className="grid-container">
+                {gigsApplied.map((gigs) => (
+                  <div key={gigs._id} className="card">
+                    <div className="card-header">
+                      {gigs.fetchedGig ? (
+                        <h2>{gigs.fetchedGig.title}</h2>
+                      ) : (
+                        <h2>
+                          <span>Loading...</span>
+                        </h2>
+                      )}
+                      <span className="time-ago">
+                        Applied:{" "}
+                        <CustomMoment
+                          postedTime={
+                            gigs.createdAt ? gigs.createdAt : gigs.updatedAt
+                          }
+                        />
+                      </span>
+                    </div>
+                    <div className="card-body">
+                      {gigs.fetchedGig ? (
+                        <>
+                          <span style={{ textAlign: "center" }}>
+                            <b
+                              dangerouslySetInnerHTML={{
+                                __html: gigs.fetchedGig.organisation,
+                              }}
+                            />
+                          </span>
+                          <p>
+                            <strong>Type:</strong> {gigs.fetchedGig.type}
+                          </p>
+                          <p>
+                            <strong>Location:</strong>{" "}
+                            {gigs.fetchedGig.location}
+                          </p>
+                          <p>
+                            <strong>Posted:</strong>{" "}
+                            <CustomMoment
+                              postedTime={
+                                gigs.fetchedGig.createdAt
+                                  ? gigs.fetchedGig.createdAt
+                                  : gigs.fetchedGig.updatedAt
+                              }
+                            />
+                          </p>
+                        </>
+                      ) : (
+                        <span>Loading...</span>
+                      )}
+                      <p>
+                        <strong>Résumé attached:</strong> {gigs.filename}
+                      </p>
+                    </div>
+                    <div className="card-footer">
+                      <p
+                        className="view-more"
+                        onClick={() => openGigModal(gigs.jobId)}
+                      >
+                        View More
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                {viewGig && (
+                  <div className="modal-overlay" onClick={closeGigModal}>
+                    <div
+                      className="modal-content"
+                      onClick={(e) => e.stopPropagation()}
+                      role="dialog"
+                      aria-modal="true"
                     >
-                      &times;
-                    </button>
-                    <h1 className="modal-title">Gig Details</h1>
-                    <div className="modal-body">
-                      <div className="gig-details">
-                        <h3 className="gig-description">
-                          <strong>Title:</strong> {viewGig.title}
-                        </h3>
-                        {viewGig.createdAt && (
+                      <button
+                        className="close-btn"
+                        onClick={closeGigModal}
+                        aria-label="Close Modal"
+                      >
+                        &times;
+                      </button>
+                      <h1 className="modal-title">Gig Details</h1>
+                      <div className="modal-body">
+                        <div className="gig-details">
+                          <h3 className="gig-description">
+                            <strong>Title:</strong> {viewGig.title}
+                          </h3>
+                          {viewGig.createdAt && (
+                            <p className="gig-info">
+                              <strong>Posted on: </strong>
+                              {format(
+                                new Date(
+                                  viewGig.createdAt
+                                    ? viewGig.createdAt
+                                    : viewGig.updatedAt
+                                ),
+                                "EEEE do, MM yyyy"
+                              )}
+                            </p>
+                          )}
                           <p className="gig-info">
-                            <strong>Posted on: </strong>
-                            {format(
-                              new Date(
-                                viewGig.createdAt
-                                  ? viewGig.createdAt
-                                  : viewGig.updatedAt
-                              ),
-                              "EEEE do, MM yyyy"
+                            <strong>Contractor:</strong>{" "}
+                            {viewGig.username.replace(
+                              /^./,
+                              viewGig.username[0].toUpperCase()
                             )}
                           </p>
-                        )}
-                        <p className="gig-info">
-                          <strong>Contractor:</strong>{" "}
-                          {viewGig.username.replace(
-                            /^./,
-                            viewGig.username[0].toUpperCase()
-                          )}
-                        </p>
-                        <p className="gig-info">
-                          <strong>Type:</strong> {viewGig.type}
-                        </p>
-                        <p className="gig-info">
-                          <strong>Location:</strong> {viewGig.location}
-                        </p>
-                        <div className="gig-info">
-                          <strong>Work Environment:</strong>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: viewGig.environment,
-                            }}
-                          />
-                        </div>
-                        <div className="gig-info">
-                          <strong>Organisation & Company:</strong>{" "}
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: viewGig.organisation,
-                            }}
-                          />
-                        </div>
-                        <div className="gig-info">
-                          <strong>Requirements:</strong>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: viewGig.requirements,
-                            }}
-                          />
-                        </div>
-                        <div className="gig-info">
-                          <strong>Responsibilities:</strong>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: viewGig.responsibilities,
-                            }}
-                          />
-                        </div>
-                        <div className="gig-info">
-                          <strong>Job Summary:</strong>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: viewGig.summary,
-                            }}
-                          />
-                        </div>
-                        <div className="gig-info">
-                          <strong>Additional Info:</strong>
-                          <div
-                            dangerouslySetInnerHTML={{ __html: viewGig.info }}
-                          />
-                        </div>
-                        <div className="gig-info">
-                          <strong>Work Benefits & Compensation:</strong>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: viewGig.benefits,
-                            }}
-                          />
-                        </div>
-                        <div className="gig-info">
-                          <strong>How To Apply:</strong>
-                          <div
-                            dangerouslySetInnerHTML={{ __html: viewGig.apply }}
-                          />
+                          <p className="gig-info">
+                            <strong>Type:</strong> {viewGig.type}
+                          </p>
+                          <p className="gig-info">
+                            <strong>Location:</strong> {viewGig.location}
+                          </p>
+                          <div className="gig-info">
+                            <strong>Work Environment:</strong>
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: viewGig.environment,
+                              }}
+                            />
+                          </div>
+                          <div className="gig-info">
+                            <strong>Organisation & Company:</strong>{" "}
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: viewGig.organisation,
+                              }}
+                            />
+                          </div>
+                          <div className="gig-info">
+                            <strong>Requirements:</strong>
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: viewGig.requirements,
+                              }}
+                            />
+                          </div>
+                          <div className="gig-info">
+                            <strong>Responsibilities:</strong>
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: viewGig.responsibilities,
+                              }}
+                            />
+                          </div>
+                          <div className="gig-info">
+                            <strong>Job Summary:</strong>
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: viewGig.summary,
+                              }}
+                            />
+                          </div>
+                          <div className="gig-info">
+                            <strong>Additional Info:</strong>
+                            <div
+                              dangerouslySetInnerHTML={{ __html: viewGig.info }}
+                            />
+                          </div>
+                          <div className="gig-info">
+                            <strong>Work Benefits & Compensation:</strong>
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: viewGig.benefits,
+                              }}
+                            />
+                          </div>
+                          <div className="gig-info">
+                            <strong>How To Apply:</strong>
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: viewGig.apply,
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -15,11 +15,11 @@
   overflow: auto;
 }
 
-.profile-container {
-  max-width: 90%;
+.user-profile-container {
+  max-width: 85%;
   margin: 20px auto;
-  padding: 10px;
-  background-color: rgba(255, 255, 255, 0.69);
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.73);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative; /* To ensure the background image behaves correctly */
@@ -35,19 +35,29 @@
 
 .personal-details,
 .profile-details {
-  background-color: #ffffff5a;
-  padding: 10px;
+  padding: 12px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Light shadow for visual separation */
 }
 
 /* Left (Personal Details) */
 .personal-details {
-  flex: 1; /* Takes up 1 part of the space */
+  flex: 1;
   max-width: 30%; /* Ensures it doesn't take more than 40% of the available space */
   margin-right: 10px;
   display: flex;
   flex-direction: column; /* Stack the personal details vertically */
+  background-color: #8a999d5a;
+}
+
+/* Right (Profile Details) */
+.profile-details {
+  flex: 2; /* Takes up 2 parts of the space, making it wider than the left side */
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: #5c8a738e;
 }
 
 .username,
@@ -83,23 +93,16 @@
   font-weight: bold;
 }
 
-/* Right (Profile Details) */
-.profile-details {
-  flex: 2; /* Takes up 2 parts of the space, making it wider than the left side */
-  max-width: 65%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.bio,
-.goals,
-.interests {
+.profile-bio,
+.profile-goals,
+.profile-interests {
+  width: 100%;
+  max-width: 680px;
   position: relative; /* Necessary for absolute positioning */
-  padding: 10px; /* Add padding for spacing */
-  background-color: #f9f9f9; /* Optional: Light background for visibility */
+  padding: 15px; /* Add padding for spacing */
+  background-color: #f9f9f9b5; /* Optional: Light background for visibility */
   border-radius: 5px; /* Optional: Rounded corners */
-  margin-bottom: 10px; /* Space below the bio section */
+  margin-bottom: 15px; /* Space below the bio section */
 }
 
 .card-title {
@@ -109,25 +112,6 @@
   font-weight: bold; /* Make the title bold */
   margin-bottom: 5px; /* Space below the title */
   font-size: 1.5em; /* Adjust font size as needed */
-}
-
-/* Image Styling */
-.profile-picture img {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  border: 2px solid #0dce44;
-  margin-bottom: -20px;
-}
-
-/* Container for Profile */
-.profile-container {
-  max-width: 1200px;
-  margin: 40px auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 h3 {
@@ -140,7 +124,6 @@ h3 {
 /* Profile Picture */
 .profile-picture {
   text-align: center;
-  margin-bottom: 20px;
 }
 
 .profile-picture img {
@@ -148,6 +131,7 @@ h3 {
   height: 150px;
   border-radius: 50%;
   border: 3px solid #e0e0e0;
+  margin-bottom: -20px;
 }
 
 /* Profile Info */
@@ -326,7 +310,7 @@ h3 {
 
 .button-container {
   display: flex;
-  justify-content: space-around;
-  margin: auto;
+  justify-content: space-between;
+  margin: 10px;
   align-items: center;
 }

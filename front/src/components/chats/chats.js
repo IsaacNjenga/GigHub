@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../navbar";
 import "../../assets/css/chatsCss/chat.css";
 import ChatContainer from "./chatContainer";
-//import pfp from "../../assets/images/createProfile.jpg";
+import defaultPfp from "../../assets/images/defaultProfilePic.png";
 import axios from "axios";
 import { format, differenceInDays, isToday, isYesterday } from "date-fns";
 import { faCheck, faCheckDouble } from "@fortawesome/free-solid-svg-icons";
@@ -131,7 +131,13 @@ function Chats() {
             {loading && <Loader />}
             {currentUser.map((liveUser) => (
               <div key={liveUser._id} className="chat-info">
-                <img src={liveUser.profileImage} alt="" className="chat-pfp" />
+                <img
+                  src={
+                    liveUser.profileImage ? liveUser.profileImage : defaultPfp
+                  }
+                  alt=""
+                  className="chat-pfp"
+                />
                 <div className="chat-details">
                   <p className="chat-username">
                     <u>@{user.username}</u>
@@ -161,7 +167,7 @@ function Chats() {
                   >
                     <div className="chat-info">
                       <img
-                        src={user.profileImage}
+                        src={user.profileImage ? user.profileImage : defaultPfp}
                         alt=""
                         className="chat-pfp"
                       />
@@ -204,7 +210,11 @@ function Chats() {
               <>
                 <div className="chats-header">
                   <img
-                    src={selectedReceiver.profileImage}
+                    src={
+                      selectedReceiver.profileImage
+                        ? selectedReceiver.profileImage
+                        : defaultPfp
+                    }
                     alt="pfp"
                     className="pfp"
                   />
@@ -215,9 +225,7 @@ function Chats() {
                     <span className="username">
                       @{selectedReceiver.username}
                     </span>
-                    <span className="time">
-                      {selectedReceiver.role}
-                    </span>
+                    <span className="time">{selectedReceiver.role}</span>
                   </div>
                 </div>
                 <ChatContainer

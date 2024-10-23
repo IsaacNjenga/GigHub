@@ -116,7 +116,7 @@ function CreateProfile() {
       {loading && <Loader />}
       <div className="create-background">
         <Navbar />
-        <div className="profile-container">
+        <div className="create-profile-container">
           <h1>Create Your Profile</h1>
           <hr />
           {serverErrors.length > 0 &&
@@ -125,7 +125,7 @@ function CreateProfile() {
                 {error.msg}
               </p>
             ))}
-          <div className="create-profile-form-container">
+          <div>
             <form onSubmit={handleSubmit}>
               <div className="basic-details">
                 <div className="profile-picture">
@@ -141,13 +141,13 @@ function CreateProfile() {
                     onChange={handleImageUpload}
                   />
                 </div>
-                <p>
+                {/* <p>
                   {profileName.username}, {profileName.role}
-                </p>
+                </p> */}
                 <label>
                   <u>Personal Details</u>
                 </label>
-                <div className="personal-group">
+                <div className="name-group">
                   <div>
                     <label>First name:</label>
                     <input
@@ -188,46 +188,47 @@ function CreateProfile() {
                   />
                   <label>Female</label>
                 </div>
+                <div className="details">
+                  <div className="details-group1">
+                    <div>
+                      <label>E-mail:</label>
+                      <input
+                        type="email"
+                        name="email"
+                        onChange={handleChange}
+                        className="input"
+                      />
+                    </div>
+                    <div>
+                      <label>Contact:</label>
+                      <input
+                        type="text"
+                        name="phone"
+                        onChange={handleChange}
+                        className="input"
+                      />
+                    </div>
+                  </div>
 
-                <div className="personal-group">
-                  <div>
-                    <label>E-mail:</label>
-                    <input
-                      type="email"
-                      name="email"
-                      onChange={handleChange}
-                      className="input"
-                    />
-                  </div>
-                  <div>
-                    <label>Contact:</label>
-                    <input
-                      type="text"
-                      name="phone"
-                      onChange={handleChange}
-                      className="input"
-                    />
-                  </div>
-                </div>
-
-                <div className="personal-group">
-                  <div>
-                    <label>DOB:</label>
-                    <input
-                      type="date"
-                      name="dob"
-                      onChange={handleChange}
-                      className="input"
-                    />
-                  </div>
-                  <div>
-                    <label>Expertise:</label>
-                    <input
-                      type="text"
-                      name="expertise"
-                      onChange={handleChange}
-                      className="input"
-                    />
+                  <div className="details-group2">
+                    <div>
+                      <label>DOB:</label>
+                      <input
+                        type="date"
+                        name="dob"
+                        onChange={handleChange}
+                        className="input"
+                      />
+                    </div>
+                    <div>
+                      <label>Expertise:</label>
+                      <input
+                        type="text"
+                        name="expertise"
+                        onChange={handleChange}
+                        className="input"
+                      />
+                    </div>
                   </div>
                 </div>
                 <br />

@@ -1,5 +1,5 @@
 /* Container for the entire profile creation page */
-.profile-container {
+.create-profile-container {
   max-width: 800px;
   margin: 30px auto;
   padding: 15px;
@@ -19,18 +19,13 @@
   color: #333;
 }
 
-/* Grouping sections for better structure */
-.create-profile-form-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
+
 
 /* Basic Details section styling */
 .basic-details {
   display: flex;
   flex-direction: column;
-  width: 150%;
+  width: 100%;
   gap: 10px;
 }
 

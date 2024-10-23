@@ -9,6 +9,7 @@ import withReactContent from "sweetalert2-react-content";
 import Loader from "../../components/loader";
 import "../../assets/css/profileCss/profile.css";
 import missingProfile from "../../assets/icons/question.png";
+import CreateProfile from "./createProfile";
 
 const MySwal = withReactContent(Swal);
 
@@ -122,7 +123,7 @@ function Profile() {
       {loading && <Loader />}
       <div className="profile-background">
         <Navbar />
-        <div className="profile-container">
+        <div className="user-profile-container">
           {values ? (
             <div>
               <h3>User Profile</h3>
@@ -154,21 +155,20 @@ function Profile() {
                   <p className="age">Age: {data.age} yrs</p>
                   <p className="phone">Phone: {data.phone}</p>
                   <p className="email">Email: {data.email}</p>
-                  {/*<p>{data.gender}</p>*/}
                 </div>
 
                 <div className="profile-details">
-                  <div className="bio">
+                  <div className="profile-bio">
                     <p className="card-title">Bio</p>
                     <hr />
                     <p dangerouslySetInnerHTML={{ __html: data.bio }} />
-                  </div>
-                  <div className="goals">
+                  </div>{" "}
+                  <div className="profile-goals">
                     <p className="card-title">Goals</p>
                     <hr />
                     <p dangerouslySetInnerHTML={{ __html: data.goals }} />
                   </div>
-                  <div className="interests">
+                  <div className="profile-interests">
                     <p className="card-title">Interests</p>
                     <hr />
                     <p dangerouslySetInnerHTML={{ __html: data.interests }} />

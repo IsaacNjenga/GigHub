@@ -61,7 +61,7 @@ function UpdateProfile() {
       console.error("Error fetching profile:", error);
       toast.error("Error fetching profile data", { position: "top-right" });
     }
-  }, [user, values]);
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -71,16 +71,18 @@ function UpdateProfile() {
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
+      // Only update the state if the content has changed
       if (values[fieldName] !== content) {
-        setValues({
-          ...values,
+        setData({
+          ...data,
           [fieldName]: content,
         });
       }
     } else {
+      // Update state only if input value has changed
       if (values[e.target.name] !== e.target.value) {
-        setValues({
-          ...values,
+        setData({
+          ...data,
           [e.target.name]: e.target.value,
         });
       }
@@ -117,7 +119,7 @@ function UpdateProfile() {
       username: profileName.username,
       role: profileName.role,
     };
-    
+
     axios
       .put(`updateProfile/${id}`, profileData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -160,7 +162,7 @@ function UpdateProfile() {
       {loading && <Loader />}
       <div className="update-background">
         <Navbar />
-        <div className="profile-container">
+        <div className="update-profile-container">
           <h1>Update Your Profile</h1>
           <hr />
           {serverErrors.length > 0 &&
@@ -169,7 +171,7 @@ function UpdateProfile() {
                 {error.msg}
               </p>
             ))}
-          <div className="update-profile-form-container">
+          <div>
             <form onSubmit={handleSubmit}>
               <div className="basic-details">
                 <div className="profile-picture">
@@ -185,9 +187,6 @@ function UpdateProfile() {
                     onChange={handleImageUpload}
                   />
                 </div>
-                <p>
-                  {profileName.username}, {profileName.role}
-                </p>
                 <label>
                   <u>Personal Details</u>
                 </label>
@@ -213,9 +212,9 @@ function UpdateProfile() {
                     />
                   </div>
                 </div>
+                <label>Gender:</label>
 
                 <div className="gender-group">
-                  <label>Gender:</label>
                   <div className="radio-group">
                     <input
                       type="radio"
@@ -238,49 +237,51 @@ function UpdateProfile() {
                   </div>
                 </div>
 
-                <div className="details-group1">
-                  <label>E-mail:</label>
-                  <div className="email">
-                    <input
-                      type="email"
-                      name="email"
-                      value={data.email}
-                      onChange={handleChange}
-                      className="input"
-                    />
+                <div className="details">
+                  <div className="details-group1">
+                    <label>E-mail:</label>
+                    <div className="email">
+                      <input
+                        type="email"
+                        name="email"
+                        value={data.email}
+                        onChange={handleChange}
+                        className="input"
+                      />
+                    </div>
+                    <div className="contact">
+                      <label>Contact:</label>
+                      <input
+                        type="text"
+                        name="phone"
+                        value={data.phone}
+                        onChange={handleChange}
+                        className="input"
+                      />
+                    </div>
                   </div>
-                  <div className="contact">
-                    <label>Contact:</label>
-                    <input
-                      type="text"
-                      name="phone"
-                      value={data.phone}
-                      onChange={handleChange}
-                      className="input"
-                    />
-                  </div>
-                </div>
 
-                <div className="details-group2">
-                  <div className="dob">
-                    <label>DOB:</label>
-                    <input
-                      type="date"
-                      name="dob"
-                      value={data.dob}
-                      onChange={handleChange}
-                      className="input"
-                    />
-                  </div>
-                  <div className="expertise">
-                    <label>Expertise:</label>
-                    <input
-                      type="text"
-                      name="expertise"
-                      value={data.expertise}
-                      onChange={handleChange}
-                      className="input"
-                    />
+                  <div className="details-group2">
+                    <div className="dob">
+                      <label>DOB:</label>
+                      <input
+                        type="date"
+                        name="dob"
+                        value={data.dob}
+                        onChange={handleChange}
+                        className="input"
+                      />
+                    </div>
+                    <div className="update-expertise">
+                      <label>Expertise:</label>
+                      <input
+                        type="text"
+                        name="expertise"
+                        value={data.expertise}
+                        onChange={handleChange}
+                        className="input"
+                      />
+                    </div>
                   </div>
                 </div>
                 <br />
