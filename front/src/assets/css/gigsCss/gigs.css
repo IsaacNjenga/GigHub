@@ -17,7 +17,7 @@
 .gig-container {
   max-width: 95%;
   margin: 20px auto;
-  padding: 10px;
+  padding: 12px;
   background-color: rgba(255, 255, 255, 0.69);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -28,6 +28,7 @@
 .post-gig {
   width: 200px;
   padding: 17px;
+  margin: 12px auto;
   background-color: #277938;
   color: #fff;
   border: none;
@@ -406,4 +407,41 @@
 
 .delete-gig-btn:hover {
   background-color: rgb(169, 10, 10);
+}
+
+.gig-search-bar {
+  margin: 12px auto;
+  width: 45%;
+  padding: 12px;
+  border-radius: 18px;
+  border-width: 1px;
+  border-color: #000;
+  background-color: #ffffff0d;  border: 1px solid #000; /* Combined border-width and border-color */
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #000;
+  font-size: 18px;
+}
+
+.gig-search-bar::placeholder {
+  color: #000;
+  font-size: 18px;
+}
+
+.gig-button-container {
+  margin: 12px auto;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+}
+
+.all-gig-button,
+.my-gig-button,
+.applied-gig-button {
+  width: 120px;
+  padding: 10px;
+  border: none;
+  margin: 5px;
+  border-radius: 7px;
+  font-size: 1.1em;
+  cursor: pointer;
 }

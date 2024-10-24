@@ -15,6 +15,8 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import DOMPurify from "dompurify";
 import CustomMoment from "../../components/customMoment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
 
 const MySwal = withReactContent(Swal);
 function GigList() {
@@ -23,6 +25,7 @@ function GigList() {
   const [loading, setLoading] = useState(false);
   const [selectedGig, setSelectedGig] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const [search, setSearch] = useState("");
 
   const fetchGigs = useCallback(async () => {
     setLoading(true);
@@ -265,7 +268,40 @@ function GigList() {
           <Link to="/create-gig" className="post-gig">
             Post a Gig
           </Link>
-          <h2>Gigs Available:</h2>
+          <h1></h1>
+          <div>
+            <form>
+              <InputGroup className="gig-search-bar">
+                <Form.Control
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search gig type, location, title"
+                />
+              </InputGroup>
+            </form>
+            <div className="gig-button-container">
+              <button className="all-gig-button">All Gigs</button>
+              <button className="my-gig-button">My Gigs</button>
+              <button className="applied-gig-button">Applied Gigs</button>
+            </div>
+          </div>
+          {search ? (
+            <div className="searched">
+              {gigs
+                .filter(
+                  (gig) =>
+                    search.toLowerCase() === "" ||
+                    Object.values(gig).some(
+                      (value) =>
+                        typeof value === "string" &&
+                        value.toLowerCase().includes(search)
+                    )
+                )
+                .map((gig) => (
+                  <div>{gig.title}</div>
+                ))}
+            </div>
+          ) : null}
+
           <div className="gigs-list">
             <DataTable
               columns={columns}
