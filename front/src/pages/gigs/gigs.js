@@ -17,6 +17,7 @@ import CustomMoment from "../../components/customMoment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
+import UserProfile from "../../components/userProfile";
 
 const MySwal = withReactContent(Swal);
 function GigList() {
@@ -25,6 +26,10 @@ function GigList() {
   const [loading, setLoading] = useState(false);
   const [selectedGig, setSelectedGig] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const [showContractorGigs, setShowContractorGigs] = useState(false);
+  const [showAllGigs, setShowAllGigs] = useState(true);
+  const [myGigs, setMyGigs] = useState([]);
+  //const [appliedGigs, setAppliedGigs] = useState([]);
   const [search, setSearch] = useState("");
 
   const fetchGigs = useCallback(async () => {
@@ -38,18 +43,47 @@ function GigList() {
         ...gig,
         summary: DOMPurify.sanitize(gig.summary),
       }));
+      const contractorGigs = fetchedGigs.filter(
+        (contractorGig) => contractorGig.postedBy === user._id
+      );
+      setMyGigs(contractorGigs);
       setGigs(sanitizedGigs);
       setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error("Error fetching:", error);
-      toast.error("Error fetching data", { position: "top-right" });
+      toast.error("Error fetching gigs", { position: "top-right" });
     }
   });
+
+  // const fetchAppliedGigs = useCallback(
+  //   async (id) => {
+  //     setLoading(true);
+  //     try {
+  //       const res = await axios.get(`applicants`, {
+  //         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  //       });
+  //       if (res.data.success) {
+  //         setLoading(false);
+  //         const applications = res.data.applicants;
+  //         const appliedGigs = applications.filter(
+  //           (application) => application.jobId === id
+  //         );
+  //         console.log(appliedGigs);
+  //       }
+  //     } catch (error) {
+  //       setLoading(false);
+  //       console.error("Error fetching:", error);
+  //       toast.error("Error fetching gigs", { position: "top-right" });
+  //     }
+  //   },
+  //   [user]
+  // );
 
   useEffect(() => {
     if (user) {
       fetchGigs();
+      //fetchAppliedGigs();
     }
   }, [user]);
 
@@ -96,7 +130,6 @@ function GigList() {
   const closeGigModal = () => {
     setSelectedGig(null);
   };
-
   const closeProfileModal = () => {
     setSelectedProfile(null);
   };
@@ -137,6 +170,16 @@ function GigList() {
         });
         console.log(err);
       });
+  };
+
+  const showGigs = () => {
+    setShowContractorGigs(false);
+    setShowAllGigs(true);
+  };
+
+  const showMyGigs = () => {
+    setShowContractorGigs(true);
+    setShowAllGigs(false);
   };
 
   const columns = [
@@ -189,6 +232,12 @@ function GigList() {
         </>
       ),
     },
+    // {
+    //   name: "id",
+    //   selector: (row) => {
+    //     fetchAppliedGigs(row._id);
+    //   },
+    // },
     {
       name: "",
       selector: (row) => (
@@ -231,45 +280,46 @@ function GigList() {
       style: {
         fontSize: "16px",
         fontWeight: "bold",
-        borderBottom: "2px solid #5bacba",  
+        borderBottom: "2px solid #5bacba",
         backgroundColor: "#e0e0e0",
-        color: "#333",  
+        color: "#333",
         textAlign: "center",
-        padding: "10px",  
-        textTransform: "uppercase",  
+        padding: "10px",
+        textTransform: "uppercase",
       },
     },
     cells: {
       style: {
         fontSize: "14px",
         fontWeight: 500,
-        backgroundColor: "#f7f7f7",  // Softer, light background
-        color: "#333",  // Darker text for readability
-        padding: "10px",  // More padding for cleaner layout
+        backgroundColor: "#f7f7f7", // Softer, light background
+        color: "#333", // Darker text for readability
+        padding: "10px", // More padding for cleaner layout
         whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",
-        alignItems:"center"
+        alignItems: "center",
       },
     },
     rows: {
       style: {
-        backgroundColor: "#fafafa",  // Softer white background
+        backgroundColor: "#fafafa", // Softer white background
         "&:nth-of-type(odd)": {
           backgroundColor: "#ffffff",
         },
-        minHeight: "50px",  // Slightly taller rows for comfort
-        transition: "background-color 0.3s ease",  // Smooth hover effect
+        minHeight: "50px", // Slightly taller rows for comfort
+        transition: "background-color 0.3s ease", // Smooth hover effect
         "&:hover": {
-          backgroundColor: "#f0f8ff",  // Light blue hover effect
+          backgroundColor: "#f0f8ff", // Light blue hover effect
         },
       },
     },
   };
-  
+
   return (
     <>
       {loading && <Loader />}
+      {/* <UserProfile /> */}
       <div className="gig-background">
         <Navbar />
         <div className="gig-container">
@@ -291,8 +341,14 @@ function GigList() {
               </InputGroup>
             </form>
             <div className="gig-button-container">
-              <button className="all-gig-button">All Gigs</button>
-              <button className="my-gig-button">My Gigs</button>
+              <button className="all-gig-button" onClick={showGigs}>
+                All Gigs
+              </button>
+              {user.role === "Contractor" ? (
+                <button className="my-gig-button" onClick={showMyGigs}>
+                  My Gigs
+                </button>
+              ) : null}
               <button className="applied-gig-button">Applied Gigs</button>
             </div>
           </div>
@@ -398,16 +454,16 @@ function GigList() {
                 </table>
               </div>
             </div>
-          ) :   <div className="gigs-list">
-            <DataTable
-              columns={columns}
-              data={gigs}
-              customStyles={customStyles}
-              pagination
-            />
-          </div>}
-
-        
+          ) : (
+            <div className="gigs-list">
+              <DataTable
+                columns={columns}
+                data={showAllGigs ? gigs : myGigs}
+                customStyles={customStyles}
+                pagination
+              />
+            </div>
+          )}
 
           {selectedProfile && (
             <div className="profile-modal-overlay" onClick={closeProfileModal}>
@@ -453,7 +509,11 @@ function GigList() {
                           />
                         </div>
                         <div className="button-container">
-                          <button>View more</button>
+                          <button>
+                            <Link to={`/user/${selectedProfile.postedBy}`}>
+                              View more
+                            </Link>
+                          </button>
                         </div>
                       </div>
                     </div>

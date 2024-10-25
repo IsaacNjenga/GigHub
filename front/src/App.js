@@ -20,6 +20,7 @@ import Reviews from "./pages/reviews/reviews";
 import AddReview from "./pages/reviews/addReview";
 import Chats from "./components/chats/chats";
 import UpdateReview from "./pages/reviews/updateReview";
+import UserProfile from "./components/userProfile";
 
 export const UserContext = createContext(null);
 
@@ -136,6 +137,7 @@ const router = createBrowserRouter([
       </ProtectedRoutes>
     ),
   },
+  { path: "/user/:id", element: <UserProfile /> },
   { path: "/logout", element: <Logout /> },
   { path: "*", element: <NotFound /> },
 ]);

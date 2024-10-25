@@ -9,7 +9,6 @@ import withReactContent from "sweetalert2-react-content";
 import Loader from "../../components/loader";
 import "../../assets/css/profileCss/profile.css";
 import missingProfile from "../../assets/icons/question.png";
-import CreateProfile from "./createProfile";
 
 const MySwal = withReactContent(Swal);
 
@@ -145,6 +144,7 @@ function Profile() {
                         user.username[0].toUpperCase()
                       )}
                     </i>
+                    <p>{user.role}</p>
                   </p>{" "}
                   <p className="name">
                     <strong>
