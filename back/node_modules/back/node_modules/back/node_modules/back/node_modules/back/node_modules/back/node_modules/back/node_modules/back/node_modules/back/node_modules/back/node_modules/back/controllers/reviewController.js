@@ -31,7 +31,6 @@ const fetchReviews = async (req, res) => {
   }
 };
 
-
 const fetchReview = async (req, res) => {
   const { id } = req.params;
   if (!id) {
@@ -52,8 +51,12 @@ const updateReview = async (req, res) => {
     return res.status(404).json({ error: "no ID specified" });
   }
   try {
-    const review = await ReviewModel.find({ _id: id });
-    return res.status(200).json({ success: true, review });
+    const result = await ReviewModel.findOneAndUpdate(
+      { _id: id },
+      { ...req.body },
+      { new: true }
+    );
+    return res.status(200).json({ success: true, ...result._doc });
   } catch (error) {
     console.log("Error", error);
     return res.status(500).json({ error: error.message });
