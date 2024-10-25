@@ -229,33 +229,44 @@ function GigList() {
   const customStyles = {
     headCells: {
       style: {
-        fontSize: 15 + "px",
-        fontWeight: 600,
-        border: "1px solid #ddd",
+        fontSize: "16px",
+        fontWeight: "bold",
+        borderBottom: "2px solid #5bacba",  
+        backgroundColor: "#e0e0e0",
+        color: "#333",  
         textAlign: "center",
+        padding: "10px",  
+        textTransform: "uppercase",  
       },
     },
     cells: {
       style: {
-        fontSize: 13 + "px",
-        fontWeight: 400,
-        backgroundColor: "#f2f2f2",
+        fontSize: "14px",
+        fontWeight: 500,
+        backgroundColor: "#f7f7f7",  // Softer, light background
+        color: "#333",  // Darker text for readability
+        padding: "10px",  // More padding for cleaner layout
         whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",
+        alignItems:"center"
       },
     },
     rows: {
       style: {
-        backgroundColor: "#f7f7f7",
+        backgroundColor: "#fafafa",  // Softer white background
         "&:nth-of-type(odd)": {
           backgroundColor: "#ffffff",
         },
-        minHeight: "45px",
+        minHeight: "50px",  // Slightly taller rows for comfort
+        transition: "background-color 0.3s ease",  // Smooth hover effect
+        "&:hover": {
+          backgroundColor: "#f0f8ff",  // Light blue hover effect
+        },
       },
     },
   };
-
+  
   return (
     <>
       {loading && <Loader />}
@@ -271,10 +282,11 @@ function GigList() {
           <h1></h1>
           <div>
             <form>
-              <InputGroup className="gig-search-bar">
+              <InputGroup>
                 <Form.Control
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search gig type, location, title"
+                  className="gig-search-bar"
                 />
               </InputGroup>
             </form>
@@ -286,30 +298,116 @@ function GigList() {
           </div>
           {search ? (
             <div className="searched">
-              {gigs
-                .filter(
-                  (gig) =>
-                    search.toLowerCase() === "" ||
-                    Object.values(gig).some(
-                      (value) =>
-                        typeof value === "string" &&
-                        value.toLowerCase().includes(search)
-                    )
-                )
-                .map((gig) => (
-                  <div>{gig.title}</div>
-                ))}
+              <div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Contractor</th>
+                      <th>Title</th>
+                      <th>Type</th>
+                      <th>Location</th>
+                      <th>Posted</th>
+                      <th>More</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tr>
+                    <td colSpan="16">
+                      <hr />
+                    </td>
+                  </tr>
+                  <tbody>
+                    {gigs
+                      .filter(
+                        (gig) =>
+                          search.toLowerCase() === "" ||
+                          Object.values(gig).some(
+                            (value) =>
+                              typeof value === "string" &&
+                              value.toLowerCase().includes(search)
+                          )
+                      )
+                      .map((gig) => (
+                        <React.Fragment key={gig._id}>
+                          <tr>
+                            <td>
+                              {gig.username.replace(
+                                /^./,
+                                gig.username[0].toUpperCase()
+                              )}
+                            </td>
+                            <td>{gig.title}</td>
+                            <td>{gig.type}</td>
+                            <td>{gig.location}</td>
+                            <td>
+                              <CustomMoment
+                                postedTime={
+                                  gig.createdAt ? gig.createdAt : gig.updatedAt
+                                }
+                              />
+                            </td>
+                            <td>
+                              <button
+                                onClick={() => viewGig(gig._id)}
+                                style={{ cursor: "pointer" }}
+                                className="view-gig-btn"
+                              >
+                                View Details
+                              </button>
+                            </td>
+                            <td>
+                              {gig.postedBy === user._id ? (
+                                <div>
+                                  <button className="update-gig-btn">
+                                    <Link
+                                      to={`/update-gig/${gig._id}`}
+                                      style={{
+                                        textDecoration: "none",
+                                        color: "white",
+                                      }}
+                                    >
+                                      <FontAwesomeIcon icon={faPenToSquare} />
+                                    </Link>
+                                  </button>
+                                  <button
+                                    onClick={() => deleteGig(gig._id)}
+                                    style={{ cursor: "pointer" }}
+                                    className="delete-gig-btn"
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </button>
+                                </div>
+                              ) : (
+                                <button className="apply-gig-btn">
+                                  <Link
+                                    to={`/apply-gig/${gig._id}`}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "white",
+                                    }}
+                                  >
+                                    Apply
+                                  </Link>
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        </React.Fragment>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          ) : null}
-
-          <div className="gigs-list">
+          ) :   <div className="gigs-list">
             <DataTable
               columns={columns}
               data={gigs}
               customStyles={customStyles}
               pagination
             />
-          </div>
+          </div>}
+
+        
 
           {selectedProfile && (
             <div className="profile-modal-overlay" onClick={closeProfileModal}>
@@ -383,7 +481,7 @@ function GigList() {
                 <div className="modal-body">
                   <div className="gig-details">
                     <h3 className="gig-description">
-                      <strong>Title:</strong> {selectedGig.title}
+                      <strong>{selectedGig.title}</strong>
                     </h3>
                     {selectedGig.createdAt && (
                       <p className="gig-info">

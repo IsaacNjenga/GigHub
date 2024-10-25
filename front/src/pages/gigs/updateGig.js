@@ -26,6 +26,8 @@ function UpdateGig() {
       if (response.data.gigs) {
         setData(true);
         const fetchedGig = response.data.gigs.find((gig) => gig._id === id);
+        
+        console.log(fetchedGig);
         setValues((prevValues) => ({ ...prevValues, ...fetchedGig }));
         console.log(values);
       }

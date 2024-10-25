@@ -410,16 +410,22 @@
 }
 
 .gig-search-bar {
-  margin: 12px auto;
-  width: 45%;
-  padding: 12px;
-  border-radius: 18px;
-  border-width: 1px;
-  border-color: #000;
-  background-color: #ffffff0d;  border: 1px solid #000; /* Combined border-width and border-color */
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #000;
-  font-size: 18px;
+  margin: 20px auto;
+  width: 50%;
+  padding: 15px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 16px;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+}
+
+.gig-search-bar:hover {
+  background-color: #fff;
+  border-color: #5bacba;
 }
 
 .gig-search-bar::placeholder {
@@ -428,20 +434,85 @@
 }
 
 .gig-button-container {
-  margin: 12px auto;
+  margin: 20px auto;
   display: flex;
-  flex-direction: row;
-  align-items: left;
+  justify-content: center;
 }
 
-.all-gig-button,
-.my-gig-button,
-.applied-gig-button {
-  width: 120px;
-  padding: 10px;
+.gig-button-container button {
+  width: 130px;
+  padding: 12px 20px;
   border: none;
-  margin: 5px;
-  border-radius: 7px;
-  font-size: 1.1em;
+  margin: 0 10px;
+  border-radius: 30px;
+  font-size: 16px;
   cursor: pointer;
+  color: white;
+  transition: all 0.3s ease-in-out;
+}
+
+.gig-button-container button:hover {
+  background-color: #4b99a0;
+  transform: scale(1.05);
+}
+
+.all-gig-button {
+  background-color: #2ed479;
+}
+
+.my-gig-button {
+  background-color: #e66060;
+  color: #333;
+}
+
+.applied-gig-button {
+  background-color: #8768ed;
+}
+
+.gig-button-container button:active {
+  transform: scale(0.95);
+  transition: all 0.1s ease-in-out;
+}
+
+table {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+}
+
+thead th {
+  background-color: #586a6d8a;
+  color: white;
+  padding: 15px 10px;
+  text-align: center;
+  font-size: 16px;
+}
+
+tbody td {
+  background-color: #5a59591d;
+  padding: 12px 10px;
+  text-align: center;
+  font-size: 14px;
+  color: rgb(14, 14, 14);
+  border-bottom: 1px solid #ccc;
+}
+
+tbody tr:hover {
+  background-color: #e0f7fa;
+  transition: background-color 0.3s ease-in-out;
+}
+
+td button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 20px;
+  background-color: #5bacba;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+td button:hover {
+  background-color: #4b99a0;
+  transform: scale(1.05);
 }

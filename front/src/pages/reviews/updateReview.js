@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -17,6 +17,32 @@ function UpdateReview() {
   const [values, setValues] = useState({});
   const [loading, setLoading] = useState(false);
   const [stars, setStars] = useState([false, false, false, false, false]);
+
+  const fetchUserReview = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`fetchReview/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (res.data.success) {
+        const review = res.data.review.find((rev) => rev._id === id);
+        setValues((prevValues) => ({ ...prevValues, ...review }));
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching reviews:", error);
+      toast.error("Error fetching data", { position: "top-right" });
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetchUserReview();
+    }
+  }, [id]);
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
@@ -44,43 +70,20 @@ function UpdateReview() {
     ["link"],
   ];
 
-  useEffect(() => {
-    const fetchUserReview = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.get(`fetchReview/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        if (res.data.success) {
-          const review = res.data.review;
-          console.log(res.data.review);
-          setValues((prevValues) => ({ ...prevValues, review }));
-          console.log(values);
-        }
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log("Error fetching reviews:", error);
-      }
-    };
-    fetchUserReview();
-  }, [id]);
-
   const handleSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
     const rating = stars.filter((star) => star).length;
     const valuesData = { ...values, rating };
+    console.log(valuesData);
     axios
-      .post("createReview", valuesData, {
+      .put(`updateReview/${id}`, valuesData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((res) => {
         setLoading(false);
         if (res.data.success) {
-          toast.success("Review Posted Successfully", {
+          toast.success("Review Updated Successfully", {
             position: "top-right",
             autoClose: 800,
           });
@@ -102,14 +105,15 @@ function UpdateReview() {
     setStars(newStars);
   };
 
-  const renderStars = (rating) => {
+  const renderStars = (currentRating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <FontAwesomeIcon
           key={i}
-          icon={i <= rating ? faStar : faRegularStar}
-          style={{ color: "yellow" }}
+          icon={i <= currentRating ? faStar : faRegularStar}
+          style={{ color: "yellow", cursor: "pointer", fontSize: "30px" }}
+          onClick={() => toggleRate(i)} // Update the rating state when a star is clicked
         />
       );
     }
@@ -128,20 +132,7 @@ function UpdateReview() {
                 <label style={{ marginRight: "15px", fontSize: "20px" }}>
                   <strong>Rate</strong>
                 </label>
-                <div className="stars">
-                  {stars.map((isSolid, index) => (
-                    <FontAwesomeIcon
-                      key={index}
-                      onClick={() => toggleRate(index)}
-                      icon={isSolid ? faStar : faRegularStar}
-                      style={{
-                        color: "yellow",
-                        cursor: "pointer",
-                        fontSize: "30px",
-                      }}
-                    />
-                  ))}
-                </div>
+                <div className="stars">{renderStars(values.rating)}</div>
               </div>
               <br />
               <label>
