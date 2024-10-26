@@ -29,6 +29,9 @@ function UpdateReview() {
       if (res.data.success) {
         const review = res.data.review.find((rev) => rev._id === id);
         setValues((prevValues) => ({ ...prevValues, ...review }));
+        if (review && review.rating) {
+          setStars(Array.from({ length: 5 }, (_, i) => i < review.rating));
+        }
       }
       setLoading(false);
     } catch (error) {
@@ -93,31 +96,32 @@ function UpdateReview() {
       .catch((error) => {
         setLoading(false);
         console.log(error);
-        toast.error("Error posting review", {
+        toast.error("Error updating review", {
           position: "top-right",
-          autoClose: 800,
+          autoClose: 700,
         });
       });
   };
 
   const toggleRate = (index) => {
-    const newStars = stars.map((_, i) => i <= index); //based on clicked index
+    const newStars = Array.from({ length: 5 }, (_, i) => i <= index);
     setStars(newStars);
+    setValues((prevValues) => ({ ...prevValues, rating: index + 1 })); // Update rating in values
   };
 
-  const renderStars = (currentRating) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <FontAwesomeIcon
-          key={i}
-          icon={i <= currentRating ? faStar : faRegularStar}
-          style={{ color: "yellow", cursor: "pointer", fontSize: "30px" }}
-          onClick={() => toggleRate(i)} // Update the rating state when a star is clicked
-        />
-      );
-    }
-    return stars;
+  const renderStars = () => {
+    return stars.map((isSolid, index) => (
+      <FontAwesomeIcon
+        key={index}
+        onClick={() => toggleRate(index)}
+        icon={isSolid ? faStar : faRegularStar}
+        style={{
+          color: "yellow",
+          cursor: "pointer",
+          fontSize: "30px",
+        }}
+      />
+    ));
   };
 
   return (
@@ -132,7 +136,7 @@ function UpdateReview() {
                 <label style={{ marginRight: "15px", fontSize: "20px" }}>
                   <strong>Rate</strong>
                 </label>
-                <div className="stars">{renderStars(values.rating)}</div>
+                <div className="stars">{renderStars()}</div>
               </div>
               <br />
               <label>

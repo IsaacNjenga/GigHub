@@ -91,9 +91,9 @@
 }
 
 .reviews-search-bar {
-  width: 100%; /* adjust the width to your liking */
+  width: 95%; /* adjust the width to your liking */
   height: 20px;
-  padding: 3px;
+  padding: 7px;
   font-size: 18px;
   border: none;
   border-radius: 20px;

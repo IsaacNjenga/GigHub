@@ -10,8 +10,11 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import "../../assets/css/reviewCss/review.css";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../App";
+import defaultPfp from "../../assets/images/defaultProfilePic.png";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
 
 const MySwal = withReactContent(Swal);
 function Reviews() {
@@ -20,6 +23,7 @@ function Reviews() {
   const [selectedReviewee, setSelectedReviewee] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -153,40 +157,87 @@ function Reviews() {
         <div className="reviews-container">
           <div className="users-div">
             <h2>Users</h2>
-            <input
-              type="text"
-              placeholder="Search..."
-              className="reviews-search-bar"
-            />
+            <form>
+              <InputGroup>
+                <Form.Control
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search..."
+                  className="reviews-search-bar"
+                />
+              </InputGroup>
+            </form>
             <br />
-            <br />
-            <div>
-              {users.map((user) => (
-                <div
-                  key={user._id}
-                  onClick={() => handleUserClick(user)}
-                  className={`chat-item ${
-                    selectedReviewee?._id === user._id ? "active" : ""
-                  }`}
-                >
-                  <div className="chat-info">
-                    <img
-                      src={user.profileImage}
-                      alt="avatar"
-                      className="chat-pfp"
-                    />
-                    <div className="user-details">
-                      <p className="username">@{user.username}</p>
-                      <p className="name">
-                        {user.firstname} {user.lastname}
-                      </p>
+            {search ? (
+              <div>
+                {users
+                  .filter(
+                    (user) =>
+                      search.toLowerCase() === "" ||
+                      Object.values(user).some(
+                        (value) =>
+                          typeof value === "string" &&
+                          value.toLowerCase().includes(search)
+                      )
+                  )
+                  .map((user) => (
+                    <div
+                      key={user._id}
+                      onClick={() => handleUserClick(user)}
+                      className={`chat-item ${
+                        selectedReviewee?._id === user._id ? "active" : ""
+                      }`}
+                    >
+                      <div className="chat-info">
+                        <img
+                          src={
+                            user.profileImage ? user.profileImage : defaultPfp
+                          }
+                          alt=""
+                          className="chat-pfp"
+                        />
+                        <div className="chat-details">
+                          <p className="chat-username">
+                            <u>@{user.username}</u>
+                          </p>
+                          <p className="chat-name">
+                            {user.firstname} {user.lastname}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <div>
+                {users.map((user) => (
+                  <div
+                    key={user._id}
+                    onClick={() => handleUserClick(user)}
+                    className={`chat-item ${
+                      selectedReviewee?._id === user._id ? "active" : ""
+                    }`}
+                  >
+                    <div className="chat-info">
+                      <img
+                        src={user.profileImage ? user.profileImage : defaultPfp}
+                        alt=""
+                        className="chat-pfp"
+                      />
+                      <div className="user-details">
+                        <p className="username">@{user.username}</p>
+                        <p className="name">
+                          {user.firstname} {user.lastname}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+            <br />
+            <br />
           </div>
-          
+
           <div className="review-div">
             <div className="review-container">
               <div className="review-body">
@@ -221,7 +272,16 @@ function Reviews() {
                                   <p
                                     style={{ color: "#666", fontSize: "15px" }}
                                   >
-                                    @{review.reviewerProfile[0].username}
+                                    <Link
+                                      to={`/user/${review.reviewerProfile[0].postedBy}`}
+                                      style={{
+                                        color: "#666",
+                                        fontSize: "15px",
+                                        textDecoration: "none",
+                                      }}
+                                    >
+                                      @{review.reviewerProfile[0].username}
+                                    </Link>
                                   </p>
                                   <p>
                                     <strong>

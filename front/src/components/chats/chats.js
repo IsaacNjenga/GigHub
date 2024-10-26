@@ -9,6 +9,9 @@ import { faCheck, faCheckDouble } from "@fortawesome/free-solid-svg-icons";
 import Loader from "../loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserContext } from "../../App";
+import { Link } from "react-router-dom";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
 
 function Chats() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -19,6 +22,7 @@ function Chats() {
   const [selectedReceiver, setSelectedReceiver] = useState(null);
   const [loading, setLoading] = useState(false);
   const [chatView, setChatView] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -149,60 +153,116 @@ function Chats() {
               </div>
             ))}
             <h2>Chats</h2>
-            <input type="text" placeholder="Search..." className="search-bar" />
+            <form>
+              <InputGroup>
+                <Form.Control
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search..."
+                  className="search-bar"
+                />
+              </InputGroup>
+            </form>
             <br />
-            <br />
-            <div>
-              {chatView.map(
-                ({ user, lastMessage, lastMessageTime, isRead }) => (
-                  <div
-                    key={user._id}
-                    onClick={() => {
-                      setSelectedReceiver(user);
-                      setSelectedReceiverId(user.postedBy);
-                    }}
-                    className={`chat-item ${
-                      selectedReceiver?._id === user._id ? "active" : ""
-                    }`}
-                  >
-                    <div className="chat-info">
-                      <img
-                        src={user.profileImage ? user.profileImage : defaultPfp}
-                        alt=""
-                        className="chat-pfp"
-                      />
-                      <div className="chat-details">
-                        <p className="chat-username">
-                          <u>@{user.username}</u>
-                        </p>
-                        <p className="chat-name">
-                          {user.firstname} {user.lastname}
-                        </p>
-                        <div className="message-details">
-                          {isRead ? (
-                            <FontAwesomeIcon
-                              icon={faCheckDouble}
-                              className="circle-read"
-                            />
-                          ) : (
-                            <FontAwesomeIcon
-                              icon={faCheck}
-                              className="circle-unread"
-                            />
-                          )}{" "}
-                          <p className="chat-preview">{lastMessage}</p>
+            {search ? (
+              <div>
+                {users
+                  .filter(
+                    (user) =>
+                      search.toLowerCase() === "" ||
+                      Object.values(user).some(
+                        (value) =>
+                          typeof value === "string" &&
+                          value.toLowerCase().includes(search)
+                      )
+                  )
+                  .map((user) => (
+                    <div
+                      key={user._id}
+                      onClick={() => {
+                        setSelectedReceiver(user);
+                        setSelectedReceiverId(user.postedBy);
+                      }}
+                      className={`chat-item ${
+                        selectedReceiver?._id === user._id ? "active" : ""
+                      }`}
+                    >
+                      <div className="chat-info">
+                        <img
+                          src={
+                            user.profileImage ? user.profileImage : defaultPfp
+                          }
+                          alt=""
+                          className="chat-pfp"
+                        />
+                        <div className="chat-details">
+                          <p className="chat-username">
+                            <u>@{user.username}</u>
+                          </p>
+                          <p className="chat-name">
+                            {user.firstname} {user.lastname}
+                          </p>
                         </div>
                       </div>
                     </div>
-                    {lastMessageTime ? (
-                      <div className="chat-time">
-                        {getFormattedTime(lastMessageTime)}
+                  ))}
+              </div>
+            ) : (
+              <div>
+                {chatView.map(
+                  ({ user, lastMessage, lastMessageTime, isRead }) => (
+                    <div
+                      key={user._id}
+                      onClick={() => {
+                        setSelectedReceiver(user);
+                        setSelectedReceiverId(user.postedBy);
+                      }}
+                      className={`chat-item ${
+                        selectedReceiver?._id === user._id ? "active" : ""
+                      }`}
+                    >
+                      <div className="chat-info">
+                        <img
+                          src={
+                            user.profileImage ? user.profileImage : defaultPfp
+                          }
+                          alt=""
+                          className="chat-pfp"
+                        />
+                        <div className="chat-details">
+                          <p className="chat-username">
+                            <u>@{user.username}</u>
+                          </p>
+                          <p className="chat-name">
+                            {user.firstname} {user.lastname}
+                          </p>
+                          <div className="message-details">
+                            {isRead ? (
+                              <FontAwesomeIcon
+                                icon={faCheckDouble}
+                                className="circle-read"
+                              />
+                            ) : (
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                className="circle-unread"
+                              />
+                            )}{" "}
+                            <p className="chat-preview">{lastMessage}</p>
+                          </div>
+                        </div>
                       </div>
-                    ) : null}
-                  </div>
-                )
-              )}
-            </div>
+                      {lastMessageTime ? (
+                        <div className="chat-time">
+                          {getFormattedTime(lastMessageTime)}
+                        </div>
+                      ) : null}
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+            <br />
+            <br />
           </div>
 
           <div className="chat-page">
@@ -222,8 +282,14 @@ function Chats() {
                     <span className="username">
                       {selectedReceiver.firstname} {selectedReceiver.lastname}
                     </span>
+
                     <span className="username">
-                      @{selectedReceiver.username}
+                      <Link
+                        to={`/user/${selectedReceiver.postedBy}`}
+                        className="username"
+                      >
+                        @{selectedReceiver.username}
+                      </Link>{" "}
                     </span>
                     <span className="time">{selectedReceiver.role}</span>
                   </div>

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faStarHalfAlt } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 function UserProfile() {
   const { id } = useParams();
@@ -19,7 +19,7 @@ function UserProfile() {
   const userProfile = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get("profile", {
+      const response = await axios.get("fetchProfile", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const profileDetails = response.data.profile.find(
@@ -164,10 +164,21 @@ function UserProfile() {
                 </p>{" "}
                 <p className="expertise">{data.expertise}</p>{" "}
                 {averageRate && totalRating && (
-                  <div style={{ display: "flex", justifyContent: "center" }}>
-                    {renderAverageStars(averageRate)}
-                    <p style={{ color: "grey" }}>{totalRating} ratings</p>
-                  </div>
+                  <>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      {renderAverageStars(averageRate)}{" "}
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <p style={{ fontSize: "40px", margin: 0 }}>
+                        <strong>
+                          {(Math.round(averageRate * 100) / 100).toFixed(1)}
+                        </strong>
+                      </p>
+                    </div>{" "}
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <p style={{ color: "grey" }}>({totalRating} ratings)</p>
+                    </div>
+                  </>
                 )}
                 <br /> <p className="age">Age: {data.age} yrs</p>
                 <p className="phone">Phone: {data.phone}</p>
@@ -191,6 +202,14 @@ function UserProfile() {
                   <p dangerouslySetInnerHTML={{ __html: data.interests }} />
                 </div>
               </div>
+            </div>
+            <div className="button-container">
+              <Link to="/chats" className="update-profile-btn">
+                Message @{data.username}
+              </Link>
+              <Link to="/reviews" className="delete-profile-btn">
+                Review @{data.username}
+              </Link>
             </div>
           </div>
         </div>

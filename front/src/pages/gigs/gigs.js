@@ -17,7 +17,6 @@ import CustomMoment from "../../components/customMoment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import UserProfile from "../../components/userProfile";
 
 const MySwal = withReactContent(Swal);
 function GigList() {
