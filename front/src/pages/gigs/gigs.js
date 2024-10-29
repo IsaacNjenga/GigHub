@@ -24,11 +24,12 @@ function GigList() {
   const [gigs, setGigs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedGig, setSelectedGig] = useState(null);
+  const [selectedApplication, setSelectedApplication] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [showContractorGigs, setShowContractorGigs] = useState(false);
   const [showAllGigs, setShowAllGigs] = useState(true);
   const [myGigs, setMyGigs] = useState([]);
-  //const [appliedGigs, setAppliedGigs] = useState([]);
+  const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
 
   const fetchGigs = useCallback(async () => {
@@ -106,6 +107,28 @@ function GigList() {
     }
   };
 
+  const viewApplications = async (id) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`applicants`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      if (res.data.success) {
+        setLoading(false);
+        const applications = res.data.applicants;
+        const appliedGigs = applications.filter(
+          (application) => application.jobId === id
+        );
+        setSelectedApplication(true);
+        setApplications(appliedGigs);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching:", error);
+      toast.error("Error fetching applications", { position: "top-right" });
+    }
+  };
+
   const viewProfile = (id) => {
     setLoading(true);
     try {
@@ -131,6 +154,10 @@ function GigList() {
   };
   const closeProfileModal = () => {
     setSelectedProfile(null);
+  };
+
+  const closeApplicationModal = () => {
+    setSelectedApplication(null);
   };
 
   const deleteGig = (id) => {
@@ -221,13 +248,25 @@ function GigList() {
       name: "More",
       selector: (row) => (
         <>
-          <button
-            onClick={() => viewGig(row._id)}
-            style={{ cursor: "pointer" }}
-            className="view-gig-btn"
-          >
-            View Details
-          </button>
+          <div className="view-gig-container">
+            {row.postedBy === user._id ? (
+              <button
+                onClick={() => viewApplications(row._id)}
+                style={{ cursor: "pointer" }}
+                className="view-gig-btn"
+              >
+                View Applications
+              </button>
+            ) : (
+              <button
+                onClick={() => viewGig(row._id)}
+                style={{ cursor: "pointer" }}
+                className="view-gig-btn"
+              >
+                View Details
+              </button>
+            )}{" "}
+          </div>
         </>
       ),
     },
@@ -325,10 +364,11 @@ function GigList() {
           <h1>
             <u>Gigs List</u>
           </h1>
-          <Link to="/create-gig" className="post-gig">
-            Post a Gig
-          </Link>
-          <h1></h1>
+          {user.role === "Contractor" ? (
+            <Link to="/create-gig" className="post-gig">
+              Post a Gig
+            </Link>
+          ) : null}
           <div>
             <form>
               <InputGroup>
@@ -517,6 +557,84 @@ function GigList() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {selectedApplication && (
+            <div className="modal-overlay" onClick={closeApplicationModal}>
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+              >
+                {" "}
+                <button
+                  className="close-btn"
+                  onClick={closeGigModal}
+                  aria-label="Close Modal"
+                >
+                  &times;
+                </button>{" "}
+                <h1 className="modal-title">Applicants' Details</h1>{" "}
+                <div className="modal-body">
+                  {applications.map((application, index) => (
+                    <div key={index}>
+                      <div className="chat-info">
+                        <img
+                          src={application.profileImage}
+                          alt="_"
+                          className="chat-pfp"
+                        />
+                        <div className="user-details">
+                          <p
+                            style={{
+                              color: "#666",
+                              fontSize: "15px",
+                            }}
+                          >
+                            @{application.username}
+                          </p>
+                          <p>
+                            <strong>
+                              <span>
+                                {application.firstname} {application.lastname}
+                              </span>
+                            </strong>
+                          </p>
+                          <p>{application.role}</p>
+                        </div>
+                      </div>{" "}
+                      <div>
+                        Applied:{" "}
+                        <CustomMoment postedTime={application.createdAt} />
+                      </div>
+                      <p>
+                        <strong>E-mail:</strong> {application.email}
+                      </p>
+                      <p>
+                        <strong>Phone No.:</strong> {application.phone}
+                      </p>
+                      <p>
+                        <strong>Expertise:</strong> {application.expertise}
+                      </p>
+                      <p>
+                        <strong>Resume:</strong> {application.filename}
+                      </p>
+                      <p>Download resume</p>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        <button>Message {application.username}</button>
+                      </div>{" "}
+                      <br />
+                      <hr />
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

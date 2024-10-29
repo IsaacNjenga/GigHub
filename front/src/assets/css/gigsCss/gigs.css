@@ -388,9 +388,15 @@
   color: white;
 }
 
+.view-gig-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically, if needed */
+}
+
 .view-gig-btn {
   background-color: rgb(31, 159, 185);
-  width: 100px;
+  width: 140px;
 }
 
 .update-gig-btn {
