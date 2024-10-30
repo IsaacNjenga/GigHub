@@ -7,7 +7,6 @@ const upload = multer({ storage: storage });
 const createApplicant = async (req, res) => {
   try {
     const {
-      filename,
       firstname,
       lastname,
       expertise,
@@ -21,9 +20,10 @@ const createApplicant = async (req, res) => {
     } = req.body;
 
     const file = req.file.filename;
+    const fileName = req.file.filename;
     const filePath = `/files/${req.file.filename}`;
     const newFile = new ApplicantModel({
-      filename,
+      filename: fileName,
       file: file,
       filePath: filePath,
       postedBy: req.user._id,

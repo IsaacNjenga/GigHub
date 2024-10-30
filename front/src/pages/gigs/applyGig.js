@@ -35,8 +35,8 @@ function ApplyGig() {
       setProfileData({
         firstname: profileDetails.firstname,
         lastname: profileDetails.lastname,
-        username: profileData.username,
-        role: profileData.role,
+        username: profileDetails.username,
+        role: profileDetails.role,
         email: profileDetails.email,
         phone: profileDetails.phone,
         expertise: profileDetails.expertise,
@@ -93,6 +93,7 @@ function ApplyGig() {
       contractorId: contractorId,
     };
     const valuesData = { ...values, ...profileInformation };
+    console.log(profileInformation);
     const formData = new FormData();
     formData.append("file", file);
     for (const key in valuesData) {
