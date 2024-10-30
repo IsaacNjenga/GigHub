@@ -354,9 +354,10 @@ function GigList() {
     },
   };
 
+  // const url = `http://localhost:3001${filePath}`;
   // Helper function to create a download link for binary data
   const createOpenLink = (filePath, file) => {
-    const url = `http://localhost:3001${filePath}`; // Change to your production URL in deployment
+    const url = `https://gig-hub-liart.vercel.app${filePath}`; // Change to your production URL in deployment
     return (
       <a href={url} target="_blank" rel="noopener noreferrer">
         Open {file}

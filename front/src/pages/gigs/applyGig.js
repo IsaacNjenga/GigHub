@@ -117,7 +117,7 @@ function ApplyGig() {
     } catch (error) {
       setLoading(false);
       console.error("Error", error);
-      toast.error("Error posting Gig", {
+      toast.error("Error posting application", {
         position: "top-right",
         autoClose: 800,
       });
