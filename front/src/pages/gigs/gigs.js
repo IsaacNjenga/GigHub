@@ -231,7 +231,7 @@ function GigList() {
       selector: (row) => row.type,
     },
     {
-      name: "Location",
+      name: "mode",
       selector: (row) => row.location,
       grow: 0,
     },
@@ -352,6 +352,16 @@ function GigList() {
         },
       },
     },
+  };
+
+  // Helper function to create a download link for binary data
+  const createOpenLink = (filePath, file) => {
+    const url = `https://gig-hub-liart.vercel.app${filePath}`; // Change to your production URL in deployment
+    return (
+      <a href={url} target="_blank" rel="noopener noreferrer">
+        Open {file}
+      </a>
+    );
   };
 
   return (
@@ -622,7 +632,8 @@ function GigList() {
                       <p>
                         <strong>Resume:</strong> {application.filename}
                       </p>
-                      <p>Download resume</p>
+                      {createOpenLink(application.filePath, application.file)}
+                      
                       <div
                         style={{
                           display: "flex",

@@ -18,11 +18,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use("/files", express.static("files")); //serve static files
 app.use("/gighub", Router);
 
 app.options("*", cors(corsOptions));
-
-
 
 app.use((req, res, next) => {
   // console.log("Request Method:", req.method);

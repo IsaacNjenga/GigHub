@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 const applicantSchema = new mongoose.Schema(
   {
     filename: { type: String },
-    data: Buffer,
-    contentType: { type: String },
+    file: { type: String },
+    filePath: { type: String },
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     jobId: { type: String },
     username: { type: String },

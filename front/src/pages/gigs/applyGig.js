@@ -94,7 +94,7 @@ function ApplyGig() {
     };
     const valuesData = { ...values, ...profileInformation };
     const formData = new FormData();
-    formData.append("resume", file);
+    formData.append("file", file);
     for (const key in valuesData) {
       if (valuesData.hasOwnProperty(key)) {
         formData.append(key, valuesData[key]);
@@ -200,12 +200,11 @@ function ApplyGig() {
   };
 
   // Helper function to create a download link for binary data
-  const createDownloadLink = (buffer, filename, contentType) => {
-    const blob = new Blob([buffer], { type: contentType });
-    const url = URL.createObjectURL(blob);
+  const createOpenLink = (filePath, file) => {
+    const url = `http://localhost:3001${filePath}`; // Change to production URL in deployment
     return (
-      <a href={url} download={filename}>
-        Download {filename}
+      <a href={url} target="_blank" rel="noopener noreferrer">
+        Open {file}
       </a>
     );
   };
@@ -360,9 +359,8 @@ function ApplyGig() {
                     <div key={index}>
                       <p>Resume: {applicant.filename}</p>
                       {createDownloadLink(
-                        applicant.data,
-                        applicant.filename,
-                        applicant.contentType
+                        applicant.name,
+                        applicant.filePath,
                       )}
                     </div>
                       ))*/}

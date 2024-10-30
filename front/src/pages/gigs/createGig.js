@@ -8,12 +8,19 @@ import { UserContext } from "../../App";
 import "../../assets/css/gigsCss/createGigs.css";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+//import { GoogleMap, LoadScript, Autocomplete } from "@react-google-maps/api";
 
 function CreateGig() {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(false);
+  //const [data, setData] = useState({ location: "" });
+  //const [showLocation, setShowLocation] = useState(false);
+  // const [selectedLocation, setSelectedLocation] = useState({
+  //   lat: null,
+  //   lng: null,
+  // });
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
@@ -27,7 +34,22 @@ function CreateGig() {
         [e.target.name]: e.target.value,
       });
     }
+    // if (e.target.value === "On-site") {
+    //   setShowLocation(true);
+    // } else setShowLocation(false);
   };
+
+  // const handlePlaceSelect = (autocomplete) => {
+  //   const place = autocomplete.getPlace();
+  //   let coordinates = {};
+  //   if (place.geometry) {
+  //     coordinates = {
+  //       lat: place.geometry.location.lat(),
+  //       lng: place.geometry.location.lng(),
+  //     };
+  //   }
+  //   setSelectedLocation(coordinates);
+  // };
 
   const handleSubmit = (e) => {
     setLoading(true);
@@ -107,7 +129,8 @@ function CreateGig() {
                   modules={{
                     toolbar: toolbarOptions,
                   }}
-                /><br/>
+                />
+                <br />
                 <label>Type</label>
                 <select
                   name="type"
@@ -169,10 +192,8 @@ function CreateGig() {
                   }}
                 />
                 <br />
-                <br />
+                <br /> <label>Mode</label>
                 <div className="radio-input">
-                  <label>Location</label>
-                  <br />
                   <input
                     type="radio"
                     onChange={handleChange}
@@ -193,7 +214,43 @@ function CreateGig() {
                     className="form-radio"
                   />
                   <label>Remote</label>
-                </div>
+                </div>{" "}
+                <br />
+                {/* {showLocation && (
+                  <div className="add-location">
+                    <label>Add location</label>
+                    <LoadScript
+                      googleMapsApiKey="key_here"
+                      libraries={["places"]}
+                    >
+                      <Autocomplete
+                        onLoad={(autocomplete) =>
+                          (window.autocomplete = autocomplete)
+                        }
+                        onPlaceChanged={() =>
+                          handlePlaceSelect(window.autocomplete)
+                        }
+                      >
+                        <input
+                          type="text"
+                          placeholder="Enter location"
+                          className="location-input"
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            margin: "10px 0",
+                          }}
+                        />
+                      </Autocomplete>
+                    </LoadScript>{" "}
+                    {selectedLocation.lat && selectedLocation.lng && (
+                      <p>
+                        Latitude: {selectedLocation.lat}, Longitude:{" "}
+                        {selectedLocation.lng}
+                      </p>
+                    )}
+                  </div>
+                )} */}
                 <br />
                 <hr />
                 <label>Organisation & Company</label>{" "}

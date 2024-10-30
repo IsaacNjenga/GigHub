@@ -1,4 +1,7 @@
 import express from "express";
+import multer from "multer";
+const router = express.Router();
+import { body } from "express-validator";
 
 import {
   Login,
@@ -51,9 +54,6 @@ import {
 } from "../controllers/reviewController.js";
 
 import { VerifyUser } from "../middleware/verifyUser.js";
-import multer from "multer";
-const router = express.Router();
-import { body } from "express-validator";
 
 router.post(
   "/register",
@@ -123,10 +123,17 @@ router.put("/updateGig/:id", VerifyUser, updateGig);
 router.delete("/deleteGig/:id", VerifyUser, deleteGig);
 
 //applicant routes
-const storage = multer.memoryStorage();
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./files");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
 const upload = multer({ storage: storage });
 
-router.post("/apply", upload.single("resume"), VerifyUser, createApplicant);
+router.post("/apply", upload.single("file"), VerifyUser, createApplicant);
 router.get("/applicants", VerifyUser, fetchApplicants);
 router.get("/fetchUserApplicants", VerifyUser, fetchUserApplications);
 router.delete("/deleteApplication/:id", VerifyUser, deleteApplicant);
