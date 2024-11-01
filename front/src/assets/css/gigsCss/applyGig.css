@@ -70,7 +70,7 @@
   background-color: #16d14b;
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 17px;
   text-decoration: none;
   text-align: center;
@@ -89,7 +89,7 @@
   background-color: #d11616;
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 17px;
   text-decoration: none;
   text-align: center;
@@ -97,6 +97,8 @@
   transition: background-color 0.3s ease;
   margin: 10px;
 }
+
+
 
 .delete-application-btn:hover {
   background-color: #a50606;

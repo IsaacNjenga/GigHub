@@ -16,13 +16,9 @@ const createApplicant = async (req, res) => {
       role,
     } = req.body;
 
-    const file = req.file.filename;
-    const fileName = req.file.filename;
-    const filePath = `/files/${req.file.filename}`;
+    const file = req.file.originalname;
     const newFile = new ApplicantModel({
-      filename: fileName,
       file: file,
-      filePath: filePath,
       postedBy: req.user._id,
       firstname,
       lastname,

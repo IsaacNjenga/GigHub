@@ -653,9 +653,9 @@ function GigList() {
                         <strong>Expertise:</strong> {application.expertise}
                       </p>
                       <p>
-                        <strong>Resume:</strong> {application.filename}
+                        <strong>Resume:</strong> {application.file}
                       </p>
-                      {createOpenLink(application._id, application.filename)}
+                      {createOpenLink(application._id, application.file)}
                       <div
                         style={{
                           display: "flex",

@@ -223,6 +223,19 @@
   color: #0056b3;
 }
 
+.message-btn {
+  background-color: rgb(20, 157, 91);
+  padding: 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: white;border-style: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.message-btn:hover{
+  background-color: rgb(11, 109, 72);
+}
+
 .reviews-modal-content,
 .contractor-modal-content ::-webkit-scrollbar {
   width: 8px;

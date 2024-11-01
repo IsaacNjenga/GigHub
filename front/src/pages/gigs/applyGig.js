@@ -200,23 +200,13 @@ function ApplyGig() {
     navigate("/gigs");
   };
 
-  // Helper function to create a download link for binary data
-  const createOpenLink = (filePath, file) => {
-    const url = `http://localhost:3001${filePath}`; // Change to production URL in deployment
-    return (
-      <a href={url} target="_blank" rel="noopener noreferrer">
-        Open {file}
-      </a>
-    );
-  };
-
   return (
     <>
       {loading && <Loader />}
       <div className="application-background">
         <Navbar />
         <div>
-          <h1>Application</h1>
+          <h1 style={{ color: "white" }}>Application</h1>
           <button onClick={back} className="back-btn">
             Back
           </button>
@@ -318,17 +308,26 @@ function ApplyGig() {
             <div className="application-div">
               <form onSubmit={handleSubmit}>
                 <div>
-                  <label>Attach Résumé/Cover Letter</label>
-                  <input
-                    type="file"
-                    name="resume"
-                    accept=".pdf, .doc, .docx"
-                    onChange={handleChange}
-                  />
+                  <h2>Attach Résumé/Cover Letter</h2>
+                  <p>
+                    <u>Only .pdf files should be submitted</u>
+                  </p>
+                  <div className="file-upload">
+                    {" "}
+                    <input
+                      type="file"
+                      name="resume"
+                      accept=".pdf"
+                      onChange={handleChange}
+                    />{" "}
+                  </div>
                 </div>
+                <br />
                 <div>
                   Message Contractor:{" "}
-                  <button onClick={messageContractor}>Message</button>
+                  <button onClick={messageContractor} className="message-btn">
+                    Message
+                  </button>
                 </div>
                 <br />
                 <div className="application-button-container">
@@ -344,11 +343,15 @@ function ApplyGig() {
                   >
                     Submit
                   </button>
+                  <button
+                    className="delete-application-btn"
+                    onClick={handleDelete}
+                  >
+                    Withdraw application
+                  </button>
                 </div>
               </form>
-              <button className="delete-application-btn" onClick={handleDelete}>
-                Withdraw application
-              </button>
+
               {data.length > 0 ? (
                 <div>
                   <div>

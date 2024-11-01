@@ -14,8 +14,10 @@ import CustomMoment from "../../components/customMoment";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import "../../assets/css/dashboardCss/contractorDashboard.css";
+import { useNavigate } from "react-router-dom";
 
 function ContractorDashboard({ userDetails }) {
+  const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const [currentUser, setCurrentUser] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -274,6 +276,41 @@ function ContractorDashboard({ userDetails }) {
       }
     }
     return stars;
+  };
+
+  const createOpenLink = (fileId, file) => {
+    const token = localStorage.getItem("token");
+    const url = `https://gig-hub-liart.vercel.app/gighub/file/${fileId}`;
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => {
+          e.preventDefault();
+          fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.blob();
+            })
+            .then((blob) => {
+              const blobUrl = window.URL.createObjectURL(blob);
+              window.open(blobUrl, "_blank");
+            })
+            .catch((error) => console.error("Error fetching the file:", error));
+        }}
+      >
+        Open {file}
+      </a>
+    );
+  };
+
+  const messageUser = () => {
+    navigate("/chats");
   };
 
   return (
@@ -653,6 +690,14 @@ function ContractorDashboard({ userDetails }) {
                                       <p>{applicant.role}</p>
                                     </div>
                                   </div>
+                                  <div>
+                                    <p className="time-ago">
+                                      Applied:{" "}
+                                      <CustomMoment
+                                        postedTime={applicant.createdAt}
+                                      />
+                                    </p>
+                                  </div>
                                   <p>
                                     <strong>E-mail:</strong> {applicant.email}
                                   </p>
@@ -668,15 +713,21 @@ function ContractorDashboard({ userDetails }) {
                                     <strong>Resume:</strong>{" "}
                                     {applicant.filename}
                                   </p>
-                                  <p>Download resume</p>
+                                  {createOpenLink(
+                                    applicant._id,
+                                    applicant.file
+                                  )}
                                   <div
                                     style={{
                                       display: "flex",
                                       justifyContent: "flex-end",
                                     }}
                                   >
-                                    <button>
-                                      Message {applicant.username}
+                                    <button
+                                      className="message-btn"
+                                      onClick={messageUser}
+                                    >
+                                      Message @{applicant.username}
                                     </button>
                                   </div>
                                   <br />
