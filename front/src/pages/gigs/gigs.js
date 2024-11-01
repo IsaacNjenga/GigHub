@@ -355,11 +355,33 @@ function GigList() {
   };
 
   // const url = `http://localhost:3001${filePath}`;
-  // Helper function to create a download link for binary data
-  const createOpenLink = (filePath, file) => {
-    const url = `https://gig-hub-liart.vercel.app${filePath}`; // Change to your production URL in deployment
+  // Helper function to create an open link for binary data
+  const createOpenLink = (fileId, file) => {
+    const token = localStorage.getItem("token");
+    const url = `https://gig-hub-liart.vercel.app/gighub/file/${fileId}`;
     return (
-      <a href={url} target="_blank" rel="noopener noreferrer">
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => {
+          e.preventDefault();
+          fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.blob();
+            })
+            .then((blob) => {
+              const blobUrl = window.URL.createObjectURL(blob);
+              window.open(blobUrl, "_blank");
+            })
+            .catch((error) => console.error("Error fetching the file:", error));
+        }}
+      >
         Open {file}
       </a>
     );
@@ -633,8 +655,7 @@ function GigList() {
                       <p>
                         <strong>Resume:</strong> {application.filename}
                       </p>
-                      {createOpenLink(application.filePath, application.file)}
-                      
+                      {createOpenLink(application._id, application.filename)}
                       <div
                         style={{
                           display: "flex",

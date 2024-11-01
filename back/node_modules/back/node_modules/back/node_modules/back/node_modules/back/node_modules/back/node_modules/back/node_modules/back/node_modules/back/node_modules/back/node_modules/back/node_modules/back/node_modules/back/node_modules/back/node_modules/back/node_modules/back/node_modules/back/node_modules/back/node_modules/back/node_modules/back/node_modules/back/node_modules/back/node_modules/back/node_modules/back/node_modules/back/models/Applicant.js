@@ -4,6 +4,8 @@ const applicantSchema = new mongoose.Schema(
   {
     filename: { type: String },
     file: { type: String },
+    data: Buffer,
+    contentType: String,
     filePath: { type: String },
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     jobId: { type: String },

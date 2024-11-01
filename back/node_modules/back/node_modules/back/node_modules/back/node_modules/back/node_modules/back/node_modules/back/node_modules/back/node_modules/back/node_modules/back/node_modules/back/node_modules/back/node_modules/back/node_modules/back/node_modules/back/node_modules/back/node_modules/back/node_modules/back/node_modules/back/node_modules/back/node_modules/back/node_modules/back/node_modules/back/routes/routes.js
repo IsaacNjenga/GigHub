@@ -34,6 +34,7 @@ import {
   createApplicant,
   deleteApplicant,
   fetchApplicants,
+  fetchFile,
   fetchUserApplications,
 } from "../controllers/applicantController.js";
 
@@ -123,7 +124,7 @@ router.put("/updateGig/:id", VerifyUser, updateGig);
 router.delete("/deleteGig/:id", VerifyUser, deleteGig);
 
 //applicant routes
-const storage = multer.diskStorage({
+const localStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./files");
   },
@@ -131,10 +132,14 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-const upload = multer({ storage: storage });
+
+const storage = multer.memoryStorage();
+//const upload = multer({ storage: localStorage });
+const upload = multer({ storage });
 
 router.post("/apply", upload.single("file"), VerifyUser, createApplicant);
 router.get("/applicants", VerifyUser, fetchApplicants);
+router.get("/file/:fileId", VerifyUser, fetchFile);
 router.get("/fetchUserApplicants", VerifyUser, fetchUserApplications);
 router.delete("/deleteApplication/:id", VerifyUser, deleteApplicant);
 

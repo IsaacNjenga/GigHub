@@ -1,9 +1,6 @@
 import ApplicantModel from "../models/Applicant.js";
 import multer from "multer";
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
 const createApplicant = async (req, res) => {
   try {
     const {
@@ -37,6 +34,8 @@ const createApplicant = async (req, res) => {
       profileImage,
       contractorId,
       role,
+      contentType: req.file.mimetype,
+      data: req.file.buffer,
     });
     const result = await newFile.save();
     return res.status(201).json({ success: true, result });
@@ -64,6 +63,21 @@ const fetchUserApplications = async (req, res) => {
   try {
     const applicants = await ApplicantModel.find({ postedBy: userId });
     return res.status(200).json({ success: true, applicants });
+  } catch (error) {
+    console.error("Error", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const fetchFile = async (req, res) => {
+  try {
+    console.log("Fetching file with ID:", req.params.fileId);
+    const file = await ApplicantModel.findById(req.params.fileId);
+    if (!file) {
+      return res.status(404).send("File not found");
+    }
+    res.setHeader("Content-Type", file.contentType);
+    res.send(file.data); //binary data sent here
   } catch (error) {
     console.error("Error", error);
     return res.status(500).json({ error: error.message });
@@ -99,4 +113,5 @@ export {
   updateApplicant,
   deleteApplicant,
   fetchUserApplications,
+  fetchFile,
 };
