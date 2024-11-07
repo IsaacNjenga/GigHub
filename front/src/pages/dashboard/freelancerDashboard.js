@@ -341,9 +341,9 @@ function FreelancerDashboard() {
             </div>
 
             {viewReviews && (
-              <div className="reviews-modal-overlay" onClick={closeReviewModal}>
+              <div className="modal-overlay" onClick={closeReviewModal}>
                 <div
-                  className="reviews-modal-content"
+                  className="modal-content"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button className="close-btn" onClick={closeReviewModal}>

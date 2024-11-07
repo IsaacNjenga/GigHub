@@ -31,16 +31,9 @@ axios.defaults.withCredentials = true;
 //"dev": "nodemon index.js"
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <ProtectedRoutes>
-        <Home />
-      </ProtectedRoutes>
-    ),
-  },
   { path: "/register", element: <Register /> },
   { path: "/login", element: <Login /> },
+  { path: "/", element: <Home /> },
   {
     path: "/dashboard",
     element: (
@@ -158,6 +151,7 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+        console.error("Error during verification:", err);
       });
   }, []);
   return (

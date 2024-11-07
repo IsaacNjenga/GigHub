@@ -54,6 +54,7 @@ function ContractorDashboard({ userDetails }) {
         setUserReviews((prevReviews) =>
           prevReviews.map((r) => (r._id === review._id ? updatedReview : r))
         );
+        console.log(userReviews);
       }
       setLoading(false);
     } catch (error) {

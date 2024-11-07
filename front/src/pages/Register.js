@@ -98,7 +98,11 @@ function Register() {
               />
               {serverErrors.length > 0 &&
                 serverErrors.map((error, index) => (
-                  <p className="error" key={index}>
+                  <p
+                    className="error"
+                    key={index}
+                    data-cy={`server-error-${index}`}
+                  >
                     {error.msg}
                   </p>
                 ))}{" "}

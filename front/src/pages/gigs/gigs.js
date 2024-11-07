@@ -250,13 +250,22 @@ function GigList() {
         <>
           <div className="view-gig-container">
             {row.postedBy === user._id ? (
-              <button
-                onClick={() => viewApplications(row._id)}
-                style={{ cursor: "pointer" }}
-                className="view-gig-btn"
-              >
-                View Applications
-              </button>
+              <>
+                <button
+                  onClick={() => viewGig(row._id)}
+                  style={{ cursor: "pointer" }}
+                  className="view-gig-btn"
+                >
+                  View Details
+                </button>
+                <button
+                  onClick={() => viewApplications(row._id)}
+                  style={{ cursor: "pointer" }}
+                  className="view-gig-btn"
+                >
+                  View Applications
+                </button>
+              </>
             ) : (
               <button
                 onClick={() => viewGig(row._id)}
