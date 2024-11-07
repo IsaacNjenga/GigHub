@@ -48,8 +48,8 @@ function Register() {
     <>
       {loading && <Loader />}
       <div className="register-background">
-        <Navbar />
-        <div className="register-container">
+        {/* <Navbar /> */}
+        <div className="register-container" data-cy="form">
           <h1>Sign Up </h1>
           <hr />
           <div className="form-container">

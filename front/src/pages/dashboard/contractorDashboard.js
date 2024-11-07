@@ -54,7 +54,6 @@ function ContractorDashboard({ userDetails }) {
         setUserReviews((prevReviews) =>
           prevReviews.map((r) => (r._id === review._id ? updatedReview : r))
         );
-        console.log(userReviews);
       }
       setLoading(false);
     } catch (error) {
@@ -388,7 +387,7 @@ function ContractorDashboard({ userDetails }) {
                     </div>
                   </div>
                   <p onClick={openReviewsModal} className="view-more">
-                    View ratings
+                    See reviews
                   </p>
                 </>
               ) : (
@@ -396,9 +395,9 @@ function ContractorDashboard({ userDetails }) {
               )}
             </div>
             {viewReviews && (
-              <div className="reviews-modal-overlay" onClick={closeReviewModal}>
+              <div className="modal-overlay" onClick={closeReviewModal}>
                 <div
-                  className="reviews-modal-content"
+                  className="modal-content"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button className="close-btn" onClick={closeReviewModal}>

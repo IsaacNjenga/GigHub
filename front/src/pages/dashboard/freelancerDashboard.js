@@ -332,7 +332,7 @@ function FreelancerDashboard() {
                     </div>
                   </div>
                   <p onClick={openReviewsModal} className="view-more">
-                    View ratings
+                    See reviews
                   </p>
                 </>
               ) : (
