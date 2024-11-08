@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
+import { useLocation as useReactRouterLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,13 @@ import { UserContext } from "../../App";
 import "../../assets/css/gigsCss/createGigs.css";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-//import { GoogleMap, LoadScript, Autocomplete } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Autocomplete } from "@react-google-maps/api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faLocationDot,
+  faLocationPin,
+} from "@fortawesome/free-solid-svg-icons";
+import ReverseGeocode from "../../components/reverseGeocode";
 
 function CreateGig() {
   const { user } = useContext(UserContext);
@@ -16,11 +23,12 @@ function CreateGig() {
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(false);
   //const [data, setData] = useState({ location: "" });
-  //const [showLocation, setShowLocation] = useState(false);
-  // const [selectedLocation, setSelectedLocation] = useState({
-  //   lat: null,
-  //   lng: null,
-  // });
+  const [showLocation, setShowLocation] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState({
+    lat: null,
+    lng: null,
+  });
+  const reactRouterLocation = useReactRouterLocation();
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
@@ -28,28 +36,53 @@ function CreateGig() {
         ...values,
         [fieldName]: content,
       });
-    } else {
+    } else if (e && e.target) {
       setValues({
         ...values,
         [e.target.name]: e.target.value,
       });
+
+      if (e.target.value === "On-site") {
+        setShowLocation(true);
+      } else {
+        setShowLocation(false);
+      }
     }
-    // if (e.target.value === "On-site") {
-    //   setShowLocation(true);
-    // } else setShowLocation(false);
   };
 
-  // const handlePlaceSelect = (autocomplete) => {
-  //   const place = autocomplete.getPlace();
-  //   let coordinates = {};
-  //   if (place.geometry) {
-  //     coordinates = {
-  //       lat: place.geometry.location.lat(),
-  //       lng: place.geometry.location.lng(),
-  //     };
-  //   }
-  //   setSelectedLocation(coordinates);
-  // };
+  const useMyLocation = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams(reactRouterLocation.search);
+    const city = params.get("city");
+    if (city) {
+      console.log(city);
+    } else if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setSelectedLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    } else {
+      console.log("Geolocation not supported by this browser");
+    }
+  };
+
+  // useEffect(() => {
+  //   useMyLocation();
+  // }, [reactRouterLocation.search]);
+
+  const handlePlaceSelect = (autocomplete) => {
+    const place = autocomplete.getPlace();
+    let coordinates = {};
+    if (place.geometry) {
+      coordinates = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      };
+    }
+    setSelectedLocation(coordinates);
+  };
 
   const handleSubmit = (e) => {
     setLoading(true);
@@ -57,7 +90,10 @@ function CreateGig() {
     const valuesData = {
       ...values,
       username: user.username,
+      lat: selectedLocation.lat,
+      lng: selectedLocation.lng,
     };
+    console.log(valuesData);
     axios
       .post("createGig", valuesData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -216,11 +252,13 @@ function CreateGig() {
                   <label>Remote</label>
                 </div>{" "}
                 <br />
-                {/* {showLocation && (
+                {showLocation && (
                   <div className="add-location">
-                    <label>Add location</label>
+                    <label>
+                      Use your current location or add a different location
+                    </label>
                     <LoadScript
-                      googleMapsApiKey="key_here"
+                      googleMapsApiKey="AIzaSyBKdS460pbtW4C0g5FvKZ7gDWQJNT7Oz0s"
                       libraries={["places"]}
                     >
                       <Autocomplete
@@ -244,13 +282,18 @@ function CreateGig() {
                       </Autocomplete>
                     </LoadScript>{" "}
                     {selectedLocation.lat && selectedLocation.lng && (
-                      <p>
-                        Latitude: {selectedLocation.lat}, Longitude:{" "}
-                        {selectedLocation.lng}
-                      </p>
+                      <>
+                        <p>
+                          Latitude: {selectedLocation.lat}, Longitude:{" "}
+                          {selectedLocation.lng}
+                        </p>
+                      </>
                     )}
+                    <button onClick={useMyLocation}>
+                      Use my location <FontAwesomeIcon icon={faLocationDot} />
+                    </button>
                   </div>
-                )} */}
+                )}
                 <br />
                 <hr />
                 <label>Organisation & Company</label>{" "}

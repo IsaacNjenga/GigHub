@@ -14,6 +14,8 @@ const GigSchema = new mongoose.Schema(
     apply: { type: String },
     info: { type: String },
     username: { type: String },
+    lat: { type: String },
+    lng: { type: String },
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
   },
   { collection: "gigs", timestamps: true }

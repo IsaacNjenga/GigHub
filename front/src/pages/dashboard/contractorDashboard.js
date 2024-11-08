@@ -15,6 +15,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import "../../assets/css/dashboardCss/contractorDashboard.css";
 import { useNavigate } from "react-router-dom";
+import ReverseGeocode from "../../components/reverseGeocode";
 
 function ContractorDashboard({ userDetails }) {
   const navigate = useNavigate();
@@ -30,6 +31,11 @@ function ContractorDashboard({ userDetails }) {
   const [gigsApplied, setGigsApplied] = useState([]);
   const [viewGig, setViewGig] = useState(null);
   const [viewDetails, setViewDetails] = useState([]);
+  const [showMap, setShowMap] = useState(false);
+  const [mapCoordinates, setMapCoordinates] = useState({
+    lat: null,
+    lng: null,
+  });
 
   useEffect(() => {
     setCurrentUser(userDetails);
@@ -307,6 +313,15 @@ function ContractorDashboard({ userDetails }) {
         Open {file}
       </a>
     );
+  };
+
+  const viewMap = (lat, lng) => {
+    if (lat != null && lng != null) {
+      setMapCoordinates({ lat, lng });
+      setShowMap(true);
+    } else {
+      console.error("Invalid coordinates for map display:", lat, lng);
+    }
   };
 
   const messageUser = () => {
@@ -589,8 +604,41 @@ function ContractorDashboard({ userDetails }) {
                                 <strong>Type:</strong> {viewGig.type}
                               </p>
                               <p className="gig-info">
-                                <strong>Location:</strong> {viewGig.location}
-                              </p>
+                                <strong>Location:</strong> {viewGig.location}{" "}
+                                {viewGig.lat && viewGig.lng ? (
+                                  <p
+                                    style={{ margin: 0 }}
+                                    className="view-more"
+                                    onClick={() =>
+                                      viewMap(viewGig.lat, viewGig.lng)
+                                    }
+                                  >
+                                    See on map
+                                  </p>
+                                ) : null}
+                              </p>{" "}
+                              {showMap && (
+                                <p
+                                  onClick={() => {
+                                    setShowMap(false);
+                                  }}
+                                  style={{
+                                    cursor: "pointer",
+                                    margin: 0,
+                                    fontSize: "20px",
+                                  }}
+                                >
+                                  &times;
+                                </p>
+                              )}
+                              {showMap &&
+                                mapCoordinates.lat != null &&
+                                mapCoordinates.lng != null && (
+                                  <ReverseGeocode
+                                    lat={mapCoordinates.lat}
+                                    lng={mapCoordinates.lng}
+                                  />
+                                )}
                               <div className="gig-info">
                                 <strong>Work Environment:</strong>
                                 <div

@@ -17,6 +17,7 @@ import CustomMoment from "../../components/customMoment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
+import ReverseGeocode from "../../components/reverseGeocode";
 
 const MySwal = withReactContent(Swal);
 function GigList() {
@@ -31,6 +32,11 @@ function GigList() {
   const [myGigs, setMyGigs] = useState([]);
   const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
+  const [showMap, setShowMap] = useState(false);
+  const [mapCoordinates, setMapCoordinates] = useState({
+    lat: null,
+    lng: null,
+  });
 
   const fetchGigs = useCallback(async () => {
     setLoading(true);
@@ -363,7 +369,6 @@ function GigList() {
     },
   };
 
-  // const url = `http://localhost:3001${filePath}`;
   // Helper function to create an open link for binary data
   const createOpenLink = (fileId, file) => {
     const token = localStorage.getItem("token");
@@ -394,6 +399,15 @@ function GigList() {
         Open {file}
       </a>
     );
+  };
+
+  const viewMap = (lat, lng) => {
+    if (lat != null && lng != null) {
+      setMapCoordinates({ lat, lng });
+      setShowMap(true);
+    } else {
+      console.error("Invalid coordinates for map display:", lat, lng);
+    }
   };
 
   return (
@@ -726,10 +740,40 @@ function GigList() {
                       <strong>Type:</strong> {selectedGig.type}
                     </p>
                     <p className="gig-info">
-                      <strong>Location:</strong> {selectedGig.location}
-                    </p>
+                      <strong>Location:</strong> {selectedGig.location}{" "}
+                      {selectedGig.lat && selectedGig.lng ? (
+                        <p
+                          style={{ margin: 0 }}
+                          className="view-more"
+                          onClick={() =>
+                            viewMap(selectedGig.lat, selectedGig.lng)
+                          }
+                        >
+                          See on map
+                        </p>
+                      ) : null}
+                    </p>{" "}
+                    {showMap && (
+                      <p
+                        onClick={() => {
+                          setShowMap(false);
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          margin: 0,
+                          fontSize: "20px",
+                        }}
+                      >
+                        &times;
+                      </p>
+                    )}
+                    {showMap && mapCoordinates.lat != null && mapCoordinates.lng != null && (
+        <ReverseGeocode lat={mapCoordinates.lat} lng={mapCoordinates.lng} />
+      )}
                     <div className="gig-info">
-                      <strong>Work Environment:</strong>
+                      <strong>
+                        <u>Work Environment</u>:
+                      </strong>
                       <div
                         dangerouslySetInnerHTML={{
                           __html: selectedGig.environment,
@@ -737,7 +781,9 @@ function GigList() {
                       />
                     </div>
                     <div className="gig-info">
-                      <strong>Organisation & Company:</strong>{" "}
+                      <strong>
+                        <u>Organisation & Company:</u>
+                      </strong>{" "}
                       <div
                         dangerouslySetInnerHTML={{
                           __html: selectedGig.organisation,
@@ -745,7 +791,9 @@ function GigList() {
                       />
                     </div>
                     <div className="gig-info">
-                      <strong>Requirements:</strong>
+                      <strong>
+                        <u>Requirements:</u>
+                      </strong>
                       <div
                         dangerouslySetInnerHTML={{
                           __html: selectedGig.requirements,
@@ -753,7 +801,9 @@ function GigList() {
                       />
                     </div>
                     <div className="gig-info">
-                      <strong>Responsibilities:</strong>
+                      <strong>
+                        <u>Responsibilities</u>:
+                      </strong>
                       <div
                         dangerouslySetInnerHTML={{
                           __html: selectedGig.responsibilities,
@@ -761,7 +811,9 @@ function GigList() {
                       />
                     </div>
                     <div className="gig-info">
-                      <strong>Job Summary:</strong>
+                      <strong>
+                        <u>Job Summary</u>:
+                      </strong>
                       <div
                         dangerouslySetInnerHTML={{
                           __html: selectedGig.summary,
@@ -769,13 +821,17 @@ function GigList() {
                       />
                     </div>
                     <div className="gig-info">
-                      <strong>Additional Info:</strong>
+                      <strong>
+                        <u>Additional Info</u>:
+                      </strong>
                       <div
                         dangerouslySetInnerHTML={{ __html: selectedGig.info }}
                       />
                     </div>
                     <div className="gig-info">
-                      <strong>Work Benefits & Compensation:</strong>
+                      <strong>
+                        <u>Work Benefits & Compensation</u>:
+                      </strong>
                       <div
                         dangerouslySetInnerHTML={{
                           __html: selectedGig.benefits,
@@ -783,7 +839,9 @@ function GigList() {
                       />
                     </div>
                     <div className="gig-info">
-                      <strong>How To Apply:</strong>
+                      <strong>
+                        <u>How To Apply</u>:
+                      </strong>
                       <div
                         dangerouslySetInnerHTML={{ __html: selectedGig.apply }}
                       />

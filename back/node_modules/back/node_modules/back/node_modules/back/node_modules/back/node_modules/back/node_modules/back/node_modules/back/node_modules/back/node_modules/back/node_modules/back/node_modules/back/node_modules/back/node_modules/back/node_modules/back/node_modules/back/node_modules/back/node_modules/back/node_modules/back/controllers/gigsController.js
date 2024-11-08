@@ -16,6 +16,8 @@ const createGig = async (req, res) => {
       apply,
       info,
       username,
+      lat,
+      lng,
     } = req.body;
 
     const newGig = new GigsModel({
@@ -31,6 +33,8 @@ const createGig = async (req, res) => {
       apply,
       info,
       username,
+      lat,
+      lng,
       postedBy: req.user._id,
     });
 
@@ -143,7 +147,6 @@ const fetchedContractorGigs = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
 
 export {
   createGig,
