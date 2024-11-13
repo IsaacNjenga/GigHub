@@ -377,7 +377,8 @@
 
 .delete-gig-btn,
 .update-gig-btn,
-.view-gig-btn {
+.view-gig-btn,
+.view-app-btn {
   width: 70px;
   padding: 10px;
   border: none;
@@ -391,11 +392,16 @@
 .view-gig-container {
   display: flex;
   justify-content: center; /* Centers horizontally */
+  flex-direction: column;
   align-items: center; /* Centers vertically, if needed */
 }
 
 .view-gig-btn {
   background-color: rgb(31, 159, 185);
+  width: 140px;
+}
+.view-app-btn {
+  background-color: rgb(185, 136, 31);
   width: 140px;
 }
 
@@ -521,4 +527,114 @@ td button {
 td button:hover {
   background-color: #4b99a0;
   transform: scale(1.05);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 18px;
+  padding: 20px;
+}
+
+.gig-card {
+  background-color: #ffffffd9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  transition: transform 0.3s;
+  max-height: 300px;
+}
+
+.gig-card:hover {
+  transform: translateY(-6px);
+}
+
+.gig-card h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2em;
+  max-height: 2.4em; /* Ensures two lines only */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: start;
+  width: 100%;
+}
+
+.gig-card p {
+  color: #555;
+  font-size: 14px;
+  margin: 11px 0;
+}
+
+.gig-card .card-button-container {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.card-action-button-container {
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.card-view-gig-btn,
+.card-update-gig-btn,
+.card-delete-gig-btn,
+.card-apply-gig-btn,
+.card-view-app-btn {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  border: none;
+}
+
+.card-view-gig-btn {
+  background-color: #007bff;
+}
+.card-view-app-btn {
+  background-color: rgb(185, 136, 31);
+}
+
+.card-update-gig-btn {
+  background-color: #28a745;
+}
+
+.card-delete-gig-btn {
+  background-color: #dc3545;
+}
+
+.card-apply-gig-btn {
+  background-color: #24832c;
+}
+
+.card-apply-gig-btn a {
+  color: white;
+  text-decoration: none;
+}
+
+.view-button-container {
+  padding: 20px 0px;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+}
+
+.view-button-container button {
+  width: 70px;
+  padding: 7px;
+  border-radius: 10px;
+  border-width: 1px;
+}
+
+.card-button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
 }

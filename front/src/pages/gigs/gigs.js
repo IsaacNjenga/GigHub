@@ -10,7 +10,7 @@ import withReactContent from "sweetalert2-react-content";
 import "../../assets/css/gigsCss/gigs.css";
 import Loader from "../../components/loader";
 import { toast } from "react-toastify";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faGrip, faList, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import DOMPurify from "dompurify";
 import CustomMoment from "../../components/customMoment";
@@ -33,6 +33,8 @@ function GigList() {
   const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
   const [showMap, setShowMap] = useState(false);
+  const [grid, setGrid] = useState(false);
+  const [list, setList] = useState(true);
   const [mapCoordinates, setMapCoordinates] = useState({
     lat: null,
     lng: null,
@@ -251,7 +253,7 @@ function GigList() {
       grow: 0,
     },
     {
-      name: "More",
+      name: "",
       selector: (row) => (
         <>
           <div className="view-gig-container">
@@ -267,7 +269,7 @@ function GigList() {
                 <button
                   onClick={() => viewApplications(row._id)}
                   style={{ cursor: "pointer" }}
-                  className="view-gig-btn"
+                  className="view-app-btn"
                 >
                   View Applications
                 </button>
@@ -296,7 +298,7 @@ function GigList() {
       selector: (row) => (
         <>
           {row.postedBy === user._id ? (
-            <div>
+            <div className="view-gig-container">
               <button className="update-gig-btn">
                 <Link
                   to={`/update-gig/${row._id}`}
@@ -408,6 +410,16 @@ function GigList() {
     } else {
       console.error("Invalid coordinates for map display:", lat, lng);
     }
+  };
+
+  const listView = () => {
+    setList(true);
+    setGrid(false);
+  };
+
+  const gridView = () => {
+    setList(false);
+    setGrid(true);
   };
 
   return (
@@ -551,12 +563,132 @@ function GigList() {
             </div>
           ) : (
             <div className="gigs-list">
-              <DataTable
-                columns={columns}
-                data={showAllGigs ? gigs : myGigs}
-                customStyles={customStyles}
-                pagination
-              />
+              <div className="view-button-container">
+                <button
+                  onClick={listView}
+                  style={{ backgroundColor: list ? "grey" : "transparent" }}
+                >
+                  <FontAwesomeIcon icon={faList} style={{ fontSize: "30px" }} />
+                </button>
+                <button
+                  onClick={gridView}
+                  style={{ backgroundColor: grid ? "grey" : "transparent" }}
+                >
+                  <FontAwesomeIcon icon={faGrip} style={{ fontSize: "30px" }} />
+                </button>
+              </div>
+              {grid && (
+                <div className="card-grid">
+                  {gigs.map((gig) => (
+                    <div key={gig._id} className="gig-card">
+                      <div className="card-header">
+                        {" "}
+                        <h3>{gig.title}</h3>{" "}
+                        <span className="time-ago">
+                          Posted:{" "}
+                          <CustomMoment
+                            postedTime={
+                              gig.createdAt ? gig.createdAt : gig.updatedAt
+                            }
+                          />
+                        </span>
+                      </div>
+                      <hr />
+                      <p>
+                        <strong>Contractor:</strong>{" "}
+                        {gig.username.replace(
+                          /^./,
+                          gig.username[0].toUpperCase()
+                        )}
+                      </p>{" "}
+                      <p>
+                        <strong>Type:</strong> {gig.type}
+                      </p>
+                      <p>
+                        <strong>Mode:</strong> {gig.location}
+                      </p>
+                      <br />
+                      <hr />
+                      <div className="card-button-container">
+                        {gig.postedBy === user._id ? (
+                          <>
+                            <button
+                              onClick={() => viewGig(gig._id)}
+                              style={{ cursor: "pointer" }}
+                              className="card-view-gig-btn"
+                            >
+                              View Details
+                            </button>
+                            <button
+                              onClick={() => viewApplications(gig._id)}
+                              style={{ cursor: "pointer" }}
+                              className="card-view-app-btn"
+                            >
+                              View Applications
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => viewGig(gig._id)}
+                              style={{ cursor: "pointer" }}
+                              className="card-view-gig-btn"
+                            >
+                              View Details
+                            </button>
+                            <button className="card-apply-gig-btn">
+                              <Link
+                                to={`/apply-gig/${gig._id}`}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "white",
+                                }}
+                              >
+                                Apply
+                              </Link>
+                            </button>
+                          </>
+                        )}{" "}
+                      </div>
+                      <br />
+                      <div>
+                        {gig.postedBy === user._id ? (
+                          <div className="card-action-button-container">
+                            <button className="card-update-gig-btn">
+                              <Link
+                                to={`/update-gig/${gig._id}`}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "white",
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                              </Link>
+                            </button>
+                            <button
+                              onClick={() => deleteGig(gig._id)}
+                              style={{ cursor: "pointer" }}
+                              className="card-delete-gig-btn"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {list && (
+                <DataTable
+                  columns={columns}
+                  data={showAllGigs ? gigs : myGigs}
+                  customStyles={customStyles}
+                  pagination
+                />
+              )}
             </div>
           )}
 
@@ -767,9 +899,14 @@ function GigList() {
                         &times;
                       </p>
                     )}
-                    {showMap && mapCoordinates.lat != null && mapCoordinates.lng != null && (
-        <ReverseGeocode lat={mapCoordinates.lat} lng={mapCoordinates.lng} />
-      )}
+                    {showMap &&
+                      mapCoordinates.lat != null &&
+                      mapCoordinates.lng != null && (
+                        <ReverseGeocode
+                          lat={mapCoordinates.lat}
+                          lng={mapCoordinates.lng}
+                        />
+                      )}
                     <div className="gig-info">
                       <strong>
                         <u>Work Environment</u>:
