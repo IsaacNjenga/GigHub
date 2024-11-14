@@ -533,7 +533,7 @@ td button:hover {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 18px;
-  padding: 20px;
+  padding: 15px;
 }
 
 .gig-card {
@@ -542,7 +542,6 @@ td button:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 18px;
   transition: transform 0.3s;
-  max-height: 300px;
 }
 
 .gig-card:hover {

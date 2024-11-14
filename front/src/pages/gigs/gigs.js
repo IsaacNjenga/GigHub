@@ -470,8 +470,8 @@ function GigList() {
                       <th>Type</th>
                       <th>Location</th>
                       <th>Posted</th>
-                      <th>More</th>
-                      <th>Action</th>
+                      <th></th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tr>
@@ -595,7 +595,23 @@ function GigList() {
                             </span>
                           </div>
                           <hr />
-                          <p>
+                          <div
+                            style={{
+                              display: "block",
+                              margin: "0 auto",
+                              width: "fit-content",
+                            }}
+                          >
+                            <h4
+                              dangerouslySetInnerHTML={{
+                                __html: gig.organisation,
+                              }}
+                            />
+                          </div>
+                          <p
+                            onClick={() => viewProfile(gig.postedBy)}
+                            style={{ cursor: "pointer" }}
+                          >
                             <strong>Contractor:</strong>{" "}
                             {gig.username.replace(
                               /^./,
@@ -608,7 +624,6 @@ function GigList() {
                           <p>
                             <strong>Mode:</strong> {gig.location}
                           </p>
-                          <br />
                           <hr />
                           <div className="card-button-container">
                             {gig.postedBy === user._id ? (
@@ -695,7 +710,10 @@ function GigList() {
                             </span>
                           </div>
                           <hr />
-                          <p>
+                          <p
+                            onClick={() => viewProfile(gig.postedBy)}
+                            style={{ cursor: "pointer" }}
+                          >
                             <strong>Contractor:</strong>{" "}
                             {gig.username.replace(
                               /^./,
@@ -780,7 +798,6 @@ function GigList() {
                           </div>
                         </div>
                       ))}
-                  
                 </div>
               )}
               {list && (
@@ -838,8 +855,11 @@ function GigList() {
                           />
                         </div>
                         <div className="button-container">
-                          <button>
-                            <Link to={`/user/${selectedProfile.postedBy}`}>
+                          <button
+                            className="view-gig-btn"
+                           
+                          >
+                            <Link to={`/user/${selectedProfile.postedBy}`}  style={{ textDecoration: "none", color: "white" }}>
                               View more
                             </Link>
                           </button>
@@ -959,7 +979,7 @@ function GigList() {
                               ? selectedGig.createdAt
                               : selectedGig.updatedAt
                           ),
-                          "EEEE do, MM yyyy"
+                          "EEEE do, MMMM yyyy"
                         )}
                       </p>
                     )}

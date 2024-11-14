@@ -530,7 +530,7 @@ function FreelancerDashboard() {
                                     ? viewGig.createdAt
                                     : viewGig.updatedAt
                                 ),
-                                "EEEE do, MM yyyy"
+                                "EEEE do, MMMM yyyy"
                               )}
                             </p>
                           )}
