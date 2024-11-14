@@ -11,6 +11,12 @@ function InputText({ addMessage }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
   return (
     <>
       <div className="inputtext-container">
@@ -19,6 +25,7 @@ function InputText({ addMessage }) {
           rows="15"
           placeholder="Type a message"
           onChange={(e) => setValue(e.target.value)}
+          onKeyDown={handleKeyDown}
           value={value}
         />
         <button onClick={sendMessage}>

@@ -579,106 +579,208 @@ function GigList() {
               </div>
               {grid && (
                 <div className="card-grid">
-                  {gigs.map((gig) => (
-                    <div key={gig._id} className="gig-card">
-                      <div className="card-header">
-                        {" "}
-                        <h3>{gig.title}</h3>{" "}
-                        <span className="time-ago">
-                          Posted:{" "}
-                          <CustomMoment
-                            postedTime={
-                              gig.createdAt ? gig.createdAt : gig.updatedAt
-                            }
-                          />
-                        </span>
-                      </div>
-                      <hr />
-                      <p>
-                        <strong>Contractor:</strong>{" "}
-                        {gig.username.replace(
-                          /^./,
-                          gig.username[0].toUpperCase()
-                        )}
-                      </p>{" "}
-                      <p>
-                        <strong>Type:</strong> {gig.type}
-                      </p>
-                      <p>
-                        <strong>Mode:</strong> {gig.location}
-                      </p>
-                      <br />
-                      <hr />
-                      <div className="card-button-container">
-                        {gig.postedBy === user._id ? (
-                          <>
-                            <button
-                              onClick={() => viewGig(gig._id)}
-                              style={{ cursor: "pointer" }}
-                              className="card-view-gig-btn"
-                            >
-                              View Details
-                            </button>
-                            <button
-                              onClick={() => viewApplications(gig._id)}
-                              style={{ cursor: "pointer" }}
-                              className="card-view-app-btn"
-                            >
-                              View Applications
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => viewGig(gig._id)}
-                              style={{ cursor: "pointer" }}
-                              className="card-view-gig-btn"
-                            >
-                              View Details
-                            </button>
-                            <button className="card-apply-gig-btn">
-                              <Link
-                                to={`/apply-gig/${gig._id}`}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "white",
-                                }}
-                              >
-                                Apply
-                              </Link>
-                            </button>
-                          </>
-                        )}{" "}
-                      </div>
-                      <br />
-                      <div>
-                        {gig.postedBy === user._id ? (
-                          <div className="card-action-button-container">
-                            <button className="card-update-gig-btn">
-                              <Link
-                                to={`/update-gig/${gig._id}`}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "white",
-                                }}
-                              >
-                                <FontAwesomeIcon icon={faPenToSquare} />
-                              </Link>
-                            </button>
-                            <button
-                              onClick={() => deleteGig(gig._id)}
-                              style={{ cursor: "pointer" }}
-                              className="card-delete-gig-btn"
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </button>
+                  {showAllGigs
+                    ? gigs.map((gig) => (
+                        <div key={gig._id} className="gig-card">
+                          <div className="card-header">
+                            {" "}
+                            <h3>{gig.title}</h3>{" "}
+                            <span className="time-ago">
+                              Posted:{" "}
+                              <CustomMoment
+                                postedTime={
+                                  gig.createdAt ? gig.createdAt : gig.updatedAt
+                                }
+                              />
+                            </span>
                           </div>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                          <hr />
+                          <p>
+                            <strong>Contractor:</strong>{" "}
+                            {gig.username.replace(
+                              /^./,
+                              gig.username[0].toUpperCase()
+                            )}
+                          </p>{" "}
+                          <p>
+                            <strong>Type:</strong> {gig.type}
+                          </p>
+                          <p>
+                            <strong>Mode:</strong> {gig.location}
+                          </p>
+                          <br />
+                          <hr />
+                          <div className="card-button-container">
+                            {gig.postedBy === user._id ? (
+                              <>
+                                <button
+                                  onClick={() => viewGig(gig._id)}
+                                  style={{ cursor: "pointer" }}
+                                  className="card-view-gig-btn"
+                                >
+                                  View Details
+                                </button>
+                                <button
+                                  onClick={() => viewApplications(gig._id)}
+                                  style={{ cursor: "pointer" }}
+                                  className="card-view-app-btn"
+                                >
+                                  View Applications
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  onClick={() => viewGig(gig._id)}
+                                  style={{ cursor: "pointer" }}
+                                  className="card-view-gig-btn"
+                                >
+                                  View Details
+                                </button>
+                                <button className="card-apply-gig-btn">
+                                  <Link
+                                    to={`/apply-gig/${gig._id}`}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "white",
+                                    }}
+                                  >
+                                    Apply
+                                  </Link>
+                                </button>
+                              </>
+                            )}{" "}
+                          </div>
+                          <br />
+                          <div>
+                            {gig.postedBy === user._id ? (
+                              <div className="card-action-button-container">
+                                <button className="card-update-gig-btn">
+                                  <Link
+                                    to={`/update-gig/${gig._id}`}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "white",
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                  </Link>
+                                </button>
+                                <button
+                                  onClick={() => deleteGig(gig._id)}
+                                  style={{ cursor: "pointer" }}
+                                  className="card-delete-gig-btn"
+                                >
+                                  <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    : myGigs.map((gig) => (
+                        <div key={gig._id} className="gig-card">
+                          <div className="card-header">
+                            {" "}
+                            <h3>{gig.title}</h3>{" "}
+                            <span className="time-ago">
+                              Posted:{" "}
+                              <CustomMoment
+                                postedTime={
+                                  gig.createdAt ? gig.createdAt : gig.updatedAt
+                                }
+                              />
+                            </span>
+                          </div>
+                          <hr />
+                          <p>
+                            <strong>Contractor:</strong>{" "}
+                            {gig.username.replace(
+                              /^./,
+                              gig.username[0].toUpperCase()
+                            )}
+                          </p>{" "}
+                          <p>
+                            <strong>Type:</strong> {gig.type}
+                          </p>
+                          <p>
+                            <strong>Mode:</strong> {gig.location}
+                          </p>
+                          <br />
+                          <hr />
+                          <div className="card-button-container">
+                            {gig.postedBy === user._id ? (
+                              <>
+                                <button
+                                  onClick={() => viewGig(gig._id)}
+                                  style={{ cursor: "pointer" }}
+                                  className="card-view-gig-btn"
+                                >
+                                  View Details
+                                </button>
+                                <button
+                                  onClick={() => viewApplications(gig._id)}
+                                  style={{ cursor: "pointer" }}
+                                  className="card-view-app-btn"
+                                >
+                                  View Applications
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  onClick={() => viewGig(gig._id)}
+                                  style={{ cursor: "pointer" }}
+                                  className="card-view-gig-btn"
+                                >
+                                  View Details
+                                </button>
+                                <button className="card-apply-gig-btn">
+                                  <Link
+                                    to={`/apply-gig/${gig._id}`}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "white",
+                                    }}
+                                  >
+                                    Apply
+                                  </Link>
+                                </button>
+                              </>
+                            )}{" "}
+                          </div>
+                          <br />
+                          <div>
+                            {gig.postedBy === user._id ? (
+                              <div className="card-action-button-container">
+                                <button className="card-update-gig-btn">
+                                  <Link
+                                    to={`/update-gig/${gig._id}`}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "white",
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                  </Link>
+                                </button>
+                                <button
+                                  onClick={() => deleteGig(gig._id)}
+                                  style={{ cursor: "pointer" }}
+                                  className="card-delete-gig-btn"
+                                >
+                                  <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                  
                 </div>
               )}
               {list && (

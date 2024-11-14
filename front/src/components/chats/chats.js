@@ -114,13 +114,12 @@ function Chats() {
     const diffInDays = differenceInDays(now, messageTime);
 
     if (isToday(messageTime)) {
-      return format(messageTime, "HH:mm"); // If it's today, display time in "HH:mm"
+      return format(messageTime, "HH:mm"); 
     } else if (isYesterday(messageTime)) {
-      return "Yesterday"; // If it was yesterday
+      return "Yesterday"; 
     } else if (diffInDays < 7) {
-      return format(messageTime, "EEEE"); // Day of the week (e.g., Monday)
+      return format(messageTime, "EEEE"); 
     } else {
-      // If it's more than a week ago, show the date in "dd/MM/yyyy"
       return format(messageTime, "dd/MM/yyyy");
     }
   };
