@@ -11,11 +11,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { GoogleMap, LoadScript, Autocomplete } from "@react-google-maps/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLocationDot,
-  faLocationPin,
-} from "@fortawesome/free-solid-svg-icons";
-import ReverseGeocode from "../../components/reverseGeocode";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 
 function CreateGig() {
   const { user } = useContext(UserContext);
@@ -24,11 +20,11 @@ function CreateGig() {
   const [loading, setLoading] = useState(false);
   //const [data, setData] = useState({ location: "" });
   const [showLocation, setShowLocation] = useState(false);
+  const reactRouterLocation = useReactRouterLocation();
   const [selectedLocation, setSelectedLocation] = useState({
     lat: null,
     lng: null,
   });
-  const reactRouterLocation = useReactRouterLocation();
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
@@ -93,7 +89,6 @@ function CreateGig() {
       lat: selectedLocation.lat,
       lng: selectedLocation.lng,
     };
-    console.log(valuesData);
     axios
       .post("createGig", valuesData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

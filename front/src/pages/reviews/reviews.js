@@ -3,7 +3,7 @@ import Navbar from "../../components/navbar";
 import axios from "axios";
 import Loader from "../../components/loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faStarHalfAlt } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
@@ -23,6 +23,8 @@ function Reviews() {
   const [selectedReviewee, setSelectedReviewee] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [users, setUsers] = useState([]);
+  const [averageRate, setAverageRate] = useState(0);
+  const [totalRating, setTotalRating] = useState(0);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -92,9 +94,51 @@ function Reviews() {
     }
   };
 
+  const fetchAllReviews = async (revieweeId) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`fetchReviews?revieweeId=${revieweeId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      if (res.data.success) {
+        const reviewsWithProfiles = res.data.reviews;
+        const ratingCounts = {
+          1: 0,
+          2: 0,
+          3: 0,
+          4: 0,
+          5: 0,
+        };
+
+        let totalRatings = 0;
+        let ratingCount = 0;
+
+        reviewsWithProfiles.forEach((review) => {
+          if (review.rating >= 1 && review.rating <= 5) {
+            ratingCounts[review.rating] += 1;
+            totalRatings += review.rating++;
+            ratingCount++;
+          }
+        });
+        let averageRating = ratingCount > 0 ? totalRatings / ratingCount : 0;
+        setAverageRate(averageRating);
+        setTotalRating(ratingCount);
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching user:", error);
+    }
+  };
+
+  // useEffect(() => {
+  //   fetchAllReviews(user._id);
+  // }, []);
+
   const handleUserClick = (user) => {
     setSelectedReviewee(user);
     fetchUserReviews(user.postedBy);
+    fetchAllReviews(user.postedBy);
   };
 
   const deleteReview = (id) => {
@@ -145,6 +189,38 @@ function Reviews() {
           style={{ color: "yellow" }}
         />
       );
+    }
+    return stars;
+  };
+
+  const renderAverageStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faStar}
+            style={{ color: "yellow", fontSize: "35px" }}
+          />
+        );
+      } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faStarHalfAlt}
+            style={{ color: "yellow", fontSize: "35px" }}
+          />
+        );
+      } else {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faRegularStar}
+            style={{ color: "yellow", fontSize: "35px" }}
+          />
+        );
+      }
     }
     return stars;
   };
@@ -251,9 +327,46 @@ function Reviews() {
                         <strong>Write a review</strong>
                       </Link>
                       <p style={{ textAlign: "center", fontWeight: "bold" }}>
-                        Reviews for {selectedReviewee.firstname}{" "}
+                        Reviews for {selectedReviewee.firstname} {" "}
                         {selectedReviewee.lastname}
                       </p>
+                      {averageRate && totalRating && (
+                        <>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {renderAverageStars(averageRate)}{" "}
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <p style={{ fontSize: "30px", margin: 0 }}>
+                              <strong>
+                                {(Math.round(averageRate * 100) / 100).toFixed(
+                                  1
+                                )}
+                              </strong>
+                            </p>
+                          </div>{" "}
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <p style={{ color: "grey" }}>
+                              ({totalRating}{" "}
+                              {totalRating === 1 ? "rating" : "ratings"})
+                            </p>
+                          </div>
+                        </>
+                      )}
                     </div>
                     {reviews.length > 0 ? (
                       reviews.map((review) => (

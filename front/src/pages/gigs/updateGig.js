@@ -7,7 +7,11 @@ import { UserContext } from "../../App";
 import Loader from "../../components/loader";
 import "../../assets/css/gigsCss/updateGig.css";
 import ReactQuill from "react-quill";
+import { GoogleMap, LoadScript, Autocomplete } from "@react-google-maps/api";
 import "react-quill/dist/quill.snow.css";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { useLocation as useReactRouterLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function UpdateGig() {
   const navigate = useNavigate();
@@ -16,6 +20,12 @@ function UpdateGig() {
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({});
   const [data, setData] = useState(false);
+  const [showLocation, setShowLocation] = useState(false);
+  const reactRouterLocation = useReactRouterLocation();
+  const [selectedLocation, setSelectedLocation] = useState({
+    lat: null,
+    lng: null,
+  });
 
   const fetchGigs = useCallback(async () => {
     setLoading(true);
@@ -26,7 +36,7 @@ function UpdateGig() {
       if (response.data.gigs) {
         setData(true);
         const fetchedGig = response.data.gigs.find((gig) => gig._id === id);
-        
+
         console.log(fetchedGig);
         setValues((prevValues) => ({ ...prevValues, ...fetchedGig }));
         console.log(values);
@@ -47,28 +57,63 @@ function UpdateGig() {
 
   const handleChange = (e, content = null, fieldName = null) => {
     if (content !== null && fieldName !== null) {
-      // Only update the state if the content has changed
-      if (values[fieldName] !== content) {
-        setValues({
-          ...values,
-          [fieldName]: content,
-        });
-      }
-    } else {
-      // Update state only if input value has changed
-      if (values[e.target.name] !== e.target.value) {
-        setValues({
-          ...values,
-          [e.target.name]: e.target.value,
-        });
+      setValues({
+        ...values,
+        [fieldName]: content,
+      });
+    } else if (e && e.target) {
+      setValues({
+        ...values,
+        [e.target.name]: e.target.value,
+      });
+
+      if (e.target.value === "On-site") {
+        setShowLocation(true);
+      } else {
+        setShowLocation(false);
       }
     }
+  };
+
+  const useMyLocation = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams(reactRouterLocation.search);
+    const city = params.get("city");
+    if (city) {
+      console.log(city);
+    } else if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setSelectedLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    } else {
+      console.log("Geolocation not supported by this browser");
+    }
+  };
+
+  const handlePlaceSelect = (autocomplete) => {
+    const place = autocomplete.getPlace();
+    let coordinates = {};
+    if (place.geometry) {
+      coordinates = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      };
+    }
+    setSelectedLocation(coordinates);
   };
 
   const handleSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
-    const valuesData = { ...values, username: user.username };
+    const valuesData = {
+      ...values,
+      username: user.username,
+      lat: selectedLocation.lat,
+      lng: selectedLocation.lng,
+    };
     axios
       .put(`updateGig/${id}`, valuesData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -226,6 +271,49 @@ function UpdateGig() {
                     />
                     <label>Remote</label>
                   </div>
+                  <br/>
+                  {showLocation && (
+                  <div className="add-location">
+                    <label>
+                      Use your current location or add a different location
+                    </label>
+                    <LoadScript
+                      googleMapsApiKey="AIzaSyBKdS460pbtW4C0g5FvKZ7gDWQJNT7Oz0s"
+                      libraries={["places"]}
+                    >
+                      <Autocomplete
+                        onLoad={(autocomplete) =>
+                          (window.autocomplete = autocomplete)
+                        }
+                        onPlaceChanged={() =>
+                          handlePlaceSelect(window.autocomplete)
+                        }
+                      >
+                        <input
+                          type="text"
+                          placeholder="Enter location"
+                          className="location-input"
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            margin: "10px 0",
+                          }}
+                        />
+                      </Autocomplete>
+                    </LoadScript>{" "}
+                    {selectedLocation.lat && selectedLocation.lng && (
+                      <>
+                        <p>
+                          Latitude: {selectedLocation.lat}, Longitude:{" "}
+                          {selectedLocation.lng}
+                        </p>
+                      </>
+                    )}
+                    <button onClick={useMyLocation}>
+                      Use my location <FontAwesomeIcon icon={faLocationDot} />
+                    </button>
+                  </div>
+                )}
                   <br />
                   <hr />
                   <label>Organisation & Company</label>{" "}

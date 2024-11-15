@@ -176,7 +176,7 @@ function UserProfile() {
                       </p>
                     </div>{" "}
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                      <p style={{ color: "grey" }}>({totalRating} ratings)</p>
+                      <p style={{ color: "grey" }}>({totalRating}  {totalRating === 1 ? "rating" : "ratings"})</p>
                     </div>
                   </>
                 )}

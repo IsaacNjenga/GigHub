@@ -855,11 +855,11 @@ function GigList() {
                           />
                         </div>
                         <div className="button-container">
-                          <button
-                            className="view-gig-btn"
-                           
-                          >
-                            <Link to={`/user/${selectedProfile.postedBy}`}  style={{ textDecoration: "none", color: "white" }}>
+                          <button className="view-gig-btn">
+                            <Link
+                              to={`/user/${selectedProfile.postedBy}`}
+                              style={{ textDecoration: "none", color: "white" }}
+                            >
                               View more
                             </Link>
                           </button>
@@ -889,62 +889,68 @@ function GigList() {
                 </button>{" "}
                 <h1 className="modal-title">Applicants' Details</h1>{" "}
                 <div className="modal-body">
-                  {applications.map((application, index) => (
-                    <div key={index}>
-                      <div className="chat-info">
-                        <img
-                          src={application.profileImage}
-                          alt="_"
-                          className="chat-pfp"
-                        />
-                        <div className="user-details">
-                          <p
-                            style={{
-                              color: "#666",
-                              fontSize: "15px",
-                            }}
-                          >
-                            @{application.username}
-                          </p>
-                          <p>
-                            <strong>
-                              <span>
-                                {application.firstname} {application.lastname}
-                              </span>
-                            </strong>
-                          </p>
-                          <p>{application.role}</p>
+                  {applications.length === 0 ? (
+                    <p style={{ textAlign: "center", color: "#666" }}>
+                      No applicants yet
+                    </p>
+                  ) : (
+                    applications.map((application, index) => (
+                      <div key={index}>
+                        <div className="chat-info">
+                          <img
+                            src={application.profileImage}
+                            alt="_"
+                            className="chat-pfp"
+                          />
+                          <div className="user-details">
+                            <p
+                              style={{
+                                color: "#666",
+                                fontSize: "15px",
+                              }}
+                            >
+                              @{application.username}
+                            </p>
+                            <p>
+                              <strong>
+                                <span>
+                                  {application.firstname} {application.lastname}
+                                </span>
+                              </strong>
+                            </p>
+                            <p>{application.role}</p>
+                          </div>
+                        </div>{" "}
+                        <div>
+                          Applied:{" "}
+                          <CustomMoment postedTime={application.createdAt} />
                         </div>
-                      </div>{" "}
-                      <div>
-                        Applied:{" "}
-                        <CustomMoment postedTime={application.createdAt} />
+                        <p>
+                          <strong>E-mail:</strong> {application.email}
+                        </p>
+                        <p>
+                          <strong>Phone No.:</strong> {application.phone}
+                        </p>
+                        <p>
+                          <strong>Expertise:</strong> {application.expertise}
+                        </p>
+                        <p>
+                          <strong>Resume:</strong> {application.file}
+                        </p>
+                        {createOpenLink(application._id, application.file)}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          <button>Message {application.username}</button>
+                        </div>{" "}
+                        <br />
+                        <hr />
                       </div>
-                      <p>
-                        <strong>E-mail:</strong> {application.email}
-                      </p>
-                      <p>
-                        <strong>Phone No.:</strong> {application.phone}
-                      </p>
-                      <p>
-                        <strong>Expertise:</strong> {application.expertise}
-                      </p>
-                      <p>
-                        <strong>Resume:</strong> {application.file}
-                      </p>
-                      {createOpenLink(application._id, application.file)}
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        <button>Message {application.username}</button>
-                      </div>{" "}
-                      <br />
-                      <hr />
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>
