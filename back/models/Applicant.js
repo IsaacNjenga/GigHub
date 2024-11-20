@@ -2,11 +2,19 @@ import mongoose from "mongoose";
 
 const applicantSchema = new mongoose.Schema(
   {
-    filename: { type: String },
-    file: { type: String },
-    data: Buffer,
-    contentType: String,
-    filePath: { type: String },
+    // filename: { type: String },
+    // file: { type: String },
+    // data: Buffer,
+    // contentType: String,
+    //filePath: { type: String },
+    files: [
+      {
+        fieldName: { type: String },
+        filename: { type: String },
+        contentType: { type: String },
+        data: { type: Buffer },
+      },
+    ],
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     jobId: { type: String },
     username: { type: String },

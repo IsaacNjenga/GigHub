@@ -21,6 +21,9 @@ import AddReview from "./pages/reviews/addReview";
 import Chats from "./components/chats/chats";
 import UpdateReview from "./pages/reviews/updateReview";
 import UserProfile from "./components/userProfile";
+import Reports from "./pages/reports/reports";
+import UpdateReport from "./pages/reports/updateReport";
+import CreateReport from "./pages/reports/createReport";
 
 export const UserContext = createContext(null);
 
@@ -127,6 +130,30 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoutes>
         <UpdateReview />
+      </ProtectedRoutes>
+    ),
+  },
+  {
+    path: "/reports",
+    element: (
+      <ProtectedRoutes>
+        <Reports />
+      </ProtectedRoutes>
+    ),
+  },
+  {
+    path: "/update-report/:id",
+    element: (
+      <ProtectedRoutes>
+        <UpdateReport />
+      </ProtectedRoutes>
+    ),
+  },
+  {
+    path: "/create-report",
+    element: (
+      <ProtectedRoutes>
+        <CreateReport />
       </ProtectedRoutes>
     ),
   },

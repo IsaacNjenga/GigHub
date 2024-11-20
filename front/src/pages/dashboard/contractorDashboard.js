@@ -750,21 +750,40 @@ function ContractorDashboard({ userDetails }) {
                                     <strong>E-mail:</strong> {applicant.email}
                                   </p>
                                   <p>
-                                    <strong>Phone No.:</strong>{" "}
+                                    <strong>Phone:</strong>{" "}
                                     {applicant.phone}
                                   </p>
                                   <p>
                                     <strong>Expertise:</strong>{" "}
                                     {applicant.expertise}
                                   </p>
-                                  <p>
-                                    <strong>Resume:</strong>{" "}
-                                    {applicant.filename}
-                                  </p>
-                                  {createOpenLink(
-                                    applicant._id,
-                                    applicant.file
-                                  )}
+                                  <div>
+                                    <h2>Submitted documents</h2>
+                                    <p>
+                                      <strong>Resume:</strong>{" "}
+                                      {applicant.files[0]?.filename}
+                                    </p>
+                                    {createOpenLink(
+                                      applicant.files[0]?._id,
+                                      applicant.files[0]?.filename
+                                    )}{" "}
+                                    <p>
+                                      <strong>Cover Letter:</strong>{" "}
+                                      {applicant.files[1]?.filename}
+                                    </p>
+                                    {createOpenLink(
+                                      applicant.files[1]?._id,
+                                      applicant.files[1]?.filename
+                                    )}{" "}
+                                    <p>
+                                      <strong>Portfolio:</strong>{" "}
+                                      {applicant.files[2]?.filename}
+                                    </p>
+                                    {createOpenLink(
+                                      applicant.files[2]?._id,
+                                      applicant.files[2]?.filename
+                                    )}
+                                  </div>
                                   <div
                                     style={{
                                       display: "flex",

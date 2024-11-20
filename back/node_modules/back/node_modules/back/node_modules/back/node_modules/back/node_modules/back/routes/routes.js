@@ -54,7 +54,16 @@ import {
   updateReview,
 } from "../controllers/reviewController.js";
 
+import {
+  createReport,
+  deleteReport,
+  fetchReport,
+  fetchReports,
+  updateReport,
+} from "../controllers/reportsController.js";
+
 import { VerifyUser } from "../middleware/verifyUser.js";
+import uploadFiles from "../middleware/uploadFiles.js";
 
 router.post(
   "/register",
@@ -124,20 +133,7 @@ router.put("/updateGig/:id", VerifyUser, updateGig);
 router.delete("/deleteGig/:id", VerifyUser, deleteGig);
 
 //applicant routes
-const localStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./files");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
-
-const storage = multer.memoryStorage();
-//const upload = multer({ storage: localStorage });
-const upload = multer({ storage });
-
-router.post("/apply", upload.single("file"), VerifyUser, createApplicant);
+router.post("/apply", uploadFiles, VerifyUser, createApplicant);
 router.get("/applicants", VerifyUser, fetchApplicants);
 router.get("/file/:fileId", VerifyUser, fetchFile);
 router.get("/fetchUserApplicants", VerifyUser, fetchUserApplications);
@@ -156,5 +152,12 @@ router.get("/fetchReviews", VerifyUser, fetchReviews);
 router.get("/fetchReview/:id", VerifyUser, fetchReview);
 router.put("/updateReview/:id", VerifyUser, updateReview);
 router.delete("/deleteReview", VerifyUser, deleteReview); //deleting with a query
+
+//report routes
+router.post("/createReport", VerifyUser, createReport);
+router.get("/fetchReports", VerifyUser, fetchReports);
+router.get("/fetchReport/:id", VerifyUser, fetchReport);
+router.put("/updateReport/:id", VerifyUser, updateReport);
+router.delete("/deleteReport/:id", VerifyUser, deleteReport);
 
 export { router as Router };

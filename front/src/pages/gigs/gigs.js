@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState, useEffect } from "react";
 import Navbar from "../../components/navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import { UserContext } from "../../App";
@@ -35,6 +35,7 @@ function GigList() {
   const [showMap, setShowMap] = useState(false);
   const [grid, setGrid] = useState(false);
   const [list, setList] = useState(true);
+  const navigate = useNavigate();
   const [mapCoordinates, setMapCoordinates] = useState({
     lat: null,
     lng: null,
@@ -372,35 +373,44 @@ function GigList() {
   };
 
   // Helper function to create an open link for binary data
-  const createOpenLink = (fileId, file) => {
+  const createOpenLink = (fileId, fileName) => {
     const token = localStorage.getItem("token");
     const url = `https://gig-hub-liart.vercel.app/gighub/file/${fileId}`;
+    // const url = `http://localhost:3001/gighub/file/${fileId}`;
+    console.log("Generated URL:", url);
     return (
       <a
         href={url}
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => {
-          e.preventDefault();
+          e.preventDefault(); // Prevent default link behavior
+          setLoading(true);
           fetch(url, {
             headers: { Authorization: `Bearer ${token}` },
           })
             .then((response) => {
-              if (!response.ok) {
-                throw new Error("Network response was not ok");
-              }
+              if (!response.ok) throw new Error("Failed to fetch the file");
               return response.blob();
             })
             .then((blob) => {
+              setLoading(false);
               const blobUrl = window.URL.createObjectURL(blob);
               window.open(blobUrl, "_blank");
             })
-            .catch((error) => console.error("Error fetching the file:", error));
+            .catch((error) => {
+              setLoading(false);
+              console.error("Error fetching the file:", error);
+            });
         }}
       >
-        Open {file}
+        Open {fileName}
       </a>
     );
+  };
+
+  const messageUser = () => {
+    navigate("/chats");
   };
 
   const viewMap = (lat, lng) => {
@@ -922,29 +932,59 @@ function GigList() {
                           </div>
                         </div>{" "}
                         <div>
-                          Applied:{" "}
-                          <CustomMoment postedTime={application.createdAt} />
+                          <p className="time-ago">
+                            {" "}
+                            Applied:{" "}
+                            <CustomMoment postedTime={application.createdAt} />
+                          </p>
                         </div>
                         <p>
                           <strong>E-mail:</strong> {application.email}
                         </p>
                         <p>
-                          <strong>Phone No.:</strong> {application.phone}
+                          <strong>Phone:</strong> {application.phone}
                         </p>
                         <p>
                           <strong>Expertise:</strong> {application.expertise}
                         </p>
-                        <p>
-                          <strong>Resume:</strong> {application.file}
-                        </p>
-                        {createOpenLink(application._id, application.file)}
+                        <div>
+                          <h2>Submitted Documents</h2>
+                          <p>
+                            <strong>Resume:</strong>{" "}
+                            {application.files[0]?.filename}
+                          </p>
+                          {createOpenLink(
+                            application.files[0]?._id,
+                            application.files[0]?.filename
+                          )}
+
+                          <p>
+                            <strong>Cover Letter:</strong>{" "}
+                            {application.files[1]?.filename}
+                          </p>
+                          {createOpenLink(
+                            application.files[1]?._id,
+                            application.files[1]?.filename
+                          )}
+
+                          <p>
+                            <strong>Portfolio:</strong>{" "}
+                            {application.files[2]?.filename}
+                          </p>
+                          {createOpenLink(
+                            application.files[2]?._id,
+                            application.files[2]?.filename
+                          )}
+                        </div>
                         <div
                           style={{
                             display: "flex",
                             justifyContent: "flex-end",
                           }}
                         >
-                          <button>Message {application.username}</button>
+                          <button className="message-btn" onClick={messageUser}>
+                            Message {application.username}
+                          </button>
                         </div>{" "}
                         <br />
                         <hr />

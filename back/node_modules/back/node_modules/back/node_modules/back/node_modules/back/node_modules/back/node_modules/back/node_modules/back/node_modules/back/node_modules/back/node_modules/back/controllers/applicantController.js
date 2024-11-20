@@ -16,9 +16,23 @@ const createApplicant = async (req, res) => {
       role,
     } = req.body;
 
-    const file = req.file.originalname;
+    //console.log("Files received:", req.files);
+
+    //const file = req.file.originalname;
+    const uploadedFiles = Object.entries(req.files || {}).map(
+      ([key, fileArray]) => {
+        const file = fileArray[0]; // Take the first file if multiple files are not allowed
+        return {
+          fieldName: key,
+          filename: file.originalname,
+          contentType: file.mimetype,
+          data: file.buffer,
+        };
+      }
+    );
+
     const newFile = new ApplicantModel({
-      file: file,
+      files: uploadedFiles,
       postedBy: req.user._id,
       firstname,
       lastname,
@@ -30,8 +44,6 @@ const createApplicant = async (req, res) => {
       profileImage,
       contractorId,
       role,
-      contentType: req.file.mimetype,
-      data: req.file.buffer,
     });
     const result = await newFile.save();
     return res.status(201).json({ success: true, result });
@@ -65,10 +77,32 @@ const fetchUserApplications = async (req, res) => {
   }
 };
 
+// const fetchFile = async (req, res) => {
+//   try {
+//     console.log("Fetching file with ID:", req.params.fileId);
+//     const file = await ApplicantModel.findById(req.params.fileId);
+//     if (!file) {
+//       return res.status(404).send("File not found");
+//     }
+//     res.setHeader("Content-Type", file.contentType);
+//     res.send(file.data); //binary data sent here
+//   } catch (error) {
+//     console.error("Error", error);
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
+
 const fetchFile = async (req, res) => {
+  const fileId = req.params.fileId;
   try {
-    console.log("Fetching file with ID:", req.params.fileId);
-    const file = await ApplicantModel.findById(req.params.fileId);
+    const applicant = await ApplicantModel.findOne({
+      "files._id": req.params.fileId,
+    });
+
+    if (!applicant) {
+      return res.status(404).send("File not found");
+    }
+    const file = applicant.files.id(req.params.fileId);
     if (!file) {
       return res.status(404).send("File not found");
     }

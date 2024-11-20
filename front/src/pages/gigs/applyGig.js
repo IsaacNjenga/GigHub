@@ -16,10 +16,10 @@ function ApplyGig() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useContext(UserContext);
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState({});
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [values, setValues] = useState([]);
+  const [values, setValues] = useState({});
   const [fetchedGig, setFetchedGig] = useState([]);
   const [profileData, setProfileData] = useState([]);
   const [contractorId, setContractorId] = useState("");
@@ -81,15 +81,20 @@ function ApplyGig() {
       fetchGig();
       fetchUserProfile();
     }
-  }, [user, fetchUserProfile]);
+  }, [user, fetchUserProfile]); //setFile(e.target.files[0]);
 
   const handleChange = (e) => {
     if (e.target.type === "file") {
-      setFile(e.target.files[0]); // Store the selected file
+      const { name, files: selectedFiles } = e.target;
+      setFiles((prevFiles) => ({
+        ...prevFiles,
+        [name]: selectedFiles[0], // Store single file per input field
+      }));
     } else {
       setValues({ ...values, [e.target.name]: e.target.value || e.target.id });
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -98,15 +103,20 @@ function ApplyGig() {
       jobId: id,
       contractorId: contractorId,
     };
+
     const valuesData = { ...values, ...profileInformation };
-    console.log(profileInformation);
     const formData = new FormData();
-    formData.append("file", file);
+
+    Object.entries(files).forEach(([key, file]) => {
+      formData.append(key, file);
+    });
+
     for (const key in valuesData) {
       if (valuesData.hasOwnProperty(key)) {
         formData.append(key, valuesData[key]);
       }
     }
+    //console.log([...formData.entries()]);
 
     try {
       const res = await axios.post("/apply", formData, {
@@ -352,29 +362,45 @@ function ApplyGig() {
             </div>
 
             <div className="application-div">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div>
-                  <h2>Attach Résumé/Cover Letter</h2>
+                  <h2>Attach relevant documents</h2>
                   <p>
-                    <u>Only .pdf files should be submitted</u>
+                    <u>(Only .pdf files should be submitted)</u>
                   </p>
                   <div className="file-upload">
-                    {" "}
+                    <label>Résumé</label>{" "}
                     <input
                       type="file"
                       name="resume"
                       accept=".pdf"
                       onChange={handleChange}
+                      className="application-input"
                     />{" "}
                   </div>
+                  <label>Cover Letter</label>{" "}
+                  <input
+                    type="file"
+                    name="coverletter"
+                    accept=".pdf"
+                    onChange={handleChange}
+                    className="application-input"
+                  />
+                  <label>Portfolio</label>{" "}
+                  <input
+                    type="file"
+                    name="portfolio"
+                    accept=".pdf"
+                    onChange={handleChange}
+                    className="application-input"
+                  />
                 </div>
-                <br />
-                <div>
+                {/* <div>
                   Message Contractor:{" "}
                   <button onClick={messageContractor} className="message-btn">
                     Message
                   </button>
-                </div>
+                </div> */}
                 <br />
                 <div className="application-button-container">
                   <button
