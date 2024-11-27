@@ -65,34 +65,9 @@ function GigList() {
     }
   });
 
-  // const fetchAppliedGigs = useCallback(
-  //   async (id) => {
-  //     setLoading(true);
-  //     try {
-  //       const res = await axios.get(`applicants`, {
-  //         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-  //       });
-  //       if (res.data.success) {
-  //         setLoading(false);
-  //         const applications = res.data.applicants;
-  //         const appliedGigs = applications.filter(
-  //           (application) => application.jobId === id
-  //         );
-  //         console.log(appliedGigs);
-  //       }
-  //     } catch (error) {
-  //       setLoading(false);
-  //       console.error("Error fetching:", error);
-  //       toast.error("Error fetching gigs", { position: "top-right" });
-  //     }
-  //   },
-  //   [user]
-  // );
-
   useEffect(() => {
     if (user) {
-      fetchGigs();
-      //fetchAppliedGigs();
+      fetchGigs();   
     }
   }, [user]);
 

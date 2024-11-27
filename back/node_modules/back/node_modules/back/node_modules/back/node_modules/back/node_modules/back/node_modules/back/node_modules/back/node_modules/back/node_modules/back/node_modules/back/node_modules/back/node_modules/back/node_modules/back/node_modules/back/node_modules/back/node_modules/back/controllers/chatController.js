@@ -20,7 +20,7 @@ const createChat = async (req, res) => {
 };
 
 const fetchChats = async (req, res) => {
-  const { recipientId } = req.query; 
+  const { recipientId } = req.query;
   const senderId = req.user._id;
   try {
     // Fetch messages where the sender is the current user and the recipient is the other user or vice versa
