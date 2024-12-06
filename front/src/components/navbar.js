@@ -37,7 +37,7 @@ function Navbar() {
             <Link to="/reviews" className="navbar-link">
               Reviews
             </Link>
-            {user.role === "Contractor" ? (
+            {user.role === "Admin" ? (
               <Link to="/reports" className="navbar-link">
                 Reports
               </Link>
